@@ -1,12 +1,30 @@
-# 🏛️ CodeRadius
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+    <img src="docs/assets/logo-light.svg" width="72" alt="CodeRadius logo">
+  </picture>
 
-**Prevent cross-repo architectural breakage before merge.**
+  <h1>CodeRadius</h1>
+
+  <p><strong>Prevent cross-repo architectural breakage before merge.</strong></p>
+
+  <p>
+    <a href="https://github.com/coderadius-ai/coderadius/actions/workflows/ci.yml"><img src="https://github.com/coderadius-ai/coderadius/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-green.svg" alt="License: Apache-2.0"></a>
+    <a href="https://www.npmjs.com/package/coderadius"><img src="https://img.shields.io/npm/v/coderadius" alt="npm"></a>
+    <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-Ready-blue.svg" alt="MCP Ready"></a>
+  </p>
+
+  <p>
+    <a href="https://coderadius.ai/docs"><b>Documentation</b></a>
+    ·
+    <a href="https://coderadius.ai/acme-microservices-demo.html"><b>Live demo</b></a>
+    ·
+    <a href="#quick-start"><b>Quick start</b></a>
+  </p>
+</div>
 
 As teams adopt AI coding tools, code is written faster than ever, but without global system context. CodeRadius statically builds a live knowledge graph of your entire architecture, covering every service, API, queue, and database across every repo, so engineers and AI agents can measure blast radius, enforce policy, and ship without breaking downstream systems.
-
-[![CI](https://github.com/coderadius-ai/coderadius/actions/workflows/ci.yml/badge.svg)](https://github.com/coderadius-ai/coderadius/actions/workflows/ci.yml)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-green.svg)](LICENSE)
-[![MCP Ready](https://img.shields.io/badge/MCP-Ready-blue.svg)](https://modelcontextprotocol.io)
 
 ![cr blast finding a cross-repo breaking change](docs/assets/blast-radius.gif)
 
@@ -98,7 +116,7 @@ Built on Bun, tree-sitter, Mastra + Vercel AI SDK, and Memgraph.
 
 ---
 
-## 🔌 MCP Server
+## MCP Server
 
 CodeRadius ships a native MCP server that plugs into any MCP-compatible agent (Claude Code, Cursor, Windsurf, Gemini CLI). The agent discovers these tools and checks impact before writing code:
 
