@@ -8,7 +8,9 @@ As teams adopt AI coding tools, code is written faster than ever, but without gl
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-green.svg)](LICENSE)
 [![MCP Ready](https://img.shields.io/badge/MCP-Ready-blue.svg)](https://modelcontextprotocol.io)
 
-<!-- demo gif: docs/assets/blast-radius.gif -->
+![cr blast finding a cross-repo breaking change](docs/assets/blast-radius.gif)
+
+*An innocent-looking rename in `order-service`; `cr blast` finds the consumer it breaks in `notification-service`, in seconds. [Explore the live demo dashboard →](https://coderadius.ai/acme-microservices-demo.html)*
 
 ---
 
