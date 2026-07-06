@@ -165,19 +165,19 @@ The `routing:` block of `messenger.yaml` produces the `MANIFESTS_AS` set, the `t
 
 | Provider | Code analysis (LLM) | Structural extraction |
 |---|---|---|
-| RabbitMQ | ✓ | ✓ (`rabbitmq-config.plugin.ts`) |
-| Symfony Messenger | ✓ | ✓ (`symfony-messenger.plugin.ts`) |
-| Google Pub/Sub | ✓ | ✓ (`crossplane-pubsub.plugin.ts`) |
-| Kafka | ✓ | planned |
-| AWS SQS | ✓ | planned |
-| AWS SNS | ✓ | planned |
-| Azure Service Bus | ✓ | planned |
-| NATS | ✓ | planned |
-| Apache Pulsar | ✓ | planned |
-| Redis Streams | ✓ | planned |
-| MQTT | ✓ | planned |
-| Mosquitto | ✓ | planned |
-| ZeroMQ | ✓ | n/a (no broker config file) |
+| RabbitMQ | Yes | Yes (`rabbitmq-config.plugin.ts`) |
+| Symfony Messenger | Yes | Yes (`symfony-messenger.plugin.ts`) |
+| Google Pub/Sub | Yes | Yes (`crossplane-pubsub.plugin.ts`) |
+| Kafka | Yes | planned |
+| AWS SQS | Yes | planned |
+| AWS SNS | Yes | planned |
+| Azure Service Bus | Yes | planned |
+| NATS | Yes | planned |
+| Apache Pulsar | Yes | planned |
+| Redis Streams | Yes | planned |
+| MQTT | Yes | planned |
+| Mosquitto | Yes | planned |
+| ZeroMQ | Yes | n/a (no broker config file) |
 
 Adding a structural plugin for a new provider means writing a single file under `src/ingestion/structural/plugins/messaging/` that reuses `messaging-helpers.ts` for DSN parsing + broker resolution + URN construction.
 

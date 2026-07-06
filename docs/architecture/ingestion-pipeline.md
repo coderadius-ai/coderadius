@@ -18,7 +18,7 @@ flowchart TD
 
     D --> PASS1
 
-    subgraph SA["🔍 Static Analysis Engine"]
+    subgraph SA["Static Analysis Engine"]
         PASS1["Pass 1 – Tree-sitter Parse<br/>Chunks + Import Maps + DI Aliases<br/>+ Framework Signals + File Constants"]
         PASS1 --> MERKLE{"Function-level<br/>Merkle hash<br/>unchanged?"}
         MERKLE -->|yes, unchanged| CACHEHIT[Cache Hit – skip LLM]
@@ -51,7 +51,7 @@ flowchart TD
 
     QUEUE --> LLM
 
-    subgraph SEM["🧠 Semantic Extraction"]
+    subgraph SEM["Semantic Extraction"]
         LLM["LLM – Gemini / OpenAI / Anthropic<br/>Function source + imports + DI context<br/>+ framework signals + file constants"]
         LLM --> SANITIZER["Post-LLM Sanitizer<br/>Drop hallucinated names<br/>Resolve constants · PascalCase guard"]
         SANITIZER --> OUT["intentSummary<br/>capabilities<br/>embedding"]
@@ -63,7 +63,7 @@ flowchart TD
 
     G_CODE --> POST
 
-    subgraph POST["🌐 Post-Processing"]
+    subgraph POST["Post-Processing"]
         MATCH["Matchmaking<br/>Link emergent endpoints<br/>to canonical APIInterface"]
         RESOLVER["Global Edge Resolver<br/>3-level funnel: exact → regex → LLM"]
         MATCH --> RESOLVER
@@ -76,7 +76,7 @@ flowchart TD
 
 ---
 
-## 🏗️ 1. Source Resolution & Discovery
+## 1. Source Resolution & Discovery
 
 **Entrypoints**: `src/ingestion/core/source-resolver.ts`, `src/ingestion/extractors/autodiscovery.ts`
 
@@ -144,7 +144,7 @@ The `simple-tools.plugin` separately emits `ToolConfig` presence nodes for all d
 
 ---
 
-## 🔍 3. Static Analysis & Taint Engine
+## 3. Static Analysis & Taint Engine
 
 **Entrypoint**: `src/ingestion/processors/code-pipeline/static-analyzer.ts`
 
@@ -269,7 +269,7 @@ In parallel with the IO filter, `mayContainSchemas()` inspects the AST to check 
 
 ---
 
-## 🧠 4. Semantic Extraction (LLM)
+## 4. Semantic Extraction (LLM)
 
 **Entrypoint**: `src/ai/workflows/semantic-extraction.ts`
 
@@ -311,7 +311,7 @@ Before writing to the graph, the LLM output passes through a **deterministic san
 
 ---
 
-## 🌐 5. Post-Processing & Refinement
+## 5. Post-Processing & Refinement
 
 **Entrypoints**: `src/ingestion/processors/global-resolver.ts`, `processors/matchmaking.ts`
 
@@ -330,7 +330,7 @@ Uses a 3-level funnel:
 
 ---
 
-## 🛡️ 6. Vulnerability Enrichment (Optional)
+## 6. Vulnerability Enrichment (Optional)
 
 **Entrypoint**: `src/ingestion/enrichment/vulnerability-enricher.ts`
 
@@ -370,7 +370,7 @@ src/ingestion/enrichment/
 
 ---
 
-## 📊 Graph Schema Context
+## Graph Schema Context
 
 The structure of the graph is centrally defined in `src/graph/domain.ts`, the single source of truth for node labels, Zod schemas, and constraints.
 

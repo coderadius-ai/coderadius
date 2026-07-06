@@ -227,7 +227,7 @@ cr analyze traces --file <path> [options]
 
 | Option | Required | Description |
 |--------|----------|-------------|
-| `-f, --file <path>` | ✅ Required | Path to the JSON traces export file |
+| `-f, --file <path>` | Required | Path to the JSON traces export file |
 | `-v, --verbose` | No | Verbose logging |
 
 **Example:**
@@ -429,7 +429,7 @@ cr policy export <pack-name> [options]
 
 | Option | Required | Description |
 |--------|----------|-------------|
-| `<pack-name>` | ✅ Required | Name of the built-in pack to export (e.g. `agent-readiness`) |
+| `<pack-name>` | Required | Name of the built-in pack to export (e.g. `agent-readiness`) |
 | `--path <dir>` | No | Target directory. Default: `.coderadius/policies` |
 | `--force` | No | Overwrite an existing local copy without confirmation |
 

@@ -104,7 +104,7 @@ sequenceDiagram
 Autodiscovery components are the **primary list**. For each autodiscovery component, the welder looks for a catalog component in the **same directory** and merges its metadata:
 
 ```
-Autodiscovery: /repo/api/composer.json     → "api"        (code exists ✅)
+Autodiscovery: /repo/api/composer.json     → "api"        (code exists: Yes)
 Backstage:     /repo/api/catalog-info.yaml → "com.acme..." (metadata enrichment)
 ```
 
@@ -158,11 +158,11 @@ Examples:
 
 | Path | Walk | Result |
 |------|------|--------|
-| `/repo/order-service/src` | `src` ❌ → `order-service` ✅ | `order-service` |
-| `/repo/payment-service/src` | `src` ❌ → `payment-service` ✅ | `payment-service` |
-| `/repo/checkout/src/main` | `main` ❌ → `src` ❌ → `checkout` ✅ | `checkout` |
-| `/repo/src/app` | `app` ❌ → `src` ❌ → root | `my-repo` (fallback) |
-| `/repo/api` | `api` ✅ | `api` |
+| `/repo/order-service/src` | `src` (no) → `order-service` (yes) | `order-service` |
+| `/repo/payment-service/src` | `src` (no) → `payment-service` (yes) | `payment-service` |
+| `/repo/checkout/src/main` | `main` (no) → `src` (no) → `checkout` (yes) | `checkout` |
+| `/repo/src/app` | `app` (no) → `src` (no) → root | `my-repo` (fallback) |
+| `/repo/api` | `api` (yes) | `api` |
 
 This prevents name collisions in multi-service repos where each service nests its code inside a generic `src/` directory.
 
@@ -196,9 +196,9 @@ services:
 
 | Source | File | Key fields | Status |
 |--------|------|------------|--------|
-| **Backstage** | `catalog-info.yaml` | `metadata.name`, `spec.owner`, `spec.system`, `spec.dependsOn` | ✅ Production |
-| **Cortex** | `cortex.yaml` | `x-cortex-tag`, `x-cortex-owners`, `x-cortex-dependencies` | ✅ Implemented |
-| **Autodiscovery** | Filesystem manifests | Inferred from directory + language | ✅ Production |
+| **Backstage** | `catalog-info.yaml` | `metadata.name`, `spec.owner`, `spec.system`, `spec.dependsOn` | Yes (Production) |
+| **Cortex** | `cortex.yaml` | `x-cortex-tag`, `x-cortex-owners`, `x-cortex-dependencies` | Yes (Implemented) |
+| **Autodiscovery** | Filesystem manifests | Inferred from directory + language | Yes (Production) |
 
 ### Catalog Source Field Mapping
 
