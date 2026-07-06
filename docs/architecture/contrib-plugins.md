@@ -269,11 +269,11 @@ This approach is safe, explicit, and does not interfere with the LLM pipeline's 
 
 | Layer | CRD-specific? | Reusable? |
 |---|---|---|
-| `StructuralEntity.edges[]` | No | Generic core extension. Yes: Terraform, ArgoCD, Docker-Compose |
-| `helm-template-resolver.ts` | No | Pure Helm utility. Yes: Any Helm-based plugin |
-| `matchFile()` | No | Generic Helm path matching. Yes: Any CRD |
+| `StructuralEntity.edges[]` | No (generic core extension) | Yes: Terraform, ArgoCD, Docker-Compose |
+| `helm-template-resolver.ts` | No (pure Helm utility) | Yes: any Helm-based plugin |
+| `matchFile()` | No (generic Helm path matching) | Yes: any CRD |
 | **`DEFAULT_CRD_HANDLERS` array** | Yes: ~20 lines | No: CRD-specific entries |
-| `resolveField()` / `resolveSubscriptionName()` | No | Generic YAML field resolution. Yes: Any YAML-based CRD |
+| `resolveField()` / `resolveSubscriptionName()` | No (generic YAML field resolution) | Yes: any YAML-based CRD |
 
 **Total CRD-specific code: ~20 lines out of ~250.**
 

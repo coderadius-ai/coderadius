@@ -19,16 +19,16 @@ flowchart TD
     D --> PASS1
 
     subgraph SA["Static Analysis Engine"]
-        PASS1["Pass 1 – Tree-sitter Parse<br/>Chunks + Import Maps + DI Aliases<br/>+ Framework Signals + File Constants"]
+        PASS1["Pass 1 - Tree-sitter Parse<br/>Chunks + Import Maps + DI Aliases<br/>+ Framework Signals + File Constants"]
         PASS1 --> MERKLE{"Function-level<br/>Merkle hash<br/>unchanged?"}
-        MERKLE -->|yes, unchanged| CACHEHIT[Cache Hit – skip LLM]
+        MERKLE -->|yes, unchanged| CACHEHIT[Cache Hit - skip LLM]
         MERKLE -->|no or new| TAINT
 
-        TAINT["Taint Analysis – BFS<br/>Seed Patient Zero files<br/>Propagate up import graph<br/>Map DI aliases this.x → Type"]
+        TAINT["Taint Analysis - BFS<br/>Seed Patient Zero files<br/>Propagate up import graph<br/>Map DI aliases this.x → Type"]
         TAINT --> CUSTOM["Load coderadius.yaml<br/>packages.analyze escape hatch"]
         CUSTOM --> PASS2
 
-        PASS2["Pass 2 – Heuristic Filter<br/>likelyHasIOWithTaint (5 architectural gates)"]
+        PASS2["Pass 2 - Heuristic Filter<br/>likelyHasIOWithTaint (5 architectural gates)"]
         PASS2 --> GATE1{"Gate 1<br/>UseCase entrypoint"}
         GATE1 -->|pass| QUEUE[Queue for LLM]
         GATE1 -->|fail| GATE2{"Gate 2<br/>Repository / Runner /<br/>Publisher convention"}
@@ -39,7 +39,7 @@ flowchart TD
         GATE4 -->|pass| QUEUE
         GATE4 -->|fail| GATE5{"Gate 5<br/>DI Alias<br/>this.api tainted?"}
         GATE5 -->|pass| QUEUE
-        GATE5 -->|fail| DISCARD[Discard – no LLM call]
+        GATE5 -->|fail| DISCARD[Discard - no LLM call]
 
         PASS1 --> FWSIG["Framework Signals<br/>@Controller · @EventPattern<br/>@Entity · custom decorators"]
         FWSIG --> PASS2
@@ -52,7 +52,7 @@ flowchart TD
     QUEUE --> LLM
 
     subgraph SEM["Semantic Extraction"]
-        LLM["LLM – Gemini / OpenAI / Anthropic<br/>Function source + imports + DI context<br/>+ framework signals + file constants"]
+        LLM["LLM - Gemini / OpenAI / Anthropic<br/>Function source + imports + DI context<br/>+ framework signals + file constants"]
         LLM --> SANITIZER["Post-LLM Sanitizer<br/>Drop hallucinated names<br/>Resolve constants · PascalCase guard"]
         SANITIZER --> OUT["intentSummary<br/>capabilities<br/>embedding"]
     end
