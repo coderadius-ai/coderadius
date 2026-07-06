@@ -28,6 +28,17 @@ An interactive wizard that detects which of Cursor, Windsurf, Claude Desktop, Cl
 
 If you'd rather not run the wizard, or you're on a client it doesn't detect, register the server by hand. All JSON-based clients use the same shape: a `cr` command with `mcp start` as its args, under a `coderadius` key in `mcpServers`.
 
+Where each client keeps that file:
+
+| Client | Global | Per-project |
+|--------|--------|-------------|
+| Cursor | `~/.cursor/mcp.json` | `.cursor/mcp.json` |
+| Windsurf | `~/.codeium/windsurf/mcp_config.json` | `.windsurf/mcp_config.json` |
+| Claude Desktop (macOS) | `~/Library/Application Support/Claude/claude_desktop_config.json` | not supported |
+| Gemini CLI | `~/.gemini/settings.json` | `.gemini/settings.json` |
+| Antigravity | `~/.gemini/antigravity/mcp_config.json` | not supported |
+| Claude Code | via CLI, see below | via CLI, see below |
+
 **Cursor**: `.cursor/mcp.json` (repo-local) or `~/.cursor/mcp.json` (global):
 
 ```json
@@ -66,6 +77,14 @@ If you'd rather not run the wizard, or you're on a client it doesn't detect, reg
   }
 }
 ```
+
+**Claude Code** registers servers through its CLI rather than a JSON file you edit:
+
+```bash
+claude mcp add --transport stdio --scope user coderadius -- cr mcp start
+```
+
+Use `--scope project` instead of `--scope user` to register it for the current workspace only (this writes a `.mcp.json` you can commit for the whole team).
 
 **Mastra** (programmatic, for multi-agent workflows):
 

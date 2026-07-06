@@ -209,7 +209,21 @@ Once CodeRadius is ingesting the fleet, use [Agent Harness's Skill Library](./ag
 | `.roo/rules-<mode>.md` or `.roo/rules-<mode>/*.md` | Roo Code custom-mode rule |
 | `.openhands/microagents/*.md` | OpenHands microagent |
 
-### MCP Configuration
+### MCP Configuration Files
+
+These are the MCP config files the scanner *detects inside the repositories it analyzes*, to map which teams have wired agents to which servers. This is not where you set up CodeRadius itself.
+
+> Looking to connect CodeRadius's own MCP server to your IDE? Run `cr mcp configure` (an interactive wizard that detects Cursor, Windsurf, Claude Desktop, Claude Code, Antigravity, and Gemini CLI, and writes the registration for you), or add it manually:
+>
+> ```json
+> {
+>   "mcpServers": {
+>     "coderadius": { "command": "cr", "args": ["mcp", "start"] }
+>   }
+> }
+> ```
+>
+> Full instructions per client: [MCP Server guide](../mcp-server.md).
 
 | File | Tool |
 |------|------|
