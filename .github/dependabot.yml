@@ -10,6 +10,15 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # LanguageModelV4 majors: blocked until the Mastra runtime accepts V4
+      # model specs. Bump the whole @ai-sdk family together with Mastra.
+      - dependency-name: "@ai-sdk/*"
+        update-types: ["version-update:semver-major"]
+      # v5 rewrote the custom-tag API (Type/DEFAULT_SCHEMA) used by the
+      # GitLab CI plugin; migrating is a deliberate change, not a bot bump.
+      - dependency-name: "js-yaml"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"
   - package-ecosystem: github-actions
