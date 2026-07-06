@@ -1,8 +1,5 @@
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
-    <img src="docs/assets/logo-light.svg" width="72" alt="CodeRadius logo">
-  </picture>
+  <img src="docs/assets/logo.svg" width="72" alt="CodeRadius logo">
 
   <h1>CodeRadius</h1>
 
