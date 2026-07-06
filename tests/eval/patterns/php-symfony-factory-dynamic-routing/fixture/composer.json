@@ -1,0 +1,14 @@
+{
+    "name": "acme/orders-service",
+    "description": "Acme orders service. Symfony Messenger routing built dynamically from external config (G7 edge case).",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "symfony/messenger": "^6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acme\\Orders\\": "src/"
+        }
+    }
+}

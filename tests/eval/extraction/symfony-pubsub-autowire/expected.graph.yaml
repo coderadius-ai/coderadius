@@ -1,0 +1,27 @@
+fixture: symfony-pubsub-autowire
+description: >
+  Anonymized Symfony Pub/Sub via #[Autowire(service: ...)] (PHP). The Autowire
+  service id names the physical channel; the method call gives the direction —
+  ->publish() WRITES (PUBLISHES_TO), ->consume() READS (LISTENS_TO). Golden
+  grounded in the Symfony Autowire + Pub/Sub transport semantics. Static, zero
+  LLM — the property→service map is read from the class and the pub/sub verb from
+  the method body (orm-static:extractSymfonyAutowireMessageChannelStaticInfra).
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  MessageChannel:
+    - "order_events_topic"
+    - "order_events_subscription"
+expected_edges:
+  - from_service: acme-orders
+    rel: PUBLISHES_TO
+    to: "order_events_topic"
+  - from_service: acme-orders
+    rel: LISTENS_TO
+    to: "order_events_subscription"
+negative_nodes:
+  MessageChannel:
+    - "orderTopic"
+    - "orderSubscription"
+    - "OrderPublisher"
+    - "OrderConsumer"

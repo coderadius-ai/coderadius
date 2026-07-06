@@ -1,0 +1,16 @@
+fixture: "php-graphql-same-namespace"
+description: "PHP wrapper + adapter in the SAME namespace (no `use` statement). Validates that the deterministic graphql-client decorator path resolves the bare-classname property type and emits ClientBindings without falling back to the LLM."
+
+expected_nodes:
+  APIEndpoint:
+    - "GRAPHQL MUTATION createOrder"
+    - "GRAPHQL MUTATION cancelOrder"
+
+negative_nodes:
+  APIEndpoint:
+    - "POST /api"
+    - "GRAPHQL QUERY {query}"
+    - "GRAPHQL MUTATION CreateOrderMutation"
+    - "GRAPHQL MUTATION CancelOrderMutation"
+
+negative_patterns: {}

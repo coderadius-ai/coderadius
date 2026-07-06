@@ -1,0 +1,18 @@
+fixture: "ts-graphql-outbound"
+description: "Apollo GraphQL Client (alias dereference and document operation names)"
+
+expected_nodes:
+  APIEndpoint:
+    - "GRAPHQL QUERY order"
+    - "GRAPHQL MUTATION createOrder"
+
+negative_nodes:
+  APIEndpoint:
+    # LLM must NOT extract aliases as paths
+    - "GRAPHQL QUERY myOrder"
+    # LLM must NOT extract document operation names as paths
+    - "GRAPHQL QUERY GetOrderById"
+    - "GRAPHQL QUERY GetMyOrder"
+    - "GRAPHQL MUTATION CreateNewOrder"
+
+negative_patterns: {}

@@ -1,0 +1,49 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — ts-nestjs-typeorm
+#
+# Regression fixture: NestJS service using TypeORM @InjectRepository to access
+# multiple database tables. The DB connection is configured externally via
+# TypeOrmModule.forRootAsync with a Zod-validated config (registerAs pattern).
+#
+# Verifies that the LLM correctly extracts each TypeORM entity table as a
+# DataContainer, and does NOT confuse entity class names, repository tokens,
+# or service-layer class names with infrastructure resources.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: ts-nestjs-typeorm
+description: "NestJS TypeORM @InjectRepository — multi-table DataContainer extraction"
+
+expected_nodes:
+  Function:
+    - createQuote
+    - findQuoteById
+    - saveQuoteSnapshot
+    - findActiveRenewals
+    - processRenewalBatch
+
+  DataContainer:
+    - quotes
+    - saves
+    - renewals
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEGATIVE: class/DI/entity names that MUST NOT become DataContainers
+# ═══════════════════════════════════════════════════════════════════════════════
+
+negative_nodes:
+  DataContainer:
+    - QuoteEntity
+    - SaveEntity
+    - RenewalEntity
+    - quoteRepo
+    - saveRepo
+    - renewalRepo
+    - QuoteService
+
+negative_patterns:
+  DataContainer:
+    # PascalCase class names — code identifiers, not table names
+    - "^[A-Z][a-z]+([A-Z][a-z]+){1,}$"
+    # Repository tokens
+    - "Repo$"
+    - "Repository$"

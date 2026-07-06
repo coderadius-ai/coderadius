@@ -1,0 +1,73 @@
+name: Bug report
+description: Report a defect in CodeRadius
+title: "[bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. The more precise the report, the faster we can reproduce and fix it.
+
+        **Never paste proprietary source code.** If the bug involves a private codebase, reduce it to a minimal synthetic reproduction using generic e-commerce vocabulary (`acme`, `orders`, `payment`, `inventory`, `shipping`, `notification`).
+  - type: input
+    id: version
+    attributes:
+      label: CodeRadius version
+      description: Output of `cr --version`
+      placeholder: "0.13.0"
+    validations:
+      required: true
+  - type: input
+    id: target-stack
+    attributes:
+      label: Language / framework of the analyzed repository
+      description: What is CodeRadius analyzing when the bug occurs?
+      placeholder: "PHP 8.3 / Symfony 7, or TypeScript / NestJS 10"
+    validations:
+      required: true
+  - type: dropdown
+    id: depth
+    attributes:
+      label: Analysis depth mode
+      description: The `--depth` value passed to `cr analyze code` (if applicable)
+      options:
+        - structure
+        - semantic
+        - contracts
+        - not applicable / other command
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead? Include the exact command you ran and a minimal reproduction if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / output
+      description: Relevant CLI output, stack traces, or error messages. Redact API keys, credentials, and any proprietary identifiers before pasting.
+      render: shell
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Bun version, graph database (Memgraph/Neo4j) and version, LLM provider/model if relevant.
+      placeholder: |
+        OS: macOS 15.1
+        Bun: 1.2.x
+        Graph DB: Memgraph 2.x (docker compose)
+        LLM provider: none / anthropic / openai / gemini / ollama
+    validations:
+      required: false

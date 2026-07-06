@@ -1,0 +1,42 @@
+fixture: symfony__heldout
+description: >
+  Held-out Symfony (PHP) generalization fixture — DIFFERENT routes from the
+  primary symfony fixture. Exercises multi-method attributes
+  (methods: ['GET', 'POST'] → two endpoints at the same path), a PATCH verb, a
+  differently-named path param ({sku}), AND the legacy @Route DocBlock annotation
+  form (route-extractor-php Strategy 3) alongside PHP 8 attributes. Grounded in
+  the extractor's actual output — expect PASS, zero LLM calls.
+target:
+  repo: acme/acme-inventory
+expected_nodes:
+  APIEndpoint:
+    - "GET /inventory"
+    - "POST /inventory"
+    - "GET /inventory/{sku}"
+    - "PATCH /inventory/{sku}"
+    - "GET /shipping/{id}"
+    - "POST /shipping"
+expected_edges:
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /inventory"
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /inventory"
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /inventory/{sku}"
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PATCH /inventory/{sku}"
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /shipping/{id}"
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /shipping"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

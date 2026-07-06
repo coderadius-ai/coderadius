@@ -1,0 +1,12 @@
+services:
+  orders-api:
+    build:
+      context: .
+      dockerfile: apps/orders-api/Dockerfile
+    ports:
+      - "4000:4000"
+
+  notifications-worker:
+    build:
+      context: .
+      dockerfile: apps/notifications-worker/Dockerfile

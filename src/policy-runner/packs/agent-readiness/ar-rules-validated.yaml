@@ -1,0 +1,26 @@
+id: ar-rules-validated
+name: Agent rules
+description: >-
+  Requires an agent rules file (claude.md, cursorrules, AGENTS.md, or similar)
+  that gives coding agents context and constraints.
+level: warning
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  OPTIONAL MATCH (r)<-[:STORED_IN]-(s:Service)-[:HAS_AGENTIC_CONFIG]->(c1:AgenticConfig)
+  WHERE c1.configType IN ['rule', 'agent_instructions']
+  OPTIONAL MATCH (r)-[:HAS_AGENTIC_CONFIG]->(c2:AgenticConfig)
+  WHERE c2.configType IN ['rule', 'agent_instructions']
+  WITH r, count(DISTINCT c1) + count(DISTINCT c2) AS ruleCount
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE WHEN ruleCount > 0 THEN 'pass' ELSE 'fail' END AS status,
+    CASE
+      WHEN ruleCount >= 2 THEN toString(ruleCount) + ' rule files present'
+      WHEN ruleCount = 1 THEN '1 rule file present'
+      ELSE 'No agent rules configured'
+    END AS detail

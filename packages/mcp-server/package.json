@@ -1,0 +1,22 @@
+{
+  "name": "@coderadius/mcp-server",
+  "version": "1.0.0",
+  "description": "MCP stdio server exposing the CodeRadius knowledge graph to IDEs and agents",
+  "private": true,
+  "exports": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts"
+  },
+  "author": "Emanuele Menon",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "dotenv": "^17.3.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.4.0",
+    "typescript": "^5.9.3"
+  }
+}

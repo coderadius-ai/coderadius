@@ -1,0 +1,35 @@
+fixture: nestjs
+description: >
+  Anonymized NestJS (TS) order service exercising the decorator routing model:
+  a class-level @Controller('orders') prefix composed with method-level HTTP
+  verb decorators (@Get(':id'), @Post(), @Delete(':id')). The golden is grounded
+  in the endpoints NestJS actually exposes AFTER controller-prefix composition
+  (prefix + method route), with lossless param preservation (:id → {id}, NOT
+  {param}) and the bare @Post() collapsing to the controller root (POST /orders).
+
+  Decorator routes resolve to APIEndpoints with ZERO LLM calls: chunk-extraction
+  composes the @Controller + verb signals into a static `::__route_handler` chunk
+  (composeDecoratorRoutes), matching the other TS routers — no post-LLM overlay
+  needed. (Previously LLM-gated; closed by the static decorator-route extractor.)
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders/{id}"
+    - "POST /orders"
+    - "DELETE /orders/{id}"
+expected_edges:
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /orders/{id}"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

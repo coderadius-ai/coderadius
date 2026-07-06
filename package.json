@@ -1,0 +1,122 @@
+{
+  "name": "@coderadius-ai/cli",
+  "private": true,
+  "version": "0.1.0",
+  "description": "CLI that builds an architectural knowledge graph from polyglot codebases — static analysis + LLM extraction, blast-radius impact analysis, and governance policies on Memgraph",
+  "keywords": [
+    "architecture",
+    "knowledge-graph",
+    "static-analysis",
+    "blast-radius",
+    "impact-analysis",
+    "governance",
+    "memgraph",
+    "neo4j",
+    "mcp",
+    "cli",
+    "devtools"
+  ],
+  "author": "Emanuele Menon",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/coderadius-ai/coderadius#readme",
+  "bugs": {
+    "url": "https://github.com/coderadius-ai/coderadius/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coderadius-ai/coderadius.git"
+  },
+  "type": "module",
+  "bin": {
+    "cr": "./bin/cr.js",
+    "coderadius": "./bin/cr.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "packages/shared-types/",
+    "packages/mcp-server/src/",
+    "packages/mcp-server/package.json",
+    "scripts/fix-tree-sitter.mjs",
+    "NOTICE"
+  ],
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build:ui": "bun run scripts/build-dashboard.ts",
+    "build:dashboard": "bun run scripts/build-dashboard.ts",
+    "prebuild": "bun run build:ui",
+    "dev:dashboard": "bun run scripts/dev-dashboard.ts",
+    "build": "tsc",
+    "gen:schema": "bun run scripts/gen-coderadius-schema.ts",
+    "gen:packs": "bun run scripts/generate-embedded-packs.ts",
+    "dev": "bun run src/cli/index.ts",
+    "sync": "bun run src/cli/index.ts sync",
+    "chat": "bun run src/cli/index.ts chat",
+    "docs": "bun run src/cli/index.ts docs",
+    "build:sea": "bun run scripts/build-release.ts",
+    "mastra:dev": "NODE_OPTIONS='--import tsx/esm' mastra dev",
+    "test:unit": "bun vitest run tests/unit",
+    "test:integration": "bun vitest run tests/integration --config vitest.integration.config.ts",
+    "test:coverage": "vitest run tests/unit --coverage",
+    "postinstall": "node scripts/fix-tree-sitter.mjs"
+  },
+  "engines": {
+    "bun": ">=1.0.0",
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@ai-sdk/amazon-bedrock": "^4.0.108",
+    "@ai-sdk/anthropic": "^3.0.70",
+    "@ai-sdk/google": "^3.0.64",
+    "@ai-sdk/google-vertex": "^4.0.111",
+    "@ai-sdk/openai": "^3.0.53",
+    "@clack/prompts": "^1.1.0",
+    "@mastra/core": "^1.42.0",
+    "@mastra/libsql": "^1.13.0",
+    "@mastra/observability": "^1.14.1",
+    "ai": "^6.0.165",
+    "boxen": "^8.0.1",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "dotenv": "^16.6.1",
+    "glob": "^13.0.6",
+    "graphql": "^16.13.2",
+    "ignore": "^7.0.5",
+    "js-yaml": "^4.1.1",
+    "listr2": "^10.2.1",
+    "marked": "^17.0.6",
+    "marked-terminal": "^7.3.0",
+    "neo4j-driver": "^6.0.1",
+    "omelette": "^0.4.17",
+    "openai": "^6.34.0",
+    "p-limit": "^7.3.0",
+    "semver": "^7.7.4",
+    "simple-git": "^3.36.0",
+    "strip-json-comments": "^5.0.3",
+    "tree-sitter": "^0.25.0",
+    "tree-sitter-go": "^0.25.0",
+    "tree-sitter-java": "^0.23.5",
+    "tree-sitter-php": "^0.24.2",
+    "tree-sitter-python": "^0.25.0",
+    "tree-sitter-typescript": "^0.23.2",
+    "tsx": "^4.21.0",
+    "umap-js": "^1.4.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.12",
+    "@types/js-yaml": "^4.0.9",
+    "@types/marked-terminal": "^6.1.1",
+    "@types/node": "^25.6.0",
+    "@types/omelette": "^0.4.5",
+    "@types/semver": "^7.7.1",
+    "@vitest/coverage-istanbul": "3.2.4",
+    "@vitest/coverage-v8": "3.2.4",
+    "esbuild": "^0.27.7",
+    "mastra": "^1.13.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

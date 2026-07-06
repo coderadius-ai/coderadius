@@ -1,0 +1,6 @@
+{
+    "name": "acme-inventory-assets",
+    "scripts": {
+        "start": "node index.js"
+    }
+}

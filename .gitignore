@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+coverage/
+
+# Environment
+.env
+!tests/eval/patterns/**/.env
+!tests/fixtures/**/.env
+.env.local
+
+# Sandbox (cloned remote repos)
+.sandbox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+gcp-service-account.json
+
+.mastra/
+
+release/
+
+ingestions/
+
+# Eval reports (generated per-run, not committed)
+tests/eval/reports/*.json
+
+.impeccable
+# Developer-local Claude Code settings
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.claude/skills/
+.claude/worktrees/
+
+# Developer-local agent assets and drafts (not part of the product)
+.agents/
+blog/
+*.tsbuildinfo
+
+.serena

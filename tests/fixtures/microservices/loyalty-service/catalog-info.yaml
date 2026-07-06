@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: logistics-platform
+  description: Logistics reward calculation and event publishing
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: loyalty-service
+  description: Logistics reward discount calculation and event publishing
+spec:
+  type: service
+  lifecycle: production
+  owner: team-logistics
+  system: logistics-platform
+  dependsOn:
+    - resource:mysql
+    - resource:rabbitmq

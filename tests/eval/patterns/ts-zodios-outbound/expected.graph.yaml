@@ -1,0 +1,40 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — ts-zodios-outbound
+#
+# Regression fixture: TypeScript service using a Zodios client wrapper.
+# Verifies that the pipeline extracts OUTBOUND API calls from the AST-resolved
+# Zodios alias map — NOT by asking the LLM to extract wrapper methods.
+#
+# Key assertion: The CALLS edges for GET /api/v1/quotes and POST /api/v1/quotes
+# must exist even though the LLM never sees Zodios context in its prompt.
+# The detection is 100% deterministic via post-LLM merge in semantic-extractor.
+#
+# Bug origin: Zodios wrapper calls were either missed entirely (wrapper rule)
+# or required fragile LLM prompt exceptions that leaked client IP into
+# cached system prompts.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: ts-zodios-outbound
+description: "Zodios client wrapper → deterministic OUTBOUND API extraction (post-LLM)"
+
+expected_nodes:
+  APIEndpoint:
+    # These must appear in emergent_api_calls even though the LLM is
+    # instructed NOT to extract wrapper method calls.
+    # They are injected by the post-LLM merge in semantic-extractor.ts.
+    - "/api/v1/quotes"              # GET — from getQuotes() alias
+    - "POST /api/v1/quotes"         # POST — from createQuote() alias
+
+negative_nodes:
+  APIEndpoint:
+    # Wrapper method aliases must NEVER become APIEndpoint nodes.
+    - "getQuotes"
+    - "createQuote"
+    - "deleteQuote"
+    # Type/interface names must NEVER become endpoints.
+    - "IExternalApiRepository"
+    - "ExternalApiRepository"
+    # The deleted alias must not appear (not called in QuoteUseCase)
+    - "/api/v1/quotes/:quoteId"
+
+negative_patterns: {}

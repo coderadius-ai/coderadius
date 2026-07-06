@@ -1,0 +1,16 @@
+fixture: _selftest
+description: >
+  Keystone self-test for the coverage harness. A static PHP route must yield an
+  APIEndpoint node + IMPLEMENTS_ENDPOINT edge with ZERO LLM calls. Pins the
+  ephemeral→scorer wiring (snapshot flatten + node/edge/negative scoring), not
+  framework coverage.
+expected_nodes:
+  APIEndpoint:
+    - "POST /quote"
+expected_edges:
+  - from_service: acme
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /quote"
+negative_patterns:
+  APIEndpoint:
+    - "\\$"

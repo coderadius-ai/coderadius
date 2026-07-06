@@ -1,0 +1,12 @@
+fixture: "php-graphql-inbound"
+description: "PHP Lighthouse Resolvers (#[Query] and #[Mutation])"
+
+expected_nodes:
+  APIEndpoint:
+    - "GRAPHQL QUERY notifications"
+    - "GRAPHQL MUTATION markAsRead"
+  DataContainer:
+    - "notifications"
+
+negative_nodes: {}
+negative_patterns: {}

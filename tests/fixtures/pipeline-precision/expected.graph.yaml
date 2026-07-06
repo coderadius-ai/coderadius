@@ -1,0 +1,41 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — pipeline-precision
+#
+# Regression fixture: NestJS-style DI providers with interface-based
+# dependency injection and type aliasing (QuoteStore = IQuoteRepository).
+# Verifies that:
+#   1. Functions are extracted from use cases and repositories
+#   2. The `quotes` DataContainer is found via raw SQL in QuoteRepository
+#   3. Interface names (IQuoteRepository, QuoteStore) do NOT become nodes
+#
+# Bug origin: LLM was creating phantom DataContainer nodes named after
+# TypeScript interfaces or DI token strings.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: pipeline-precision
+description: "NestJS DI provider → interface-based DB access with type aliasing"
+
+expected_nodes:
+  Function:
+    - findQuoteById
+    - handle
+
+  DataContainer:
+    - quotes
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEGATIVE: DI tokens and interface names must NOT become DataContainers
+# ═══════════════════════════════════════════════════════════════════════════════
+
+negative_nodes:
+  DataContainer:
+    - IQuoteRepository
+    - QuoteStore
+    - QuoteRepository
+    - GetQuoteUseCase
+    - GetQuoteByInterfaceUseCase
+
+negative_patterns:
+  DataContainer:
+    # PascalCase class/interface names — code identifiers, not tables
+    - "^[A-Z][a-z]+([A-Z][a-z]+){1,}$"

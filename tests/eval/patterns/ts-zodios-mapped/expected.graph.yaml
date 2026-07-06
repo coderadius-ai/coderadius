@@ -1,0 +1,43 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — ts-zodios-mapped
+#
+# Regression fixture: TypeScript service using a Zodios client accessed via
+# a Pick<typeof api, ...> mapped type interface.
+#
+# Root cause of bug:
+#   The zodios-context-builder Pass 2 regex only matches:
+#     export type IFoo = typeof api
+#   It misses:
+#     export type IFoo = Pick<typeof api, 'a' | 'b'>
+#
+# Key assertions:
+#   ✓ GET /places is resolved (via findPlaces() alias)
+#   ✓ GET /places/:placeId is resolved (via getPlace() alias)
+#   ✓ GET /birthplaces is resolved (via findBirthplaces() alias)
+#   ✗ IPlacesApiRepository must NOT become an APIEndpoint node
+#   ✗ Wrapper method names must NOT become APIEndpoint paths
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: ts-zodios-mapped
+description: "Zodios Pick<typeof api, ...> mapped type → deterministic OUTBOUND API extraction"
+
+expected_nodes:
+  APIEndpoint:
+    # These must be resolved from the Zodios alias map even though
+    # the interface uses Pick<typeof api, ...> instead of typeof api.
+    - "/places"
+    - "/places/:placeId"
+    - "/birthplaces"
+
+negative_nodes:
+  APIEndpoint:
+    # Wrapper method aliases must NEVER become paths
+    - "findPlaces"
+    - "getPlace"
+    - "findBirthplaces"
+    # Interface/type names must NEVER become endpoints
+    - "IPlacesApiRepository"
+    - "PlacesApiRepository"
+    - "PlacesService"
+
+negative_patterns: {}

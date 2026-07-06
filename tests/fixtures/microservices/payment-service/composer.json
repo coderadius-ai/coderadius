@@ -1,0 +1,20 @@
+{
+    "name": "acme-corp/payment-service",
+    "description": "Payment processing with DI-configured message brokers",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "php-amqplib/php-amqplib": "^3.5",
+        "symfony/dependency-injection": "^6.4",
+        "guzzlehttp/guzzle": "^7.8",
+        "acme-corp/logger-php": "^1.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Payment\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.1"
+    }
+}

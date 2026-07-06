@@ -1,0 +1,23 @@
+messageBrokers:
+    - id: rmq-eu
+      provider: rabbitmq
+      host: rmq-eu.example.com
+      port: 5672
+      vhost: /prod
+      env: prod
+      region: eu-west-1
+    - id: rmq-us
+      provider: rabbitmq
+      host: rmq-us.example.com
+      port: 5672
+      vhost: /prod
+      env: prod
+      region: us-east-1
+
+message_channels:
+    mirrors:
+        - logical: OrderCreated
+          kind: topic
+          physical:
+              - { broker: rmq-eu, channel: acme.orders, kind: topic }
+              - { broker: rmq-us, channel: acme.orders, kind: topic }

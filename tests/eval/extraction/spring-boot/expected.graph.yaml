@@ -1,0 +1,26 @@
+fixture: "spring-boot"
+description: >
+  Spring MVC REST controllers. Exercises @RestController + class-level
+  @RequestMapping prefix composed with @GetMapping / @PostMapping /
+  @PutMapping / @DeleteMapping, plus the generic
+  @RequestMapping(value=..., method=RequestMethod.POST) form. A plain
+  @Service class is included as a precision guard (must expose no routes).
+
+# Endpoint identity is method-aware: "${METHOD} ${path}".
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders"
+    - "GET /orders/{id}"
+    - "POST /orders"
+    - "PUT /orders/{id}"
+    - "DELETE /orders/{id}"
+    - "GET /inventory"
+    - "GET /inventory/{sku}"
+    - "POST /inventory/reserve"
+
+# No endpoint may be derived from the @Service class, and every endpoint must
+# be a well-formed "METHOD /path" with a leading slash.
+negative_patterns:
+  APIEndpoint:
+    - "[Oo]rder[Ss]ervice"
+    - "^(GET|POST|PUT|PATCH|DELETE) [^/]"

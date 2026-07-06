@@ -1,0 +1,50 @@
+id: ar-architecture-context
+name: Architectural context
+description: >-
+  Checks that coding agents working in this repo have architectural context:
+  not just how the code is organized internally, but how it connects to other
+  services (APIs, events, shared data). Without it, agents change code blind
+  to the impact on the rest of the system. Hand-written docs (AGENTS.md,
+  claude.md) help but go stale; a live source like the coderadius MCP keeps
+  that context grounded in the actual graph.
+level: warning
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  WHERE r.valid_to_commit IS NULL
+  OPTIONAL MATCH (r)<-[:STORED_IN]-(s:Service)-[:HAS_AGENTIC_CONFIG]->(c1:AgenticConfig)
+    WHERE s.valid_to_commit IS NULL
+  OPTIONAL MATCH (r)-[:HAS_AGENTIC_CONFIG]->(c2:AgenticConfig)
+  WITH r, collect(DISTINCT c1) + collect(DISTINCT c2) AS rawConfigs
+  WITH r, CASE WHEN size(rawConfigs) = 0 THEN [null] ELSE rawConfigs END AS rows
+  UNWIND rows AS cfg
+  WITH r, collect(DISTINCT cfg) AS collected
+  WITH r, [c IN collected WHERE c IS NOT NULL] AS configs
+  WITH r,
+    size(configs) AS totalConfigs,
+    size([c IN configs WHERE c.topics IS NOT NULL AND any(x IN split(c.topics, ',') WHERE trim(x) IN ['architecture', 'cross-repo-architecture'])]) AS archConfigs,
+    size([c IN configs WHERE c.topics IS NOT NULL AND any(x IN split(c.topics, ',') WHERE trim(x) = 'cross-repo-architecture')]) AS crossRepoConfigs,
+    size([c IN configs WHERE c.configType = 'mcp_config' AND c.mcpServers IS NOT NULL AND any(x IN split(c.mcpServers, ',') WHERE trim(x) = 'coderadius')]) AS mcpLinks
+  WITH r, totalConfigs, archConfigs, crossRepoConfigs,
+    (r.scanMode IN ['semantic', 'contracts']) AS analyzed,
+    (mcpLinks > 0) AS mcpLinked
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE WHEN analyzed AND mcpLinked THEN 'pass' ELSE 'fail' END AS status,
+    CASE
+      WHEN analyzed AND mcpLinked THEN
+        'coderadius MCP configured — agents get live cross-repo context from the graph.'
+      WHEN archConfigs > 0 AND NOT analyzed THEN
+        toString(archConfigs) + ' context file(s) mention architecture, but the code is not analyzed. Run cr analyze code.'
+      WHEN archConfigs > 0 AND crossRepoConfigs = 0 THEN
+        'Partial — ' + toString(archConfigs) + ' context file(s) discuss internal architecture, but NONE document cross-service topology (APIs, shared events, upstream/downstream). Agents are blind to the blast radius. Run cr mcp configure.'
+      WHEN archConfigs > 0 THEN
+        toString(crossRepoConfigs) + ' context file(s) document cross-repo architecture, but nothing links to the live graph. Run cr mcp configure.'
+      WHEN totalConfigs > 0 THEN
+        toString(totalConfigs) + ' context file(s), none mention architecture.'
+      ELSE 'No agent context files found.'
+    END AS detail

@@ -1,0 +1,32 @@
+fixture: hono
+description: >
+  Anonymized Hono (TS) order service exercising idiomatic shorthand routing
+  (const app = new Hono(); app.get/post/delete(path, c => c.json(...))). The
+  golden is grounded in the endpoints Hono actually exposes — NOT in current
+  analyzer output. Hono programmatic routing is the same call shape the
+  framework-agnostic TS route extractor already detects, so this fixture pins
+  that app.<method>(path) on a `new Hono()` instance still resolves to an
+  APIEndpoint (canonical path form: lossless preserves the param name,
+  :id → {id}, never {param} and never a raw colon).
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders/{id}"
+    - "POST /orders"
+    - "DELETE /orders/{id}"
+expected_edges:
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /orders/{id}"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

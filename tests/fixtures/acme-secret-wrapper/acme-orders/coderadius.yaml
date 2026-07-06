@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/coderadius-ai/coderadius/main/schemas/coderadius.schema.json
+#
+# acme-orders reads every env var through the EnvVault wrapper (docker-secrets
+# style: KEY_FILE indirection, dynamic getenv inside). Declared here so the
+# env scanner can harvest keys and literal defaults from its call sites.
+envAccessors:
+  - callee: 'Acme\Platform\EnvVault::fetch'
+    keyArg: 0
+    defaultArg: 1

@@ -1,0 +1,26 @@
+fixture: "php-graphql-outbound-raw-guzzle"
+description: "Raw Guzzle/PSR-18 wrapper that POSTs {query, variables} to a GraphQL provider. No Apollo / webonyx — exercises Phase B (.gql synthetic index → graphQLDocumentContext) and Phase C (body-shape rule + prompt update)."
+
+expected_nodes:
+  APIEndpoint:
+    # Phase B: file_get_contents('.gql') + injected graphQLDocumentContext
+    - "GRAPHQL MUTATION createOrder"
+    # Phase C: inline mutation declaration in source
+    - "GRAPHQL MUTATION cancelOrder"
+    # Phase C edge: inline subscription
+    - "GRAPHQL SUBSCRIPTION orderUpdated"
+
+negative_nodes:
+  APIEndpoint:
+    # The wrapper transport URL must NOT be emitted as the canonical path —
+    # the operation field is the canonical identity, not the HTTP route.
+    - "/api"
+    - "POST /api"
+    - "GRAPHQL MUTATION CreateOrder"        # document name, not field
+    - "GRAPHQL MUTATION CancelOrder"        # document name, not field
+    - "GRAPHQL SUBSCRIPTION OrderUpdates"   # document name, not field
+    # The REST `?query=` URL param is NOT a GraphQL operation
+    - "GRAPHQL QUERY search"
+    - "GRAPHQL QUERY fetchSearch"
+
+negative_patterns: {}

@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ts-zodios-mapped
+  title: "Zodios Mapped Type Eval Fixture"
+  description: "Eval fixture for Pick<typeof api, ...> Zodios interface resolution"
+  annotations:
+    coderadius.ai/eval-fixture: "true"
+spec:
+  type: service
+  lifecycle: experimental
+  owner: coderadius-team

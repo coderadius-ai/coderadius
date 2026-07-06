@@ -1,0 +1,34 @@
+services:
+  memgraph:
+    image: memgraph/memgraph-mage:latest
+    container_name: coderadius-memgraph
+    environment:
+      - MEMGRAPH_USER=${MEMGRAPH_USER:-coderadius}
+      - MEMGRAPH_PASSWORD=${MEMGRAPH_PASSWORD:-coderadius}
+    # To connect from Lab (localhost:3000):
+    # 1. Host: 127.0.0.1 or 'memgraph'
+    # 2. Port: 7687
+    # 3. UNCHECK 'Use encrypted connection' (SSL)
+    ports:
+      - "7687:7687"
+    volumes:
+      - ${HOME}/.coderadius/data/memgraph:/var/lib/memgraph
+      - ${HOME}/.coderadius/data/memgraph-logs:/var/log/memgraph
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'RETURN 1;' | mgconsole --username $${MEMGRAPH_USER} --password $${MEMGRAPH_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  memgraph-lab:
+    image: memgraph/lab:latest
+    container_name: coderadius-memgraph-lab
+    ports:
+      - "3000:3000"
+    environment:
+      - QUICK_CONNECT_MG_HOST=memgraph
+      - QUICK_CONNECT_MG_PORT=7687
+    depends_on:
+      memgraph:
+        condition: service_healthy

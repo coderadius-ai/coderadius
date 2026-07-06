@@ -1,0 +1,182 @@
+name: Release
+
+# Release flow (see docs/guide/): release-please maintains a release PR on
+# main; merging it creates the tag + GitHub Release, then this same workflow
+# builds the SEA binaries for every platform, attaches them to the release,
+# and publishes the npm packages (wrapper + per-platform binaries).
+#
+# Everything is chained inside ONE workflow on purpose: tags created with the
+# default GITHUB_TOKEN do not trigger other workflows, so a separate
+# `on: push: tags` build would never fire.
+#
+# workflow_dispatch covers the bootstrap and recovery paths: given an
+# EXISTING release tag (e.g. the hand-made v0.1.0 launch release), it
+# rebuilds the binaries and re-publishes the assets for that tag.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag to build and publish (e.g. v0.1.0)'
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  release-please:
+    name: Release PR / tag
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: rp
+
+  build:
+    name: Build ${{ matrix.artifact }}
+    needs: [release-please]
+    # `!cancelled()` lets this run when release-please is skipped
+    # (workflow_dispatch); the second clause gates the push path on an
+    # actual release having been cut.
+    if: >-
+      ${{ !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.release-please.outputs.release_created == 'true'
+      ) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            artifact: coderadius_linux_amd64
+          - runner: ubuntu-24.04-arm
+            artifact: coderadius_linux_arm64
+          - runner: macos-15-intel
+            artifact: coderadius_darwin_amd64
+          - runner: macos-latest
+            artifact: coderadius_darwin_arm64
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || needs.release-please.outputs.tag_name }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build SEA release tarball
+        run: make release
+
+      - name: Generate checksums
+        run: |
+          cd release
+          for f in *.tar.gz; do
+            (sha256sum "$f" 2>/dev/null || shasum -a 256 "$f") > "$f.sha256"
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            release/*.tar.gz
+            release/*.sha256
+          if-no-files-found: error
+
+  publish-github:
+    name: Attach release assets
+    needs: [release-please, build]
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || needs.release-please.outputs.tag_name }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || needs.release-please.outputs.tag_name }}
+
+      - uses: actions/download-artifact@v5
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Upload assets to the release
+        run: gh release upload "$TAG" dist/* scripts/install.sh --clobber
+
+  publish-npm:
+    name: Publish npm packages
+    needs: [release-please, build]
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm --provenance
+    env:
+      TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || needs.release-please.outputs.tag_name }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || needs.release-please.outputs.tag_name }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - uses: actions/download-artifact@v5
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate npm packages from SEA tarballs
+        run: bun run scripts/build-npm-packages.ts --version "${TAG#v}" --tarballs dist --out npm-dist
+
+      # Platform packages first, wrapper last: the wrapper's
+      # optionalDependencies must be resolvable the moment it goes live.
+      # Already-published versions are skipped so a recovery re-run after a
+      # partial publish completes the remaining packages instead of failing.
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          publish() {
+            local name
+            name=$(bun -e "console.log(require('./$1/package.json').name)")
+            if npm view "${name}@${TAG#v}" version >/dev/null 2>&1; then
+              echo "skip ${name}@${TAG#v}: already published"
+            else
+              (cd "$1" && npm publish --provenance --access public)
+            fi
+          }
+          for pkg in npm-dist/platforms/*; do
+            publish "$pkg"
+          done
+          publish npm-dist/coderadius

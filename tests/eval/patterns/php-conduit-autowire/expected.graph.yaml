@@ -1,0 +1,13 @@
+fixture: "php-conduit-autowire"
+description: "Symfony Autowire DI injection for Conduit Topic/Subscription (PHP)"
+
+expected_nodes:
+  MessageChannel:
+    - "conduit.topics.order_created"
+    - "conduit.subscriptions.order_created"
+
+negative_nodes:
+  Function:
+    - "processEvent"
+
+negative_patterns: {}

@@ -1,0 +1,38 @@
+fixture: nestjs-microservice__heldout
+description: >
+  Held-out NestJS microservice consumer (TS) — a generalization check, NOT a
+  copy of the primary fixture. Different service (shipping), different channel
+  names, a different decorator mix, and — critically — a CLASS-scope consumer
+  (@Processor('notification-dispatch')) alongside method-scope @EventPattern /
+  @MessagePattern. Golden grounded in NestJS semantics: each message-handler
+  decorator's string argument is the channel it LISTENS_TO (@EventPattern topic,
+  @MessagePattern command, @Processor queue). Proves the static broker extractor
+  (composeMessageChannels) is not overfit to the primary fixture's channels or to
+  method-scope decorators only. Zero LLM calls.
+target:
+  repo: acme/acme-shipping-consumer
+expected_nodes:
+  MessageChannel:
+    - "shipping.dispatched"
+    - "inventory.restocked"
+    - "notification-dispatch"
+expected_edges:
+  - from_service: acme-shipping-consumer
+    rel: LISTENS_TO
+    to: "shipping.dispatched"
+  - from_service: acme-shipping-consumer
+    rel: LISTENS_TO
+    to: "inventory.restocked"
+  - from_service: acme-shipping-consumer
+    rel: LISTENS_TO
+    to: "notification-dispatch"
+negative_nodes:
+  MessageChannel:
+    - "ShippingEventsConsumer"
+    - "NotificationProcessor"
+    - "handler"
+    - "bull"
+negative_patterns:
+  MessageChannel:
+    - "__message_handler"
+    - "::"

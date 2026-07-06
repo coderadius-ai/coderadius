@@ -1,0 +1,8 @@
+{
+  "name": "acme-shipping",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "drizzle-orm": "^0.30.0"
+  }
+}

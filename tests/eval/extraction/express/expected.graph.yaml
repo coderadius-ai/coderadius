@@ -1,0 +1,43 @@
+fixture: express
+description: >
+  Anonymized Express (TS) order service exercising the two idiomatic Express
+  routing forms: app.<method>(path, handler) on the express() app and
+  router.<method>(...) on an express.Router(). The router is root-mounted
+  (app.use(router)), so each router path IS the exposed path — the golden is
+  grounded in the endpoints Express actually serves, NOT in analyzer output.
+  Pins lossless param-name preservation for programmatic TS routes:
+  :id → {id} and :sku → {sku} (NOT {param}).
+target:
+  repo: acme/orders
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders/{id}"
+    - "POST /orders"
+    - "PUT /orders/{id}"
+    - "DELETE /orders/{id}"
+    - "GET /items/{sku}"
+    - "POST /items"
+expected_edges:
+  - from_service: orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders/{id}"
+  - from_service: orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /orders"
+  - from_service: orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /orders/{id}"
+  - from_service: orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /orders/{id}"
+  - from_service: orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /items/{sku}"
+  - from_service: orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /items"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

@@ -1,0 +1,10 @@
+# Anonymised fixture: publisher-side repo whose broker host env var uses a
+# NON-standard name (no RABBITMQ_* prefix) and a trailing-dot FQDN, exactly
+# the shape the legacy key-name trigger can never see (s0 coverage).
+replicaCount: 2
+envs:
+  plain:
+    - name: INVENTORY_MQ_HOSTNAME
+      value: 'mq.acme-internal.consul.'
+    - name: INVENTORY_SERVICE_NAME
+      value: 'inventory'

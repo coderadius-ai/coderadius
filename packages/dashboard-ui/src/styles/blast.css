@@ -1,0 +1,4830 @@
+/* ── Blast Explorer ───────────────────────────────────────────────────
+   Premium Blast Radius UI — Vercel/Linear aesthetic.
+   Minimal, precise, data-dense. No color noise.
+   ─────────────────────────────────────────────────────────────────────── */
+
+/* ── Root Container ────────────────────────────────────────────────── */
+.blast-explorer {
+    position: relative;
+    width: calc(100% + (var(--page-padding-x) * 2));
+    margin-inline: calc(var(--page-padding-x) * -1);
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    animation: fadeUp 0.4s ease-out both;
+}
+
+/* Results wrapper — animates in after search slides up */
+.blast-results {
+    position: relative;
+    z-index: 10;
+    animation: blast-results-in 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
+}
+
+@keyframes blast-results-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Flow Canvas ────────────────────────────────────────────────────── */
+.blast-flow-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: visible;
+    /* match blast-results entrance so spline fades in with the cards */
+    animation: blast-results-in 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both;
+}
+
+/* Base wire — single opacity, no breathe, just clean */
+.blast-flow-line {
+    opacity: 0.35;
+}
+
+/* Flow stream — single elegant pulse */
+.blast-flow-stream {
+    opacity: 1;
+    animation: flow-dash 4s linear infinite;
+}
+
+.blast-flow-stream--downstream {
+    animation-duration: 3s;
+}
+
+.blast-flow-stream--upstream {
+    animation-duration: 4s;
+    animation-direction: reverse;
+}
+
+@keyframes flow-dash {
+    from {
+        stroke-dashoffset: 0;
+    }
+
+    to {
+        stroke-dashoffset: -140; /* 10x 14 (2+12) */
+    }
+}
+
+/* Cards and banner need z-index above the canvas */
+.blast-target-banner,
+.blast-panels,
+.blast-teams-row {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Target Banner ─────────────────────────────────────────────────── */
+/* ── Blast Target Banner — Enterprise redesign ─────────────────────── */
+/* No diagonal "shine" gradient — that read as banded. Flat surface with
+   the same micro-dot texture as the graph canvas keeps the visual
+   language consistent across the page. */
+.blast-target-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    background:
+        url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='1.5' cy='1.5' r='1' fill='%23ffffff' fill-opacity='0.04'/%3E%3C/svg%3E"),
+        radial-gradient(ellipse 100% 100% at 50% 50%,
+            #0e0e13 0%,
+            #0a0a0e 100%);
+    background-repeat: repeat, no-repeat;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: var(--radius-lg);
+    margin: 24px 0;
+    width: 100%;
+    position: relative;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+        0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Left accent stripe — removed for minimal aesthetic */
+.blast-target-banner__accent {
+    width: 0;
+    flex-shrink: 0;
+    opacity: 0;
+}
+
+/* Inner wrapper: all content right of accent */
+.blast-target-banner__inner {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top row: left identity + right analysis block */
+.blast-target-banner__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 20px;
+    flex-wrap: wrap;
+}
+
+.blast-target-banner__left {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    flex: 1;
+}
+
+.blast-target-banner__name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    line-height: 1.2;
+    min-width: 0;
+}
+
+.blast-target-banner__name span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.blast-target-banner__name .node-type-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.blast-target-banner__urn {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.45;
+}
+
+.blast-target-banner__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+}
+
+.blast-target-banner__stats {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+/* ── Bottom strip: team chips (multi-team only) ─────────────────────── */
+.blast-target-banner__teams-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 20px 9px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.015);
+    flex-wrap: wrap;
+}
+
+.blast-target-banner__teams-strip-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    opacity: 0.55;
+    flex-shrink: 0;
+}
+
+.blast-target-banner__teams-chips {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.blast-target-banner__team-chip {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 999px;
+    padding: 1px 9px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+}
+
+/* ── Stats Pills ───────────────────────────────────────────────────── */
+.blast-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.blast-stat__value {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+.blast-stat__value--warn {
+    color: var(--color-red);
+}
+
+.blast-stat__label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+}
+
+.blast-divider {
+    width: 1px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+}
+
+
+/* ── Score Ring ────────────────────────────────────────────────────── */
+.blast-score-ring {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.blast-score-ring__track {
+    stroke: rgba(255, 255, 255, 0.06);
+}
+
+.blast-score-ring--low .blast-score-ring__fill {
+    stroke: var(--color-green);
+}
+
+.blast-score-ring--medium .blast-score-ring__fill {
+    stroke: var(--color-yellow);
+}
+
+.blast-score-ring--high .blast-score-ring__fill {
+    stroke: #f97316;
+    /* orange */
+}
+
+.blast-score-ring--critical .blast-score-ring__fill {
+    stroke: var(--color-red);
+    filter: drop-shadow(0 0 6px rgba(229,72,77, 0.5));
+    animation: ring-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ring-pulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 4px rgba(229,72,77, 0.4));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 10px rgba(229,72,77, 0.8));
+    }
+}
+
+.blast-score-ring svg {
+    display: block;
+    overflow: visible;
+}
+
+.blast-score-ring__inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.blast-score-ring__value {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.blast-score-ring__label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-top: -2px;
+}
+
+.blast-score-ring--critical .blast-score-ring__label {
+    color: var(--color-red);
+}
+
+.blast-score-ring--high .blast-score-ring__label {
+    color: #f97316;
+}
+
+.blast-score-ring--medium .blast-score-ring__label {
+    color: var(--color-yellow);
+}
+
+.blast-score-ring--low .blast-score-ring__label {
+    color: var(--color-green);
+}
+
+/* ── Teams Row ─────────────────────────────────────────────────────── */
+.blast-teams-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto 24px auto;
+    flex-wrap: wrap;
+    max-width: 850px;
+    width: 100%;
+}
+
+.blast-teams-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--cr-type-caption);
+    font-weight: 500;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+}
+
+.blast-teams-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.blast-team-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: var(--cr-type-caption);
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    letter-spacing: 0;
+    cursor: default;
+}
+
+/* ── Panels ────────────────────────────────────────────────────────── */
+.blast-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+    padding-top: 32px;
+    /* clears the flow-line travel area */
+}
+
+@media (max-width: 1024px) {
+    .blast-panels {
+        grid-template-columns: 1fr;
+    }
+}
+
+.blast-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.blast-panel__header {
+    margin-bottom: 4px;
+}
+
+.blast-panel__heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.blast-panel__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.blast-panel__dot--downstream {
+    background: var(--color-red);
+    box-shadow: 0 0 8px rgba(229,72,77, 0.5);
+}
+
+.blast-panel__dot--upstream {
+    background: var(--color-blue);
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
+}
+
+.blast-panel__title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0;
+    margin: 0;
+}
+
+.blast-panel__title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: default;
+}
+
+.blast-panel__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+}
+
+.blast-panel__info {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    opacity: 0.4;
+    cursor: help;
+    margin-left: auto;
+    flex-shrink: 0;
+    transition: opacity 0.15s, color 0.15s;
+}
+
+.blast-panel__info:hover {
+    opacity: 0.8;
+    color: var(--text-secondary);
+}
+
+/* ── Card Grid ─────────────────────────────────────────────────────── */
+.blast-card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ── Service Card ──────────────────────────────────────────────────── */
+.blast-service-card {
+    position: relative;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    min-width: 0;
+}
+
+.blast-service-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.blast-service-card--expanded {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.blast-service-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    min-width: 0;
+}
+
+.blast-service-card__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.blast-service-card__urn-sub {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    opacity: 0.5;
+    margin-top: 2px;
+}
+
+.blast-service-card__title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+}
+
+.blast-service-card__name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Clickable name — explore trigger. No underline (breaks on qualified spans).
+   Color + glow is the hover signal — Vercel/Linear standard. */
+.blast-card__name--link {
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.12s ease;
+}
+
+.blast-card__name--link:hover {
+    color: var(--accent);
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+/* Qualified children follow accent on hover — uniform color shift */
+.blast-card__name--link:hover .cr-qualified__context {
+    color: inherit;
+    opacity: 0.6;
+}
+
+.blast-card__name--link:hover .cr-qualified__sep {
+    color: inherit;
+    opacity: 0.35;
+}
+
+.blast-service-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.blast-fn-count {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    cursor: default;
+    user-select: none;
+}
+
+.blast-chevron {
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.blast-chevron--open {
+    transform: rotate(180deg);
+}
+
+.blast-service-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.blast-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--cr-type-caption);
+    color: var(--text-tertiary);
+}
+
+.blast-meta-item svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.blast-meta-item a,
+.blast-meta-link {
+    color: var(--text-tertiary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(255, 255, 255, 0.1);
+    transition: color 0.15s, text-decoration-color 0.15s;
+    cursor: pointer;
+}
+
+.blast-meta-item a:hover,
+.blast-meta-link:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+/* Card action buttons */
+.blast-card__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.blast-card__action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-sm);
+    color: var(--text-tertiary);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    letter-spacing: 0.01em;
+}
+
+.blast-card__action:hover {
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.blast-card__action--explore:hover {
+    color: var(--accent);
+    border-color: var(--accent-border);
+    background: var(--accent-muted);
+}
+
+
+.blast-service-card__rels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* ── Muted stat (for Unassigned teams) ──────────────────────────── */
+.blast-stat__value--muted {
+    opacity: 0.4;
+}
+
+/* ── Relationship Badges ───────────────────────────────────────────── */
+.blast-rel-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-tertiary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: default;
+    line-height: 1.2;
+}
+
+/* Write — dimmed red, data mutation signal */
+.blast-rel-badge--rel-write {
+    background: rgba(248, 113, 113, 0.07);
+    color: #c87171;
+    border-color: rgba(248, 113, 113, 0.12);
+}
+
+/* Read — dimmed blue, safe read */
+.blast-rel-badge--rel-read {
+    background: rgba(96, 165, 250, 0.07);
+    color: #7eaedd;
+    border-color: rgba(96, 165, 250, 0.12);
+}
+
+/* Call — dimmed purple, behavioral coupling */
+.blast-rel-badge--rel-call {
+    background: rgba(192, 132, 252, 0.07);
+    color: #a87dcc;
+    border-color: rgba(192, 132, 252, 0.12);
+}
+
+/* Implements — dimmed cyan. Distinct from Calls (purple). Color matches
+   the APIEndpoint node hue so the edge reads as "this connects to an
+   endpoint" without inspecting either side. */
+.blast-rel-badge--rel-impl {
+    background: rgba(34, 211, 238, 0.07);
+    color: #5cb6c5;
+    border-color: rgba(34, 211, 238, 0.14);
+}
+
+/* Pub — dimmed amber, fan-out signal (PUBLISHES_TO / PRODUCES / EMITS) */
+.blast-rel-badge--rel-pub {
+    background: rgba(250, 204, 21, 0.07);
+    color: #c2a13a;
+    border-color: rgba(250, 204, 21, 0.12);
+}
+
+/* Sub — dimmed mint, fan-in consume (LISTENS_TO / SUBSCRIBES / CONSUMES) */
+.blast-rel-badge--rel-sub {
+    background: rgba(52, 211, 153, 0.07);
+    color: #4cae8a;
+    border-color: rgba(52, 211, 153, 0.12);
+}
+
+/* Dep — dimmed slate, structural dependency */
+.blast-rel-badge--rel-dep {
+    background: rgba(148, 163, 184, 0.06);
+    color: #94a3b8;
+    border-color: rgba(148, 163, 184, 0.12);
+}
+
+/* Schema — dimmed teal, declarative mapping */
+.blast-rel-badge--rel-schema {
+    background: rgba(45, 212, 191, 0.06);
+    color: #5aaa9a;
+    border-color: rgba(45, 212, 191, 0.10);
+    border-style: dashed;
+}
+
+/* Default fallback */
+.blast-rel-badge--rel-default {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-tertiary);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Letter variant — single-letter compact form for tight layouts.
+   Inherits color/bg/border from --rel-* siblings; only resizes. */
+.blast-rel-badge--letter {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    justify-content: center;
+    font-size: 9px;
+    line-height: 1;
+}
+
+/* ── Functions Section ─────────────────────────────────────────────── */
+.blast-fn-divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 12px 0;
+}
+
+.blast-service-card__functions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.blast-fn-row {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.blast-fn-indicator {
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.blast-fn-name {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-caption);
+    color: var(--text-secondary);
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.blast-fn-file {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Panel empty states use the shared <EmptyState> (design-system.css). */
+
+/* ── Node Type Icon ────────────────────────────────────────────────── */
+.node-type-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+/* ── Search Row ────────────────────────────────────────────────────── */
+.blast-search-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    /* Idle: padding-top pushes search to visual centre */
+    padding-top: 22vh;
+    padding-bottom: 0;
+    /* Smooth collapse when a target is selected */
+    transition:
+        padding-top  0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        padding-bottom 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        gap 0.35s ease;
+}
+
+
+/* Active: search slides up to a compact top position */
+.blast-search-section--active {
+    padding-top: 20px;
+    padding-bottom: 16px;
+    gap: 0;
+}
+
+/* Suggestions fade away when deselected then re-selected */
+.blast-search-section--active .blast-idle__suggestions {
+    display: none;
+}
+
+.blast-search-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+/* ── Search — Domain-specific result styles ───────────────────────── */
+/* The search shell (input, scope tags) is handled by TaggedSearch component.
+   These styles apply only to the BlastExplorer result list rendered via renderResults. */
+
+.blast-search-row .tagged-search {
+    flex: 1;
+    max-width: 560px;
+    background: var(--bg-elevated, #161618);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.blast-search-row .tagged-search__input-wrap {
+    height: 48px;
+    padding: 0 16px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.blast-search-row .tagged-search__input-wrap:focus-within {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.blast-search-row .tagged-search__input {
+    font-size: 15px;
+}
+
+.blast-search-row .tagged-search__dropdown {
+    position: static;
+    border: none;
+    border-top: 1px solid var(--border-default);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    max-height: 380px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+    animation: none;
+}
+
+.blast-search-row .tagged-search__dropdown::-webkit-scrollbar {
+    width: 4px;
+}
+.blast-search-row .tagged-search__dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+.blast-search-row .tagged-search__dropdown::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+}
+
+.blast-search__selected-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: var(--cr-type-caption);
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    flex-shrink: 1;
+    /* allow shrinking when bar is narrow */
+    min-width: 0;
+    max-width: 260px;
+    /* cap before overflow */
+    overflow: hidden;
+    cursor: default;
+}
+
+/* clip the text node inside the badge */
+.blast-search__selected-badge span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+/* entity pill inside badge: never shrink the verb */
+.blast-search__selected-badge .entity-badge {
+    flex-shrink: 0;
+}
+
+
+.blast-search__results {
+    max-height: 340px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.blast-search__group {
+    padding-bottom: 2px;
+}
+
+.blast-search__group+.blast-search__group {
+    margin-top: 2px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.blast-search__group-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px 3px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    opacity: 0.6;
+}
+
+.blast-search__group-count {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    opacity: 0.5;
+    margin-left: auto;
+}
+
+.blast-search__option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 6px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+    font-size: 13px;
+}
+
+.blast-search__option:hover,
+.blast-search__option--active,
+.blast-search__option--highlight {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.blast-search__option-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* API endpoint variant: pill + path inline */
+.blast-search__option-name--api {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    overflow: hidden;
+    flex: 1;
+}
+
+.blast-search__option-name--api>span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0;
+}
+
+.blast-search__option-team {
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    cursor: default;
+    user-select: none;
+}
+
+/* Exposer service chip — right-aligned, service-colored accent */
+.blast-search__option-exposer {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: #a78bfa;
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 1px 7px;
+    border-radius: 4px;
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid rgba(167, 139, 250, 0.15);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+    letter-spacing: 0;
+    cursor: default;
+    user-select: none;
+}
+
+.blast-search__no-results {
+    padding: 16px;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    font-style: italic;
+}
+
+.blast-search__footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+}
+
+.blast-search__footer-dot {
+    opacity: 0.4;
+}
+
+/* ── Idle State ────────────────────────────────────────────────────── */
+.blast-idle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 24px 80px 24px;
+    text-align: center;
+    color: var(--text-tertiary);
+}
+
+.blast-idle__graphic {
+    opacity: 0.3;
+    margin-bottom: 8px;
+}
+
+.blast-idle__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+    letter-spacing: 0;
+}
+
+.blast-idle__subtitle {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin: 0;
+    max-width: 380px;
+    line-height: 1.6;
+}
+
+/* Idle: type-breakdown chips + suggestions */
+.blast-idle__suggestions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.blast-idle__suggestions-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.blast-idle__chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+
+.blast-idle__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+}
+
+.blast-idle__chip:hover {
+    background: color-mix(in srgb, var(--cr-signal) 8%, transparent);
+    border-color: color-mix(in srgb, var(--cr-signal) 22%, transparent);
+    color: #38bdf8;
+}
+
+.blast-idle__chip:hover .cr-qualified__context {
+    color: inherit;
+    opacity: 0.8;
+}
+
+.blast-idle__chip:hover .cr-qualified__sep {
+    color: inherit;
+    opacity: 0.5;
+}
+
+/* ── Idle state (no target selected) ─────────────────────────────── */
+
+.blast-idle-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    flex: 1;
+    padding: 14vh 16px 40px;
+    width: min(560px, 100% - 32px);
+    margin-inline: auto;
+    animation: cr-reg-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.blast-idle-state__search {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.blast-idle-state__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cr-ink-3);
+}
+
+.blast-idle-state__search .blast-search-row {
+    width: 100%;
+    animation: blast-idle-search-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+@keyframes blast-idle-search-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.blast-idle-state__section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.blast-idle-state__heading {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: var(--cr-weight-medium);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cr-ink-3);
+}
+
+.blast-idle-state__list {
+    display: grid;
+    gap: 0;
+    width: 100%;
+    max-width: 380px;
+}
+
+.blast-idle-state__target {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    color: var(--cr-ink-1);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 120ms ease;
+    animation: blast-idle-row-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(0.25s + var(--row-index, 0) * 0.06s);
+}
+
+@keyframes blast-idle-row-in {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.blast-idle-state__target:hover {
+    background: var(--cr-bg-3);
+    color: var(--cr-ink-0);
+}
+
+.blast-idle-state__target-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.blast-idle-state__target-score {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0.04em;
+    color: var(--cr-ink-3);
+}
+
+.blast-idle-state__types {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 16px;
+    animation: cr-reg-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+.blast-idle-state__type {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--cr-ink-2);
+    white-space: nowrap;
+}
+
+.blast-idle-state__type-count {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--cr-ink-3);
+}
+
+
+@keyframes cr-reg-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Score ring /20 scale */
+.blast-score-ring__value small {
+    font-size: 9px;
+    opacity: 0.5;
+    margin-left: 1px;
+    font-weight: 500;
+}
+
+/* ── (Topology Context Bar — moved into search dropdown footer) ────── */
+
+/* ── Filter Chips ──────────────────────────────────────────────────── */
+.blast-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.blast-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    white-space: nowrap;
+}
+
+.blast-filter-chip:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-secondary);
+}
+
+/* Active state: color changes only, NO font-weight change to prevent layout shift */
+.blast-filter-chip--active {
+    /* Colors are applied via inline style from JS — background, border, color */
+}
+
+.blast-filter-chip__count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    opacity: 0.6;
+}
+
+/* ── Unified Toolbar ───────────────────────────────────────────────── */
+.blast-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 26px;
+}
+
+.blast-toolbar__search {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.blast-toolbar__search-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+    flex-shrink: 0;
+}
+
+.blast-toolbar__search-toggle:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.blast-toolbar__search--open .blast-toolbar__search-toggle {
+    color: var(--text-secondary);
+}
+
+.blast-toolbar__search-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    outline: none;
+    font-size: var(--cr-type-caption);
+    color: var(--text-secondary);
+    font-family: inherit;
+    padding: 2px 0 2px 4px;
+    width: 120px;
+    animation: searchExpand 0.15s ease-out;
+}
+
+.blast-toolbar__search-input::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+
+.blast-toolbar__search-input:focus {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes searchExpand {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+
+    to {
+        width: 120px;
+        opacity: 1;
+    }
+}
+
+/* ── (Legacy panel search — replaced by toolbar) ──────────────────── */
+
+/* ── Tier Sections ─────────────────────────────────────────────────── */
+.blast-tiered-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.blast-tier-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.blast-tier-section__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    padding: 2px 0;
+    opacity: 0.7;
+}
+
+.blast-tier-section__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: default;
+}
+
+.blast-tier-section__badge--t1 {
+    background: color-mix(in srgb, var(--cr-signal) 12%, transparent);
+    color: #38bdf8;
+    border: 1px solid color-mix(in srgb, var(--cr-signal) 20%, transparent);
+}
+
+.blast-tier-section__badge--t2 {
+    background: rgba(250, 204, 21, 0.1);
+    color: #facc15;
+    border: 1px solid rgba(250, 204, 21, 0.18);
+}
+
+.blast-tier-section__count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    opacity: 0.5;
+    margin-left: auto;
+}
+
+
+/* ── Tier 2 Badge ──────────────────────────────────────────────────── */
+.blast-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.18);
+    letter-spacing: 0.02em;
+    cursor: default;
+    line-height: 1.2;
+}
+
+/* ── Tier 2 Card Styling ───────────────────────────────────────────── */
+.blast-card--tier2 {
+    border-left: 2px solid rgba(249, 115, 22, 0.25);
+}
+
+/* ── Via Badge ─────────────────────────────────────────────────────── */
+.blast-card__via {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    margin-top: 10px;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.025);
+    border-radius: var(--radius-sm);
+    border: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+.blast-card__via svg {
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+.blast-card__via-name {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.blast-card__via-name--link {
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(255, 255, 255, 0.1);
+    transition: color 0.15s, text-decoration-color 0.15s, filter 0.15s;
+}
+
+.blast-card__via-name--link:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+/* ── Relationship Badge (Small variant — kept for card badges) ─────── */
+.blast-rel-badge--sm {
+    font-size: 9px;
+    padding: 1px 5px;
+}
+
+/* ── Software Dependencies Section ────────────────────────────────── */
+.blast-pkg-section {
+    margin-top: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.015);
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.blast-pkg-section:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.blast-pkg-section--open {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.blast-pkg-section__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: color 0.15s ease;
+}
+
+.blast-pkg-section__header:hover {
+    color: var(--text-secondary);
+}
+
+.blast-pkg-section__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+.blast-pkg-section__title {
+    font-size: var(--cr-type-caption);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.blast-pkg-section__count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.blast-pkg-section__chevron {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    opacity: 0.4;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.blast-pkg-section__chevron--open {
+    transform: rotate(90deg);
+    opacity: 0.6;
+}
+
+.blast-pkg-section__list {
+    display: flex;
+    flex-direction: column;
+    padding: 0 8px 8px 8px;
+    gap: 1px;
+    animation: fadeIn 0.15s ease-out;
+}
+
+.blast-pkg-section__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 400;
+    text-align: left;
+    transition: background 0.15s ease, color 0.15s ease;
+    width: 100%;
+}
+
+.blast-pkg-section__row:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+}
+
+.blast-pkg-section__row-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-caption);
+    letter-spacing: 0;
+}
+
+/* ── Side Drawer ──────────────────────────────────────────────────── */
+.blast-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    animation: fadeIn 0.15s ease-out;
+}
+
+.blast-drawer__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 32px;
+}
+
+.blast-drawer__name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0;
+    margin: 0;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+.blast-drawer__name--api {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.blast-drawer__urn-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.blast-drawer__urn {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    word-break: break-all;
+}
+
+.blast-drawer__section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 0;
+    border-top: 1px solid color-mix(in srgb, var(--cr-ink-0) 5%, transparent);
+    flex-shrink: 0;
+}
+
+/* Functions section expands naturally */
+.blast-drawer__section--functions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Section label: the panel's structural micro voice. JetBrains Mono per the
+   design system's micro-label token; 0.10em tracking matches the metadata
+   grid keys beneath so the panel carries one uppercase rhythm (size 10.5 vs
+   9.5 + weight 600 vs 500 keep the section > key hierarchy). Keep in sync
+   with .node-inspector__section-label and .cr-grounding__label. */
+.blast-drawer__section-label {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.blast-drawer__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.blast-drawer__section-count {
+    margin-left: 6px;
+    opacity: 0.5;
+    font-weight: 500;
+}
+
+/* ── Relationship Graph ──────────────────────────────────────────── */
+
+
+/* ── T1: Horizontal 2-node layout ─────────────────────────────────── */
+.rel-graph--t1 {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 6px 0;
+    min-height: 40px;
+    overflow: hidden;
+}
+
+/* ── T2: Vertical 3-node layout ───────────────────────────────────── */
+.rel-graph--t2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 4px 0;
+}
+
+/* ── Node chip — auto-width, not full-width boxes ─────────────────── */
+.rel-graph__node {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px 4px 7px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0;
+    white-space: nowrap;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    transition: border-color 0.2s, background 0.2s;
+    /* T1: don't grow to full width */
+    max-width: calc(50% - 60px);
+}
+
+.rel-graph__node--clickable {
+    cursor: pointer;
+}
+
+.rel-graph__node--clickable:hover {
+    border-color: color-mix(in srgb, var(--cr-signal) 40%, transparent) !important;
+    background: color-mix(in srgb, var(--cr-signal) 8%, transparent) !important;
+    color: var(--text-primary);
+}
+
+/* T2 nodes: full-width is ok in vertical mode */
+.rel-graph--t2 .rel-graph__node {
+    max-width: 100%;
+}
+
+/* Target/current node — highlighted */
+.rel-graph__node--current {
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--cr-signal) 5%, transparent);
+    border-color: color-mix(in srgb, var(--cr-signal) 16%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--cr-signal) 5%, transparent) inset;
+}
+
+/* Source node */
+.rel-graph__node--source {
+    color: var(--text-secondary);
+    opacity: 0.75;
+}
+
+/* Via node — dashed, muted */
+.rel-graph__node--via {
+    color: var(--text-tertiary);
+    background: transparent;
+    border-style: dashed;
+    border-color: rgba(255, 255, 255, 0.07);
+}
+
+.rel-graph__node-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* ── Horizontal edge connector (T1) ───────────────────────────────── */
+.rel-graph__h-edge {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 48px;
+    gap: 0;
+    padding: 0 2px;
+}
+
+.rel-graph__h-line {
+    flex: 1;
+    height: 1px;
+    opacity: 0;
+    animation: relHLineGrow 0.35s ease-out 0.05s forwards;
+}
+
+@keyframes relHLineGrow {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 0.18; }
+}
+
+/* Horizontal edge label — text + tiny arrow, no pill box */
+.rel-graph__h-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0 5px;
+    opacity: 0;
+    animation: relLabelFade 0.3s ease-out 0.15s forwards;
+}
+
+/* ── Vertical edge connector (T2) ─────────────────────────────────── */
+.rel-graph__v-edge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    width: 100%;
+    position: relative;
+}
+
+.rel-graph__v-line {
+    width: 1px;
+    height: 100%;
+    flex-shrink: 0;
+    opacity: 0;
+    animation: relVLineGrow 0.35s ease-out 0.05s forwards;
+    transform-origin: top center;
+}
+
+@keyframes relVLineGrow {
+    from { transform: scaleY(0); opacity: 0; }
+    to   { transform: scaleY(1); opacity: 0.22; }
+}
+
+/* Vertical edge label */
+.rel-graph__v-label {
+    position: absolute;
+    left: calc(50% + 8px);
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: relLabelFade 0.3s ease-out 0.15s forwards;
+    white-space: nowrap;
+}
+
+/* Shared fade-in */
+@keyframes relLabelFade {
+    from { opacity: 0; }
+    to   { opacity: 0.65; }
+}
+
+/* Arrow glyph in edge labels */
+.rel-graph__arrow {
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+/* ── Code Evidence Tabs ───────────────────────────────────────────────── */
+.blast-drawer__fn-tabs {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--cr-line-dim);
+}
+
+.blast-drawer__fn-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    color: var(--cr-ink-2);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: var(--cr-weight-medium);
+    cursor: pointer;
+    transition: color 120ms ease, border-color 120ms ease;
+}
+
+.blast-drawer__fn-tab--active {
+    color: var(--cr-ink-0);
+    font-weight: var(--cr-weight-semibold);
+    border-bottom-color: var(--cr-signal);
+}
+
+.blast-drawer__fn-tab:focus-visible {
+    outline: 2px solid var(--cr-signal);
+    outline-offset: -2px;
+    border-radius: 3px;
+}
+
+.blast-drawer__fn-tab-name {
+    font-weight: var(--cr-weight-semibold);
+}
+
+.blast-drawer__fn-tab-count {
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    font-weight: var(--cr-weight-medium);
+    font-variant-numeric: tabular-nums;
+}
+
+
+.blast-drawer__func-scroll-area {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-right: 4px;
+}
+
+.blast-drawer__func-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.blast-drawer__func-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.blast-drawer__func-group-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+}
+
+.blast-drawer__func-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    /* fills remaining height inside the functions section */
+    min-height: 0;
+    /* must be set for overflow-y to work in flex context */
+    overflow-y: auto;
+}
+
+.blast-drawer__func-list li {
+    list-style: none;
+}
+
+.blast-drawer__func-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: background 0.15s;
+}
+
+a.blast-drawer__func-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.blast-drawer__func-name {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-caption);
+    font-weight: 500;
+    color: var(--text-secondary);
+    word-break: break-all;
+}
+
+/* Namespace prefix of a qualified function name (PHP FQCN): dimmed so the
+   Class.method tail leads. Color-only treatment, the text stays selectable
+   and byte-identical for copy/paste (see lib/function-name.ts). */
+.blast-drawer__func-ns {
+    color: var(--cr-ink-3);
+    font-weight: 400;
+}
+
+a.blast-drawer__func-row:hover .blast-drawer__func-name {
+    color: var(--accent);
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+a.blast-drawer__func-row:hover .blast-drawer__func-ns {
+    color: inherit;
+}
+
+/* External-link affordance: hidden by default, fades in on row hover so
+   the user sees the row is a link without adding noise to the resting
+   state. Only rendered when a fileUrl resolved (see FunctionItem.tsx). */
+.blast-drawer__func-extlink {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-tertiary);
+    opacity: 0;
+    flex-shrink: 0;
+    margin-top: 3px;
+    transition: opacity 140ms ease, color 140ms ease;
+}
+a.blast-drawer__func-row:hover .blast-drawer__func-extlink {
+    opacity: 0.75;
+    color: var(--accent);
+}
+
+.blast-drawer__func-file {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    word-break: break-all;
+}
+
+/* Func list item wrapper — relative context for the copy button */
+.blast-drawer__func-item {
+    position: relative;
+    list-style: none;
+}
+
+
+/* ── Function count chip (on card) ─────────────────────────────────── */
+/* fn counter in badges row — subtle pill, no color */
+.blast-card__fn-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+    cursor: default;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    line-height: 1.2;
+}
+
+.blast-card__fn-chip-icon {
+    font-size: 11px;
+    font-family: system-ui, sans-serif;
+    font-weight: 400;
+    opacity: 0.8;
+    line-height: 1;
+}
+
+/* ── Responsive: Drawer ────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .blast-drawer {
+        width: 100vw;
+    }
+}
+
+
+
+/* ── Entity Badge (Shared for HTTP Verbs, Topics, Protocols) ───────── */
+.entity-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    border: 1px solid;
+    white-space: nowrap;
+    flex-shrink: 0;
+    user-select: none;
+    cursor: default;
+    transition: box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+/* Size variants */
+.entity-badge--sm {
+    font-size: 10px;
+    padding: 2px 8px;
+    line-height: 1.2;
+}
+
+.entity-badge--md {
+    font-size: 10.5px;
+    padding: 2px 6px;
+    line-height: 1.2;
+}
+
+.entity-badge--lg {
+    font-size: var(--cr-type-caption);
+    padding: 3px 8px;
+    line-height: 1.2;
+}
+
+/* Banner glow on hover for entity pill */
+.blast-target-banner__name:hover .entity-badge {
+    filter: brightness(1.15);
+}
+
+/* ── Card V2 — Redesigned Impact Card ─────────────────────────────── */
+
+.blast-service-card--v2 {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    padding: 0;
+    overflow: hidden;
+    gap: 0;
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    min-height: 56px;
+    cursor: pointer;
+}
+
+.blast-service-card--v2:hover {
+    border-color: rgba(255, 255, 255, 0.13);
+    background: #1a1a1f;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+
+/* Card body — all content */
+.blast-card__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+}
+
+/* Row 1: identity = name-group (left) + badges (right) */
+.blast-card__identity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+}
+
+.blast-card__name-group {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    flex: 1;
+}
+
+/* API path — monospace, slightly secondary */
+.blast-card__api-path {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0;
+    color: var(--text-primary);
+}
+
+.blast-card__api-path.blast-card__name--link:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+.blast-card__badges {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    cursor: default;
+}
+
+/* Row 2: meta — team chip + repo link, compact */
+.blast-card__meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Team meta item — plain, no pill chrome */
+.blast-card__team-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    letter-spacing: 0;
+    cursor: default;
+    user-select: none;
+}
+
+/* Repo link within meta row */
+.blast-meta-item--repo {
+    font-size: 10.5px;
+    gap: 4px;
+}
+
+/* Provenance & Technology chips — icon + text, inherits color from inline style */
+.blast-meta-item--provenance,
+.blast-meta-item--tech {
+    font-size: 10.5px;
+    font-weight: 500;
+    gap: 3px;
+    white-space: nowrap;
+    letter-spacing: 0;
+    cursor: default;
+    user-select: none;
+    opacity: 0.85;
+}
+
+.blast-meta-item--provenance svg,
+.blast-meta-item--tech svg {
+    opacity: 0.9;
+    flex-shrink: 0;
+}
+
+/* Row 3: via trace — plain tree-branch typography, no chrome */
+.blast-card__via-trace {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    opacity: 0.65;
+    padding-left: 1px;
+}
+
+/* ↳ tree-joint glyph */
+.blast-card__via-trace-joint {
+    font-size: 10px;
+    line-height: 1;
+    opacity: 0.7;
+    flex-shrink: 0;
+    color: var(--text-secondary);
+    /* nudge slightly for optical alignment */
+    margin-top: 1px;
+}
+
+/* Node name — clickable, no underline at rest */
+.blast-card__via-trace-name {
+    font-weight: 500;
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
+    transition: color 0.12s;
+}
+
+.blast-card__via-trace-name:hover {
+    color: var(--accent);
+}
+
+/* Type annotation — muted mono, zero chrome */
+.blast-card__via-trace-type {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.01em;
+    opacity: 0.38;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Hover-reveal action overlay — right side */
+.blast-card__actions-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 5px;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.blast-service-card--v2:hover .blast-card__actions-overlay {
+    opacity: 1;
+}
+
+/* Individual icon action button */
+.blast-card__action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.blast-card__action-icon:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.blast-card__action-icon--explore:hover {
+    background: var(--accent-muted);
+    border-color: var(--accent-border);
+    color: var(--accent);
+}
+
+/* Banner: path overflow handling for long API paths */
+.blast-target-banner__name span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+/* ── Event Schema Card (MessageChannel drawer) ─────────────────────── */
+.blast-schema-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+}
+
+.blast-schema-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    position: relative;
+    padding-right: 32px;
+}
+
+.blast-schema-card__actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Field count, right edge of the schema card header (before the copy
+   button). "0 fields" renders too: an empty schema is a meaningful state. */
+.blast-schema-card__count {
+    margin-left: auto;
+    padding-left: 10px;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Link and copy button styles */
+/* Copy button */
+.blast-drawer__func-copy {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.blast-drawer__func-copy:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--text-secondary);
+}
+
+/* "Copied" feedback state */
+.blast-drawer__func-copy--done {
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.25);
+    color: #46A758;
+}
+.blast-schema-card__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    color: var(--text-tertiary);
+    transition: color 0.15s, background 0.15s;
+}
+
+.blast-schema-card__link:hover {
+    color: var(--accent, #38bdf8);
+    background: color-mix(in srgb, var(--cr-signal) 8%, transparent);
+}
+
+.blast-schema-card__name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0;
+}
+
+.blast-schema-card__name--link {
+    cursor: pointer;
+    transition: color 0.15s;
+    text-decoration: none;
+}
+
+.blast-schema-card__name--link:hover {
+    color: var(--accent, #38bdf8) !important;
+}
+
+.blast-schema-card__title {
+    flex: 1;
+    min-width: 0;
+}
+
+.blast-schema-card__name-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.blast-schema-card__more-indicator {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.blast-schema-card__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.blast-schema-card__fields--tree {
+    gap: 2px;
+}
+
+.blast-schema-tree__node-wrap {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.blast-schema-tree__children {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    margin-left: 6px;
+    padding-left: 12px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.blast-schema-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.4;
+    min-width: 0;
+    word-break: break-all; /* Fix overflow for very long fields */
+}
+
+.blast-schema-field--tree {
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+
+.blast-schema-field--tree:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.blast-schema-field--folder {
+    cursor: pointer;
+}
+
+.blast-schema-field--folder:hover .blast-schema-tree__chevron {
+    color: var(--text-secondary);
+}
+
+.blast-schema-tree__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    margin-right: -2px;
+}
+
+.blast-schema-tree__leaf-spacer {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    margin-right: -2px;
+}
+
+.blast-schema-tree__chevron {
+    color: var(--text-tertiary);
+    opacity: 0.6;
+    transition: transform 0.2s ease, color 0.15s, opacity 0.15s;
+}
+
+.blast-schema-field--folder:hover .blast-schema-tree__chevron {
+    opacity: 1;
+}
+
+.blast-schema-tree__chevron--open {
+    transform: rotate(90deg);
+}
+
+.blast-schema-field__name {
+    color: var(--text-secondary);
+    font-weight: 500;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.blast-schema-field__type {
+    color: var(--text-tertiary);
+    font-weight: 400;
+    flex-shrink: 0;
+}
+
+.blast-schema-field__optional-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 10px;
+    font-weight: 400;
+    margin-left: 4px;
+    vertical-align: middle;
+    font-family: var(--font-mono);
+    opacity: 0.6;
+}
+
+.blast-schema-card__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    background: none;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--text-tertiary);
+    padding: 6px 0 0;
+    margin-top: 4px;
+    transition: color 0.15s;
+}
+
+.blast-schema-card__toggle:hover {
+    color: var(--accent, #38bdf8);
+}
+
+.blast-schema-card__toggle-chevron {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    transition: transform 0.2s ease;
+}
+
+.blast-schema-card__toggle-chevron--up {
+    transform: rotate(180deg);
+}
+
+/* ── Qualified Service Name ────────────────────────────────────────────
+   Disambiguates generic service names like "api" with repo context.
+   Pattern: "repo / name" — Vercel/Linear aesthetic.
+   Hierarchy via weight+color differential, NOT opacity crushing.
+   One tokenization pattern everywhere, scaled by context.
+   ──────────────────────────────────────────────────────────────────── */
+
+/* Inline context prefix — used everywhere: chips, search, cards, banner, drawer, RelGraph.
+   Readable but subordinate: secondary color + lighter weight vs name. */
+.cr-qualified__context {
+    color: var(--text-secondary);
+    font-weight: 500;
+    opacity: 0.72;
+    font-size: 0.92em;
+    letter-spacing: 0;
+}
+
+/* Separator — clean slash, same everywhere. */
+.cr-qualified__sep {
+    color: var(--text-tertiary);
+    opacity: 0.35;
+    margin: 0 3px;
+    font-weight: 300;
+    font-size: 0.8em;
+    user-select: none;
+}
+
+/* Banner scale-up — same pattern, less aggressive size differential so the
+   monorepo prefix remains legible next to the large name. Hierarchy is now
+   carried by color/weight/opacity, not by shrinking the prefix into a chip. */
+.cr-qualified__context--lg {
+    font-size: 0.7em;
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+.cr-qualified__sep--lg {
+    font-size: 0.6em;
+    margin: 0 5px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   IMPACT TIER SYSTEM — T0–T4 (Seismic → Contained)
+   Design: stat-column integration, 2px decoration strip, no badge.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Tier Color Tokens ──────────────────────────────────────────── */
+:root {
+    --tier-seismic:    var(--cr-danger);
+    --tier-critical:   var(--cr-warn);
+    --tier-high:       var(--cr-ink-1);
+    --tier-moderate:   var(--cr-ink-3);
+    --tier-contained:  var(--cr-ok);
+    --tier-unverified: var(--cr-ink-3);
+}
+
+/* ── Tier as 4th stat column ────────────────────────────────────── */
+/*
+ * BlastTierStat renders identically to the Direct/Transitive/Team
+ * columns: value = "T0" in tier color, label = "Seismic" muted.
+ * No border, no background, no pill. Just colored text.
+ */
+
+/* The stat value gets the tier color */
+.blast-stat__value--tier-seismic   { color: var(--tier-seismic);   }
+.blast-stat__value--tier-critical  { color: var(--tier-critical);  }
+.blast-stat__value--tier-high      { color: var(--tier-high);      }
+.blast-stat__value--tier-moderate  { color: var(--tier-moderate);  }
+.blast-stat__value--tier-contained { color: var(--tier-contained); }
+
+/* The label gets a very subtle tint — readable but quiet */
+.blast-stat__label--tier-seismic   { color: rgba(239, 68,  68,  0.65); }
+.blast-stat__label--tier-critical  { color: rgba(249, 115, 22,  0.65); }
+.blast-stat__label--tier-high      { color: rgba(234, 179, 8,   0.60); }
+.blast-stat__label--tier-moderate  { color: rgba(59,  130, 246, 0.60); }
+.blast-stat__label--tier-contained { color: rgba(34,  197, 94,  0.60); }
+
+/* T0 Seismic value gets a very subtle text-shadow pulse — understated */
+.blast-stat__value--tier-seismic {
+    animation: tier-seismic-text 3s ease-in-out infinite;
+}
+@keyframes tier-seismic-text {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.75; }
+}
+
+/* ── BlastBreakdownStrip (deprecated — use blast-banner-footer) ────────── */
+.blast-breakdown-strip { display: none; }
+
+/* ── BlastBreakdownFooter ──────────────────────────────────────── */
+/*
+ * Full-width structural footer, direct child of .blast-target-banner.
+ * Clips to the banner's border-radius via overflow:hidden on parent.
+ * 3px bar + one legend row. Zero color noise — everything text-tertiary.
+ */
+.blast-banner-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 9px 18px 10px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.12);
+}
+
+/* 3px proportional bar */
+.blast-banner-footer__bar {
+    display: flex;
+    height: 3px;
+    border-radius: 999px;
+    overflow: hidden;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.blast-banner-footer__seg {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    cursor: default;
+    border-radius: 999px;
+    opacity: 0.55;
+}
+.blast-banner-footer__seg:hover { opacity: 0.85; }
+
+/* Colors: desaturated so they harmonize with the dark theme */
+.blast-banner-footer__seg--direct     { background: var(--tier-seismic);   }
+.blast-banner-footer__seg--transitive { background: var(--tier-high);      }
+.blast-banner-footer__seg--upstream   { background: var(--tier-moderate);  }
+
+/* Legend row: left counts + right description, both muted gray */
+.blast-banner-footer__legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.blast-banner-footer__legend-counts {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.blast-banner-footer__legend-desc {
+    font-size: 10.5px;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    opacity: 0.7;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-style: italic;
+    text-align: right;
+}
+
+/* ── Gravity Leaderboard Tier Badge ─────────────────────────────── */
+/*
+ * In the SPOF leaderboard, the badge is the *only* score indicator
+ * (no stat row context), so a small pill is appropriate there.
+ * But keep it compact — grade + label, tight padding.
+ */
+.gravity-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.gravity-tier-badge__grade {
+    font-size: var(--cr-type-caption);
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.gravity-tier-badge__sep {
+    opacity: 0.35;
+    font-weight: 400;
+    font-size: 10px;
+}
+
+.gravity-tier-badge__label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.gravity-tier-badge--seismic {
+    background: rgba(239, 68,  68,  0.07);
+    border-color: rgba(239, 68,  68,  0.18);
+    color: var(--tier-seismic);
+    animation: tier-seismic-text 3s ease-in-out infinite;
+}
+
+.gravity-tier-badge--critical {
+    background: rgba(249, 115, 22,  0.07);
+    border-color: rgba(249, 115, 22,  0.18);
+    color: var(--tier-critical);
+}
+
+.gravity-tier-badge--high {
+    background: rgba(234, 179, 8,   0.06);
+    border-color: rgba(234, 179, 8,   0.16);
+    color: var(--tier-high);
+}
+
+.gravity-tier-badge--moderate {
+    background: rgba(59,  130, 246, 0.06);
+    border-color: rgba(59,  130, 246, 0.16);
+    color: var(--tier-moderate);
+}
+
+.gravity-tier-badge--contained {
+    background: rgba(34,  197, 94,  0.06);
+    border-color: rgba(34,  197, 94,  0.16);
+    color: var(--tier-contained);
+}
+
+/* ── Gravity Rank Bar ───────────────────────────────────────────── */
+.gravity-rank-bar {
+    height: 2px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    margin: 8px 0 4px 0;
+    overflow: hidden;
+}
+
+.gravity-rank-bar__fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gravity-rank-bar__fill--seismic   { background: var(--tier-seismic);   opacity: 0.7; }
+.gravity-rank-bar__fill--critical  { background: var(--tier-critical);  opacity: 0.65; }
+.gravity-rank-bar__fill--high      { background: var(--tier-high);      opacity: 0.6; }
+.gravity-rank-bar__fill--moderate  { background: var(--tier-moderate);  opacity: 0.55; }
+.gravity-rank-bar__fill--contained { background: var(--tier-contained); opacity: 0.5; }
+
+/* ── BlastTierLabel — top-right pure typography ───────── */
+.blast-tier-lockup {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding-top: 2px;
+}
+
+.blast-tier-lockup__subline {
+    font-size: 10.5px;
+    font-weight: 400;
+    color: var(--text-tertiary, var(--cr-ink-2));
+    font-style: italic;
+    text-align: right;
+    line-height: 1.2;
+}
+
+.blast-tier-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    cursor: default;
+    user-select: none;
+}
+.blast-tier-label__grade {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+}
+.blast-tier-label__label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+}
+
+.blast-tier-label--seismic .blast-tier-label__grade  { color: var(--tier-seismic); background: rgba(239, 68, 68, 0.15); }
+.blast-tier-label--critical .blast-tier-label__grade { color: var(--tier-critical); background: rgba(249, 115, 22, 0.15); }
+.blast-tier-label--high .blast-tier-label__grade     { color: var(--tier-high); background: rgba(234, 179, 8, 0.15); }
+.blast-tier-label--moderate .blast-tier-label__grade { color: var(--tier-moderate); background: rgba(59, 130, 246, 0.15); }
+.blast-tier-label--contained .blast-tier-label__grade{ color: var(--tier-contained); background: rgba(34, 197, 94, 0.15); }
+
+/* Small variant — used in click-popovers where the chip sits next to other
+   compact controls. Description is moved to a tooltip on the chip itself. */
+.blast-tier-label--sm                           { gap: 6px; }
+.blast-tier-label--sm .blast-tier-label__grade { font-size: 9.5px; padding: 2px 5px; }
+.blast-tier-label--sm .blast-tier-label__label { font-size: 9.5px; letter-spacing: 0.05em; }
+
+/* ── BlastBannerBody — full-width section below identity ──────────── */
+/*
+ * Structure:
+ *   [stats text: "88 Direct · 4 Transitive · 49 Upstream · 1 Team"]
+ *   [████████████████████████████████████████████████████]  ← 2px sharp line
+ */
+.blast-banner-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 20px 14px 20px;
+}
+
+/* Stats line: vertical blocks */
+.blast-banner-body__stats {
+    display: flex;
+    align-items: center;
+    gap: 24px; /* wide spacing between blocks */
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.blast-banner-body__stat-block {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.blast-banner-body__stat-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-tertiary, var(--cr-ink-1));
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.blast-banner-body__stat-num {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.blast-banner-body__stat-block--zero .blast-banner-body__stat-label,
+.blast-banner-body__stat-block--zero .blast-banner-body__stat-num {
+    opacity: 0.35;
+}
+
+.blast-banner-body__bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.blast-banner-body__bar-trailing {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.blast-banner-body__bar.cr-barred-progress {
+    display: inline-flex;
+    height: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.blast-banner-body__seg {
+    height: 100%;
+    flex-shrink: 0;
+    opacity: 0.85;
+    cursor: default;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.blast-banner-body__seg:hover { opacity: 1; }
+
+.blast-banner-body__seg--direct     { background: #C084FC; } /* Soft purple */
+.blast-banner-body__seg--transitive { background: #FACC15; } /* Amber yellow */
+.blast-banner-body__seg--upstream   { background: #2DD4BF; } /* Soft cyan */
+
+/* Command Palette Modal */
+.blast-search-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 12vh;
+}
+
+.blast-search-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.blast-search-modal__content {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    animation: blast-modal-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.blast-search-modal__content .blast-search-row {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+}
+
+.blast-search-modal__content .tagged-search__input-wrap {
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border-subtle);
+    background: transparent;
+    box-shadow: none;
+}
+
+.blast-search-modal__content .tagged-search__input {
+    font-size: 15px;
+    padding: 16px;
+    height: 56px;
+}
+
+@keyframes blast-modal-in {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ── NodeInspector — modal content layout ────────────────────────── */
+
+.node-inspector {
+    display: flex;
+    flex-direction: column;
+}
+
+.node-inspector__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-right: 36px;
+}
+
+.node-inspector__identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.node-inspector__identity .node-type-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.node-inspector__name {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.node-inspector__name--api {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+.node-inspector__header-right {
+    flex-shrink: 0;
+}
+
+.node-inspector__urn-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    min-width: 0;
+}
+
+.node-inspector__urn {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.node-inspector__urn-copy {
+    position: relative;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: var(--cr-ink-3);
+    opacity: 0.5;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.12s ease, background 0.12s ease, opacity 0.12s ease;
+}
+
+.node-inspector__urn-copy::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+}
+
+.node-inspector__urn-copy:hover {
+    color: var(--cr-ink-0);
+    background: color-mix(in srgb, var(--cr-ink-0) 8%, transparent);
+    opacity: 1;
+}
+
+.node-inspector__urn-copy:focus-visible {
+    outline: 2px solid var(--cr-signal);
+    outline-offset: 1px;
+    opacity: 1;
+}
+
+/* Modal-scoped section rhythm: subtle hairline divider between sections,
+   plus disciplined padding so the section label sits visually anchored to
+   the rule above. The hairline reads as a quiet separator, not as a heavy
+   panel border. */
+.node-inspector__section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 0;
+    border-top: 1px solid var(--cr-line-dim);
+    flex-shrink: 0;
+}
+
+/* Same micro voice as .blast-drawer__section-label; keep in sync. */
+.node-inspector__section-label {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+}
+
+/* Pills, inline props and the description paragraph moved to the shared
+   cr-overview__* / cr-node-description classes in components.css; the
+   Overview grid is rendered identically by the modal and the BlastDrawer. */
+
+/* ── Banner actions row ─────────────────────────────────────────────────
+   Holds the [i] inspect button at the bottom-right of the banner card.
+   It's a normal flex child of `.blast-target-banner__inner` so it
+   participates in the layout (no absolute positioning, no overlap with
+   the BlastBannerBody bar or the teams-strip). */
+.blast-target-banner__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 4px 14px 10px 14px;
+}
+
+.blast-target-banner__inspect {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.blast-target-banner__inspect:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+.blast-target-banner__top-right {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Blast Stream (v3 list view)
+
+   Single-column dense stream that replaces the legacy two-panel layout in
+   list mode. Direction is a per-row glyph; counts live on toolbar chips,
+   not on a stats lockup in the banner. Designed for scanning 100+ items,
+   not for "see inbound/outbound at a glance" (that's the graph view).
+   See BlastRadiusListView.tsx + stream/StreamRow.tsx + stream/StreamToolbar.tsx
+   ════════════════════════════════════════════════════════════════════════ */
+
+.blast-stream-view {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 0;
+    padding: 0 16px;
+}
+
+/* ── Toolbar ──────────────────────────────────────────────────────────── */
+.blast-stream-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: var(--cr-bg-1);
+    margin-inline: -16px;
+    padding: 12px 16px 8px;
+    border-bottom: 1px solid var(--cr-line-0);
+}
+
+.blast-stream-toolbar__top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Unified height for search input, direction pills, and sort select
+   so the first toolbar row reads as a single row of equal-height controls
+   (Linear/Vercel pattern). 28px is the target; box-sizing: border-box
+   means border + internal padding don't push the visible height higher. */
+.blast-stream-toolbar__search {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1 1 280px;
+    min-width: 220px;
+    height: 28px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    background: var(--cr-bg-2);
+    border: none;
+    border-radius: 6px;
+    color: var(--cr-ink-3);
+    transition: background 120ms ease, color 120ms ease;
+}
+
+.blast-stream-toolbar__search:focus-within {
+    background: var(--cr-bg-3);
+    color: var(--cr-ink-0);
+}
+
+.blast-stream-toolbar__search svg {
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+
+.blast-stream-toolbar__search input {
+    background: transparent;
+    border: 0;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-family: inherit;
+    width: 100%;
+    padding: 0;
+    line-height: 1;
+}
+
+.blast-stream-toolbar__search input::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.7;
+}
+
+/* Hide the browser-native clear button so the input chrome stays neutral */
+.blast-stream-toolbar__search input::-webkit-search-cancel-button {
+    appearance: none;
+}
+
+.blast-stream-toolbar__dir {
+    display: inline-flex;
+    align-items: stretch;
+    height: 28px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 6px;
+    padding: 2px;
+    gap: 2px;
+}
+
+.blast-stream-toolbar__dir-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 10px;
+    border-radius: 4px;
+    background: transparent;
+    border: 0;
+    color: var(--text-tertiary);
+    font-size: var(--cr-type-caption);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.blast-stream-toolbar__dir-pill:hover {
+    color: var(--text-secondary);
+}
+
+.blast-stream-toolbar__dir-pill--active {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--text-primary);
+}
+
+.blast-stream-toolbar__dir-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    opacity: 0.55;
+}
+
+.blast-stream-toolbar__sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-tertiary);
+    font-size: 11px;
+}
+
+.blast-stream-toolbar__sort-label {
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-size: 10px;
+    opacity: 0.75;
+}
+
+.blast-stream-toolbar__sort select {
+    background-color: var(--cr-bg-2);
+    border: none;
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: var(--cr-type-caption);
+    font-family: inherit;
+    height: 28px;
+    box-sizing: border-box;
+    padding: 0 26px 0 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    /* Reset native chrome so the dropdown matches the search/dir borders */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10' fill='none'%3E%3Cpath d='M2.5 4l2.5 2.5L7.5 4' stroke='%23a1a1aa' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 10px 10px;
+}
+
+.blast-stream-toolbar__sort select:hover {
+    background-color: var(--cr-bg-3);
+}
+
+.blast-stream-toolbar__sort select:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* Second toolbar row — kind filter chips on the left, row counter on
+   the right (via `margin-left: auto` on the counter). The row always
+   renders so the counter has a home even when there are no kind chips
+   to show. */
+.blast-stream-toolbar__row2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.blast-stream-toolbar__row2 .blast-filter-bar {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Row counter (right-aligned on the second toolbar row).
+   Format: `N` (no active filter) or `N of M` (filter narrows the stream).
+   Monospace numbers so the readout stays steady as filters change. */
+.blast-stream-toolbar__count {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.01em;
+    flex-shrink: 0;
+    user-select: none;
+    cursor: default;
+}
+
+.blast-stream-toolbar__count--filtered .blast-stream-toolbar__count-num:first-child {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.blast-stream-toolbar__count-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+}
+
+.blast-stream-toolbar__count-sep {
+    font-size: 10px;
+    opacity: 0.55;
+    text-transform: lowercase;
+}
+
+/* ── List ─────────────────────────────────────────────────────────────── */
+.blast-stream-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ── Row (v3.2: 7-column grid, rels inline in identity) ─────────────────
+   The meta-strip chips line up vertically across rows. Rels live INSIDE
+   the identity slot (right after the name), full-text variant — Linear-
+   style labels read better there than in a fixed slot. Layout:
+     [dir 36px] [identity 1fr] [team 132px]
+     [tech 100px] [quality 14px] [count 40px] [T2 26px]
+*/
+.blast-stream-row {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) 132px 100px 14px 40px 26px;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 12px;
+    background: var(--bg-card, rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.blast-stream-row:hover {
+    background: var(--cr-bg-3);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.blast-stream-row:focus-visible {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Cell 1: direction pill (IN/OUT) ───────────────────────────────────── */
+.blast-stream-row__dir {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border: 1px solid;
+    flex-shrink: 0;
+    user-select: none;
+    cursor: default;
+}
+
+/* OUT = downstream / impact — purple, matches the legacy banner accent */
+.blast-stream-row__dir--out {
+    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.10);
+    border-color: rgba(167, 139, 250, 0.28);
+}
+
+/* IN = upstream / dependency — teal, matches the legacy banner accent */
+.blast-stream-row__dir--in {
+    color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.10);
+    border-color: rgba(45, 212, 191, 0.28);
+}
+
+/* ── Cell 2: identity (kind-icon + method + name) ──────────────────────── */
+.blast-stream-row__identity {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.blast-stream-row__name {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    min-width: 0;
+    letter-spacing: 0;
+}
+
+.blast-stream-row__name:hover {
+    color: var(--accent, var(--cr-signal));
+}
+
+.blast-stream-row__name--api {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-caption);
+}
+
+/* ── Cells 3-7: fixed-width meta slots ────────────────────────────────────
+   Each is an inline-flex container that holds at most one chip (or stays
+   empty so its grid column reserves space). Children inherit the column
+   width from the grid template above; the slot itself does not lock the
+   width — that way an over-long chip can compete with siblings in the
+   same column rather than overflow horizontally. */
+.blast-stream-row__team-slot,
+.blast-stream-row__tech-slot,
+.blast-stream-row__quality-slot,
+.blast-stream-row__count-slot,
+.blast-stream-row__t2-slot {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    color: var(--text-tertiary);
+}
+
+/* Quality and T2 cells centre their single chip in the reserved column */
+.blast-stream-row__quality-slot,
+.blast-stream-row__t2-slot,
+.blast-stream-row__count-slot {
+    justify-content: center;
+}
+
+/* ── Inline rels (inside identity slot, after the name) ─────────────────
+   Variable width; `flex-shrink: 0` keeps them legible while the name
+   truncates first on narrow rows. Capped at MAX_VISIBLE_RELS in JS; the
+   `+N` overflow chip surfaces the remainder in a tooltip. */
+.blast-stream-row__rels {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.blast-stream-row__rels-overflow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    opacity: 0.7;
+    padding: 0 3px;
+    cursor: default;
+}
+
+/* ── Cell 3: team (icon + name, truncates) ───────────────────────────── */
+.blast-stream-row__team {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    letter-spacing: 0;
+    cursor: default;
+    user-select: none;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.blast-stream-row__team-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* ── Cell 6: count chip (λN or ×N) ───────────────────────────────────── */
+.blast-stream-row__fn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+}
+
+.blast-stream-row__fn-icon {
+    font-size: 10.5px;
+    opacity: 0.7;
+}
+
+/* T2 row: amber-tinted left edge for at-a-glance transitive hint */
+.blast-stream-row--t2 {
+    border-left: 2px solid rgba(250, 204, 21, 0.4);
+}
+
+/* ── Empty state ──────────────────────────────────────────────────────── */
+/* The stream empty/no-match states use the shared <EmptyState> component. */
+
+/* ── Responsive: collapse meta cells below identity at narrow widths ──
+   At <720px we drop the strict 7-column grid in favour of a wrapping
+   flex flow so chips fall onto a second line instead of horizontally
+   scrolling. The fixed-column alignment is lost on mobile but every
+   cell remains visible. */
+@media (max-width: 720px) {
+    .blast-stream-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 10px;
+        padding: 8px 12px;
+        min-height: unset;
+    }
+
+    .blast-stream-row__identity {
+        flex: 1 1 220px;
+        min-width: 0;
+    }
+
+    .blast-stream-row__team-slot,
+    .blast-stream-row__tech-slot,
+    .blast-stream-row__quality-slot,
+    .blast-stream-row__count-slot,
+    .blast-stream-row__t2-slot {
+        flex: 0 0 auto;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Blast Explorer — full-bleed workspace overrides
+   Keeps graph internals untouched; only the page chrome changes.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.blast-explorer--active {
+    flex: 1 1 0;
+    min-height: 0;
+    background: #0a0b0f;
+    border-inline: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.blast-explorer__content-row {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.blast-explorer--sidebar .blast-explorer__content-row {
+    flex-direction: row;
+}
+
+.blast-explorer--sidebar {
+    flex-direction: column;
+}
+
+.blast-explorer__main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.blast-explorer__sidebar-portal {
+    display: none;
+}
+
+.blast-explorer--sidebar .blast-explorer__sidebar-portal {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.blast-explorer--active .blast-target-banner {
+    margin: 0;
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--cr-line-0);
+    border-radius: 0;
+    background: var(--cr-bg-strip);
+    box-shadow: none;
+    overflow: visible;
+}
+
+.blast-explorer--active .blast-target-banner__inner {
+    min-width: 0;
+}
+
+.blast-explorer--active .blast-target-banner__top {
+    align-items: center;
+    padding: 14px 16px 8px;
+    gap: 14px;
+}
+
+.blast-explorer--active .blast-target-banner__name {
+    font-size: 16px;
+    gap: 8px;
+    letter-spacing: -0.005em;
+}
+
+.blast-explorer--active .blast-target-banner__name .node-type-icon {
+    color: var(--blast-target-color, var(--accent));
+}
+
+.blast-target-banner__urn-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.blast-explorer--active .blast-target-banner__urn {
+    max-width: min(56vw, 720px);
+}
+
+.blast-target-banner__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.blast-target-banner__copy {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--text-tertiary);
+    opacity: 0.48;
+    cursor: pointer;
+    transition: opacity 0.12s ease, color 0.12s ease, background 0.12s ease;
+    flex-shrink: 0;
+}
+
+.blast-target-banner__copy:hover {
+    opacity: 1;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.blast-explorer--active .blast-target-banner__meta {
+    gap: 14px;
+}
+
+.blast-explorer--active .blast-target-banner__top-right {
+    align-items: center;
+}
+
+.blast-explorer--active .blast-banner-body {
+    padding: 0 16px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 18px;
+}
+
+.blast-explorer--active .blast-banner-body__stats {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.blast-explorer--active .blast-banner-body__stat-block {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.blast-explorer--active .blast-banner-body__stat-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+}
+
+.blast-explorer--active .blast-banner-body__stat-num {
+    font-size: 16px;
+}
+
+.blast-explorer--active .blast-banner-body__bar-row {
+    min-width: 180px;
+    flex: 1 1 180px;
+}
+
+.blast-explorer--active .blast-target-banner__teams-strip {
+    padding: 7px 16px 10px;
+    background: transparent;
+}
+
+.blast-explorer--active .igv-shell {
+    min-height: 0;
+}
+
+.blast-statusbar {
+    position: sticky;
+    bottom: 0;
+    z-index: 16;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 0 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(12, 13, 17, 0.96);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.blast-statusbar__group {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.blast-statusbar__sep {
+    color: rgba(255, 255, 255, 0.18);
+}
+
+.blast-statusbar__ok {
+    color: #46A758;
+}
+
+.blast-statusbar kbd {
+    min-width: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 18px;
+    padding: 0 5px;
+    margin-right: 4px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+    font: inherit;
+    letter-spacing: 0;
+}
+
+@media (max-width: 1023px) {
+    .blast-explorer--active {
+        width: calc(100% + 32px);
+        margin-inline: -16px;
+    }
+
+    .blast-explorer--active .blast-target-banner__top,
+    .blast-explorer--active .blast-banner-body,
+    .blast-explorer--active .blast-target-banner__teams-strip {
+        padding-inline: 16px;
+    }
+
+    .blast-explorer--active .blast-banner-body {
+        grid-template-columns: 1fr;
+    }
+
+    .blast-statusbar {
+        padding-inline: 16px;
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+}
+
+/* Quiet Operator target header: compact two-row strip. */
+.blast-explorer--active .blast-target-banner {
+    min-height: 72px;
+    background: var(--cr-bg-strip);
+}
+
+.blast-explorer--active .blast-target-banner__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    padding: 9px 16px 4px;
+    gap: 14px;
+    flex-wrap: nowrap;
+}
+
+.blast-target-banner__identity {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+}
+
+.blast-explorer--active .blast-target-banner__name {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1;
+    min-width: 0;
+    flex: 0 1 auto;
+}
+
+.blast-explorer--active .blast-target-banner__name .node-type-icon {
+    margin-top: 0;
+    width: 16px;
+    height: 16px;
+    align-self: center;
+}
+
+.blast-tier-lockup--inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    flex: 0 0 auto;
+    align-self: center;
+    padding-top: 0;
+    height: 20px;
+}
+
+.blast-tier-lockup__inline-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+}
+
+.blast-tier-lockup--inline .cr-tier-glyph-badge {
+    transform: none;
+    height: 20px;
+    min-height: 20px;
+    font-size: 10px;
+    line-height: 1;
+    align-items: center;
+}
+
+.blast-target-banner__urn-row {
+    justify-self: auto;
+    flex: 1 1 auto;
+    max-width: min(36vw, 560px);
+}
+
+.blast-explorer--active .blast-target-banner__urn {
+    max-width: none;
+    font-size: 11px;
+    line-height: 1;
+    opacity: 0.62;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.blast-target-banner__copy--text {
+    width: auto;
+    min-width: 0;
+    gap: 5px;
+    padding: 0 4px;
+    color: var(--cr-ink-2);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
+}
+
+.blast-explorer--active .blast-target-banner__operator-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(500px, auto);
+    align-items: center;
+    gap: 18px;
+    padding: 0 16px 9px;
+    min-width: 0;
+}
+
+.blast-explorer--active .blast-target-banner__operator-row .blast-banner-body:first-child {
+    grid-column: 1 / -1;
+}
+
+.blast-target-banner__context {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.blast-explorer--active .blast-target-banner__meta {
+    margin: 0;
+    gap: 8px 14px;
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.blast-explorer--active .blast-meta-item,
+.blast-explorer--active .blast-meta-link {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+}
+
+.blast-target-banner__tier-note {
+    display: none;
+}
+
+.blast-target-banner__tier-glyph {
+    flex: 0 0 auto;
+    display: inline-block;
+    color: var(--blast-tier-note-color);
+}
+
+.blast-target-banner__tier-glyph--seismic {
+    width: 0;
+    height: 0;
+    border-left: 3.5px solid transparent;
+    border-right: 3.5px solid transparent;
+    border-bottom: 7px solid currentColor;
+    transform: translateY(-1px);
+}
+
+.blast-target-banner__tier-glyph--critical {
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+}
+
+.blast-target-banner__tier-glyph--high,
+.blast-target-banner__tier-glyph--contained {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: currentColor;
+}
+
+.blast-target-banner__tier-glyph--moderate,
+.blast-target-banner__tier-glyph--unverified {
+    width: 8px;
+    height: 2px;
+    background: currentColor;
+}
+
+.blast-target-banner__tier-note--seismic {
+    --blast-tier-note-color: var(--cr-danger);
+}
+
+.blast-target-banner__tier-note--critical {
+    --blast-tier-note-color: var(--cr-warn);
+}
+
+.blast-target-banner__tier-note--high {
+    --blast-tier-note-color: var(--cr-ink-1);
+}
+
+.blast-target-banner__tier-note--unverified {
+    --blast-tier-note-color: var(--tier-unverified);
+}
+
+.blast-explorer--active .blast-banner-body {
+    padding: 0;
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: center;
+    justify-content: end;
+    gap: 16px;
+    min-width: 0;
+}
+
+.blast-explorer--active .blast-banner-body__stats {
+    gap: 14px;
+    flex-wrap: nowrap;
+    margin: 0;
+    min-width: 0;
+}
+
+.blast-explorer--active .blast-banner-body__stat-block {
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    align-items: baseline;
+    gap: 7px;
+}
+
+.blast-explorer--active .blast-banner-body__stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.11em;
+}
+
+.blast-explorer--active .blast-banner-body__stat-num {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.blast-explorer--active .blast-banner-body__bar-row {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    min-width: 0;
+    padding-left: 18px;
+    border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.blast-explorer--active .blast-banner-body__bar.cr-barred-progress {
+    --cr-barred-width: 5px;
+    --cr-barred-height: 14px;
+    --cr-barred-gap: 3px;
+    justify-content: flex-end;
+}
+
+.blast-explorer--active .blast-banner-body__bar .cr-barred-progress__track {
+    width: 100%;
+    justify-content: end;
+}
+
+.blast-banner-body__blast-score {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
+    flex: 0 0 auto;
+    color: var(--cr-ink-0);
+    font-family: var(--font-mono);
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.blast-banner-body__blast-value {
+    font-size: 20px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.blast-banner-body__blast-label {
+    color: var(--cr-ink-3);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 1023px) {
+    .blast-explorer--active .blast-target-banner {
+        min-height: 0;
+    }
+
+    .blast-explorer--active .blast-target-banner__top {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 10px 16px 5px;
+    }
+
+    .blast-target-banner__identity {
+        gap: 9px;
+        flex-wrap: wrap;
+    }
+
+    .blast-explorer--active .blast-target-banner__name {
+        font-size: 18px;
+    }
+
+    .blast-target-banner__urn-row {
+        justify-self: stretch;
+        max-width: 100%;
+        flex-basis: 100%;
+    }
+
+    .blast-explorer--active .blast-target-banner__operator-row {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 16px 10px;
+        overflow-x: auto;
+    }
+
+    .blast-explorer--active .blast-target-banner__meta {
+        flex: 0 0 auto;
+        max-width: 70vw;
+    }
+
+    .blast-target-banner__context {
+        flex: 0 0 auto;
+        max-width: 70vw;
+    }
+
+    .blast-explorer--active .blast-banner-body {
+        flex: 0 0 auto;
+        min-width: 680px;
+        grid-template-columns: max-content max-content;
+    }
+}
+
+@media (max-width: 640px) {
+    .blast-target-banner__urn-row {
+        display: none;
+    }
+
+    .blast-explorer--active .blast-target-banner__top-right {
+        display: none;
+    }
+
+    .blast-explorer--active .blast-target-banner__operator-row {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+        overflow-x: visible;
+    }
+
+    .blast-explorer--active .blast-target-banner__meta {
+        max-width: 100%;
+    }
+
+    .blast-target-banner__context {
+        max-width: 100%;
+        gap: 7px;
+    }
+
+    .blast-explorer--active .blast-banner-body {
+        min-width: 0;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .blast-explorer--active .blast-banner-body__stats {
+        overflow-x: auto;
+        gap: 12px;
+    }
+
+    .blast-explorer--active .blast-banner-body__bar-row {
+        justify-content: flex-start;
+        padding-left: 0;
+        border-left: 0;
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Node Popover — click-anchored detail card on graph nodes
+   ═══════════════════════════════════════════════════════════════════════ */
+@keyframes cr-popover-in-right {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes cr-popover-in-left {
+    from { opacity: 0; transform: translateX(6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    @keyframes cr-popover-in-right { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes cr-popover-in-left  { from { opacity: 0; } to { opacity: 1; } }
+}
+
+.cr-popover {
+    position: fixed;
+    z-index: 9990;
+    background: var(--cr-bg-1);
+    border-radius: 8px;
+    font-family: var(--font-sans);
+    color: var(--cr-ink-0);
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto;
+    isolation: isolate;
+    filter:
+        drop-shadow(0 0 0.5px color-mix(in srgb, var(--cr-ink-0) 9%, transparent))
+        drop-shadow(0 0 0.5px color-mix(in srgb, var(--cr-ink-0) 6%, transparent))
+        drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));
+}
+
+.cr-popover[data-side="right"] { animation: cr-popover-in-right 180ms cubic-bezier(0.16,1,0.3,1) both; }
+.cr-popover[data-side="left"]  { animation: cr-popover-in-left  180ms cubic-bezier(0.16,1,0.3,1) both; }
+
+/* ── Arrow ───────────────────────────────────────────────────────────── */
+.cr-popover__arrow {
+    position: absolute;
+    pointer-events: none;
+}
+
+.cr-popover__arrow polygon {
+    fill: var(--cr-bg-1);
+    transition: fill 120ms;
+}
+
+.cr-popover:has(.cr-resource-row:hover) .cr-popover__arrow polygon {
+    fill: var(--cr-bg-3);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────── */
+.cr-popover__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+}
+
+.cr-popover__node-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.cr-popover__title {
+    font-size: 14px;
+    font-weight: var(--cr-weight-medium);
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    cursor: default;
+}
+
+.cr-popover__title-wrap {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    overflow: hidden;
+    cursor: default;
+}
+
+.cr-popover__header-btn {
+    background: transparent;
+    border: none;
+    color: var(--cr-ink-2);
+    cursor: pointer;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    position: relative;
+    flex-shrink: 0;
+    transition: color 120ms ease, background 120ms ease;
+}
+.cr-popover__header-btn:first-of-type {
+    margin-left: auto;
+}
+
+.cr-popover__header-btn:hover {
+    color: var(--cr-ink-0);
+    background: color-mix(in srgb, var(--cr-ink-0) 6%, transparent);
+}
+
+.cr-popover__header-btn:focus-visible {
+    outline: 2px solid var(--cr-signal);
+    outline-offset: 1px;
+}
+
+.cr-popover__header-btn::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+}
+
+.cr-popover__close-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.cr-popover__tip-trigger {
+    display: inline-flex;
+    align-items: center;
+}
+
+.cr-popover__urn-tip {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    line-height: 1.4;
+}
+
+/* ── Body (scrollable middle) ────────────────────────────────────────── */
+.cr-popover__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Divider ─────────────────────────────────────────────────────────── */
+.cr-popover__divider {
+    height: 1px;
+    background: var(--cr-line-0);
+    margin: 0;
+}
+
+/* ── Status section (tier + quality) ─────────────────────────────────── */
+.cr-popover__status {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px;
+    gap: 8px;
+}
+
+.cr-popover__status-row {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.cr-popover__status-tier-label {
+    font-size: var(--cr-type-micro);
+    color: var(--cr-ink-2);
+    line-height: 1;
+}
+
+.cr-popover__quality-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.cr-popover__review-flag {
+    font-size: var(--cr-type-micro);
+    color: var(--cr-warn);
+    cursor: default;
+}
+
+/* ── Cluster header ──────────────────────────────────────────────────── */
+.cr-popover__cluster-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cr-popover__cluster-title {
+    font-size: var(--cr-type-micro);
+    font-weight: var(--cr-weight-semibold);
+    color: var(--cr-ink-0);
+}
+
+.cr-popover__cluster-sub {
+    font-size: var(--cr-type-micro);
+    color: var(--cr-ink-2);
+}
+
+/* ── Relationship row ────────────────────────────────────────────────── */
+.cr-popover__rel-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+}
+
+.cr-popover__rel-value {
+    flex: 1;
+    min-width: 0;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── Metadata grid ───────────────────────────────────────────────────── */
+.cr-popover__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 14px;
+}
+
+.cr-popover__meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cr-popover__meta-key {
+    color: var(--cr-ink-2);
+    font-size: var(--cr-type-micro);
+    min-width: 86px;
+}
+
+.cr-popover__meta-val {
+    color: var(--cr-ink-1);
+    font-size: var(--cr-type-micro);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cr-popover__meta-val .drawer-link { color: inherit; opacity: 1; }
+.cr-popover__meta-val .drawer-link:hover { color: var(--cr-signal); }
+.cr-popover__meta-val--mono { font-family: var(--font-mono); }
+
+/* ── T2 transitive path ──────────────────────────────────────────────── */
+.cr-popover__path {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    font-size: var(--cr-type-caption);
+    color: var(--cr-ink-1);
+    min-width: 0;
+}
+
+.cr-popover__path-icon {
+    color: var(--cr-ink-2);
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.cr-popover__path-text {
+    color: var(--cr-ink-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+}
+
+.cr-popover__path-via {
+    color: var(--cr-ink-0);
+    font-weight: var(--cr-weight-medium);
+}
+
+.cr-popover__path-count {
+    color: var(--cr-ink-2);
+    font-size: var(--cr-type-micro);
+    flex-shrink: 0;
+}
+
+/* ── Cluster members ─────────────────────────────────────────────────── */
+.cr-popover__members {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.cr-popover__members-label {
+    font-size: var(--cr-type-micro);
+    color: var(--cr-ink-2);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+    padding: 0 14px;
+}
+
+.cr-popover__members-more {
+    font-size: var(--cr-type-micro);
+    color: var(--cr-ink-2);
+    margin-top: 6px;
+    padding: 0 14px;
+}
+
+/* ── Action footer ───────────────────────────────────────────────────── */
+.cr-popover__footer {
+    display: flex;
+    flex-direction: column;
+}
+
+.cr-popover__action {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 14px;
+    gap: 10px;
+    background: transparent;
+    border: none;
+    color: var(--cr-ink-1);
+    font: inherit;
+    font-size: var(--cr-type-caption);
+    cursor: pointer;
+    text-align: left;
+    transition: background 120ms, color 120ms;
+}
+
+.cr-popover__action:hover {
+    background: var(--cr-bg-3);
+    color: var(--cr-ink-0);
+}
+
+.cr-popover__action:focus-visible {
+    outline: 2px solid var(--cr-signal);
+    outline-offset: -2px;
+    border-radius: 4px;
+}
+
+.cr-popover__action:last-child {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.cr-popover__action-icon {
+    margin-left: auto;
+    opacity: 0.7;
+}

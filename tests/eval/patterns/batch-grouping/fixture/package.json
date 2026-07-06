@@ -1,0 +1,11 @@
+{
+    "name": "@acme/orders-service",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Acme orders service (anonymised eval fixture)",
+    "dependencies": {
+        "axios": "^1.6.0",
+        "pg": "^8.11.0",
+        "amqplib": "^0.10.0"
+    }
+}

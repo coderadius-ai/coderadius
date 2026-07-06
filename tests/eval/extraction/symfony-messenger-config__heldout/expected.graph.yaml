@@ -1,0 +1,25 @@
+fixture: symfony-messenger-config__heldout
+description: >
+  Held-out variant of symfony-messenger-config with different transport and
+  message-class names (events/retry, ShipmentDispatched/NotificationSent) to
+  catch overfitting in the structural pass — the golden must track the plugin's
+  real emission, not memorized strings from the base fixture.
+target:
+  repo: acme/acme-shipping
+expected_nodes:
+  MessageChannel:
+    - "events"
+    - "retry"
+    - 'Acme\Shipping\Message\ShipmentDispatched'
+    - 'Acme\Notification\Message\NotificationSent'
+expected_edges:
+  - from: 'Acme\Shipping\Message\ShipmentDispatched'
+    rel: MANIFESTS_AS
+    to: "events"
+  - from: 'Acme\Notification\Message\NotificationSent'
+    rel: MANIFESTS_AS
+    to: "events"
+negative_patterns:
+  MessageChannel:
+    - "%"
+    - "::"

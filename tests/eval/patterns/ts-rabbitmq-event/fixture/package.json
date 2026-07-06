@@ -1,0 +1,8 @@
+{
+  "name": "ts-rabbitmq-event",
+  "version": "1.0.0",
+  "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "fp-ts": "^2.16.0"
+  }
+}

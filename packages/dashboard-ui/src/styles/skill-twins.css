@@ -1,0 +1,249 @@
+/* ── Skill Twins ─────────────────────────────────────────────────────
+   Cross-repo skill duplication view: 2D constellation + cluster cards.
+   Vercel/Linear minimal: monochrome surfaces, single accent per cluster
+   from a curated palette, generous whitespace, no decorative chrome.
+*/
+
+.cr-skilltwins {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter-lg);
+}
+
+/* ─ Constellation ────────────────────────────────────────────────── */
+.cr-constellation {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--gutter-lg);
+    position: relative;
+}
+
+.cr-constellation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.02em;
+}
+
+.cr-constellation-header strong {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.cr-constellation-svg-wrap {
+    width: 100%;
+    height: 280px;
+    position: relative;
+}
+
+.cr-constellation-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.cr-constellation-point {
+    cursor: pointer;
+    transition: r 0.15s ease, opacity 0.15s ease;
+}
+
+.cr-constellation-point.is-unclustered {
+    fill: var(--text-tertiary);
+    opacity: 0.35;
+}
+
+.cr-constellation-point.is-focused {
+    stroke: var(--text-primary);
+    stroke-width: 1.5;
+}
+
+.cr-constellation-point:hover {
+    r: 8;
+}
+
+.cr-constellation-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    font-size: var(--cr-type-caption);
+    color: var(--text-primary);
+    line-height: 1.4;
+    white-space: nowrap;
+    z-index: 5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.cr-constellation-tooltip-svc {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+}
+
+.cr-constellation-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+    font-size: var(--cr-type-caption);
+}
+
+.cr-constellation-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.12s ease;
+}
+
+.cr-constellation-legend-item.is-dimmed {
+    opacity: 0.4;
+}
+
+.cr-constellation-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ─ Cluster Cards list ───────────────────────────────────────────── */
+.cr-cluster-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter-md);
+}
+
+.cr-twin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--gutter-lg);
+    position: relative;
+    transition: border-color 0.15s ease;
+}
+
+.cr-twin-card.is-focused {
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.cr-twin-card-accent {
+    position: absolute;
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 2px;
+    border-radius: 2px;
+}
+
+.cr-twin-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 6px;
+}
+
+.cr-twin-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0;
+}
+
+.cr-twin-card-meta {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    letter-spacing: 0;
+}
+
+.cr-twin-card-sub {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 14px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.cr-twin-card-sub span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cr-twin-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.cr-twin-member {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 0;
+}
+
+.cr-twin-member-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cr-twin-member-desc {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.cr-twin-member-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 8px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+}
+
+.cr-twin-member-svc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60%;
+}
+
+.cr-twin-member-path {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.7;
+    max-width: 40%;
+    text-align: right;
+}

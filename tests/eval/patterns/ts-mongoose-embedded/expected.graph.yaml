@@ -1,0 +1,43 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — ts-mongoose-embedded
+#
+# Regression fixture: Mongoose document with an embedded subdocument defined
+# using @Schema({ _id: false }). Verifies that the pipeline:
+#   ✓ Extracts the standalone collection (validation_error_log) as DataContainer
+#   ✓ Does NOT extract the embedded subdocument (QuoteIdSubEntity) as DataContainer
+#   ✓ Does NOT generate a phantom "quote_id_sub" DataContainer from fallback naming
+#
+# Bug origin: @Schema({ _id: false }) was treated as a standalone ORM entity,
+# causing fallbackOrmName to create `quote_id_sub` DataContainer.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: ts-mongoose-embedded
+description: "Mongoose embedded subdocument must not create phantom DataContainers"
+
+expected_nodes:
+  Function:
+    - logValidationError
+    - findRecentErrors
+
+  DataContainer:
+    - validation_error_log
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEGATIVE: embedded subdocument class names and fallback snake_case must NOT
+# appear as DataContainers
+# ═══════════════════════════════════════════════════════════════════════════════
+
+negative_nodes:
+  DataContainer:
+    - quote_id_sub
+    - QuoteIdSubEntity
+    - QuoteIdSub
+    - ValidationErrorLogEntity
+    - errorLogModel
+
+negative_patterns:
+  DataContainer:
+    # PascalCase class names — code identifiers, not collection names
+    - "^[A-Z][a-z]+([A-Z][a-z]+){1,}$"
+    # DI tokens
+    - "Model$"

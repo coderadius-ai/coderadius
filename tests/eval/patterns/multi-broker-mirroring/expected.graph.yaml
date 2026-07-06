@@ -1,0 +1,26 @@
+fixture: multi-broker-mirroring
+description: |
+    Strict broker isolation + customer-declared mirror.
+
+    Two physically distinct RabbitMQ clusters (eu/us) host an exchange of the
+    same name (`acme.orders`). Without an explicit channelAliases declaration,
+    the welder MUST NOT merge them. With the declaration, a single
+    LogicalChannel (`OrderCreated`) MANIFESTS_AS both physicals while the
+    physicals themselves remain distinct nodes.
+
+expected_nodes:
+    MessageBroker:
+        - rmq-eu
+        - rmq-us
+    MessageChannel:
+        - OrderCreated
+        - acme.orders@rmq-eu
+        - acme.orders@rmq-us
+
+expected_edges:
+    - from: OrderCreated
+      rel: MANIFESTS_AS
+      to: acme.orders@rmq-eu
+    - from: OrderCreated
+      rel: MANIFESTS_AS
+      to: acme.orders@rmq-us

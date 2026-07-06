@@ -1,0 +1,34 @@
+fixture: koa__heldout
+description: >
+  Held-out Koa (TS) generalization fixture — DIFFERENT routes from koa/ to prove
+  the TS programmatic route extractor generalizes rather than memorizes. Uses a
+  distinct resource (shipments), a custom param name (:trackingId → {trackingId},
+  NOT a hardcoded {id}/{param}), a param in the MIDDLE of a nested path, and a
+  different entry filename (app.ts). Grounded in the endpoints Koa actually
+  exposes. Handlers are sink-free → zero LLM calls, fully deterministic.
+target:
+  repo: acme/acme-shipping
+expected_nodes:
+  APIEndpoint:
+    - "GET /shipments"
+    - "POST /shipments"
+    - "GET /shipments/{trackingId}"
+    - "PUT /shipments/{trackingId}/status"
+expected_edges:
+  - from_service: acme-shipping
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /shipments"
+  - from_service: acme-shipping
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /shipments"
+  - from_service: acme-shipping
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /shipments/{trackingId}"
+  - from_service: acme-shipping
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /shipments/{trackingId}/status"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

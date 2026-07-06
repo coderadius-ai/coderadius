@@ -1,0 +1,5 @@
+{
+  "name": "@acme/orders-monorepo",
+  "private": true,
+  "workspaces": ["apps/*"]
+}

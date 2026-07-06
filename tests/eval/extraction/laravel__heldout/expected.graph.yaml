@@ -1,0 +1,59 @@
+fixture: laravel__heldout
+description: >
+  Held-out Laravel (PHP) payments service — DIFFERENT routes from the primary
+  laravel fixture to test generalization, not memorization. Exercises the full
+  direct-verb set (post/get/put/delete/patch) including a nested-path patch
+  (/payments/{id}/capture) plus a Route::apiResource('shipments', ...) 5-endpoint
+  expansion. Same grounding rules: apiResource → index/store/show/update/destroy
+  (no create/edit views); path params canonicalize to {id}. Controllers are
+  sink-free (return arrays) so extraction is deterministic and LLM-free.
+target:
+  repo: acme/acme-payment
+expected_nodes:
+  APIEndpoint:
+    - "POST /payments"
+    - "GET /payments/{id}"
+    - "PUT /payments/{id}"
+    - "DELETE /payments/{id}"
+    - "PATCH /payments/{id}/capture"
+    - "GET /shipments"
+    - "POST /shipments"
+    - "GET /shipments/{id}"
+    - "PUT /shipments/{id}"
+    - "DELETE /shipments/{id}"
+expected_edges:
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /payments"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /payments/{id}"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /payments/{id}"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /payments/{id}"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PATCH /payments/{id}/capture"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /shipments"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /shipments"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /shipments/{id}"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /shipments/{id}"
+  - from_service: acme-payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /shipments/{id}"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

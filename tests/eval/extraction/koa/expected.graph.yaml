@@ -1,0 +1,39 @@
+fixture: koa
+description: >
+  Anonymized Koa (TS) order service using @koa/router shorthand route methods
+  (router.get/post/patch/delete('/path', handler)). The golden is grounded in
+  the endpoints Koa actually exposes — NOT in current analyzer output. Koa
+  programmatic routing shares the Express/Fastify shorthand call shape, so the
+  framework-agnostic TS programmatic route extractor must detect router.<method>
+  → APIEndpoint (canonical path form: lossless preserves the param name, :id →
+  {id}). Handlers are sink-free → zero LLM calls, fully deterministic.
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders"
+    - "GET /orders/{id}"
+    - "POST /orders"
+    - "PATCH /orders/{id}"
+    - "DELETE /orders/{id}"
+expected_edges:
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PATCH /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /orders/{id}"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

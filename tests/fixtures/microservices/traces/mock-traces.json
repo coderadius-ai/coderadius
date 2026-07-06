@@ -1,0 +1,110 @@
+[
+    {
+        "spanId": "span-001",
+        "traceId": "trace-abc-001",
+        "operationName": "POST /api/orders",
+        "serviceName": "order-service",
+        "latency_ms": 145,
+        "status": "OK",
+        "attributes": {
+            "http.method": "POST",
+            "http.url": "/api/orders",
+            "http.status_code": 201
+        }
+    },
+    {
+        "spanId": "span-002",
+        "traceId": "trace-abc-001",
+        "operationName": "queue.publish order.created",
+        "serviceName": "order-service",
+        "parentSpanId": "span-001",
+        "latency_ms": 12,
+        "status": "OK",
+        "attributes": {
+            "messaging.system": "rabbitmq",
+            "messaging.destination": "orders",
+            "messaging.operation": "publish"
+        }
+    },
+    {
+        "spanId": "span-003",
+        "traceId": "trace-abc-001",
+        "operationName": "pg.query INSERT orders",
+        "serviceName": "order-service",
+        "parentSpanId": "span-001",
+        "latency_ms": 23,
+        "status": "OK",
+        "attributes": {
+            "db.system": "postgresql",
+            "db.operation": "INSERT",
+            "db.statement": "INSERT INTO orders ..."
+        }
+    },
+    {
+        "spanId": "span-004",
+        "traceId": "trace-abc-002",
+        "operationName": "POST /api/payments",
+        "serviceName": "order-service",
+        "latency_ms": 320,
+        "status": "OK",
+        "attributes": {
+            "http.method": "POST",
+            "http.url": "http://payment-service:3001/api/payments",
+            "http.status_code": 200,
+            "peer.service": "payment-service"
+        }
+    },
+    {
+        "spanId": "span-005",
+        "traceId": "trace-def-001",
+        "operationName": "mysql.query SELECT risk_factors",
+        "serviceName": "loyalty-service",
+        "latency_ms": 18,
+        "status": "OK",
+        "attributes": {
+            "db.system": "mysql",
+            "db.operation": "SELECT",
+            "db.statement": "SELECT base_rate, risk_multiplier FROM risk_factors WHERE ..."
+        }
+    },
+    {
+        "spanId": "span-006",
+        "traceId": "trace-def-001",
+        "operationName": "HTTP POST payment-gateway charge",
+        "serviceName": "loyalty-service",
+        "latency_ms": 450,
+        "status": "OK",
+        "attributes": {
+            "http.method": "POST",
+            "http.url": "https://gateway.payments.example.com/api/v1/charge",
+            "http.status_code": 200
+        }
+    },
+    {
+        "spanId": "span-007",
+        "traceId": "trace-def-002",
+        "operationName": "queue.publish loyalty.created",
+        "serviceName": "loyalty-service",
+        "latency_ms": 8,
+        "status": "OK",
+        "attributes": {
+            "messaging.system": "rabbitmq",
+            "messaging.destination": "loyalty_events",
+            "messaging.operation": "publish"
+        }
+    },
+    {
+        "spanId": "span-008",
+        "traceId": "trace-ghi-001",
+        "operationName": "GET /api/orders/:id",
+        "serviceName": "order-service",
+        "latency_ms": 890,
+        "status": "ERROR",
+        "attributes": {
+            "http.method": "GET",
+            "http.url": "/api/orders/99999",
+            "http.status_code": 500,
+            "error.message": "Connection pool exhausted"
+        }
+    }
+]

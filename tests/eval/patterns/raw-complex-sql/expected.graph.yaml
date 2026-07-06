@@ -1,0 +1,9 @@
+fixture: "raw-complex-sql"
+description: "Raw Complex SQL (Language-Agnostic)"
+expected_nodes:
+  DataContainer:
+    - "users"
+    - "orders_archive"
+    - "audit_log"
+negative_nodes: {}
+negative_patterns: {}

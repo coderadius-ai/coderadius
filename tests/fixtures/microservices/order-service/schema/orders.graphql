@@ -1,0 +1,43 @@
+# GraphQL SDL — Order Service
+# 5 root fields: 2 Query + 2 Mutation + 1 Subscription
+
+type Query {
+  order(id: ID!): Order
+  orders(filter: OrderFilter): [Order!]!
+}
+
+type Mutation {
+  createOrder(input: CreateOrderInput!): Order!
+  cancelOrder(id: ID!): Boolean!
+}
+
+type Subscription {
+  orderUpdated(id: ID!): Order!
+}
+
+type Order {
+  id: ID!
+  status: String!
+  items: [OrderItem!]!
+}
+
+type OrderItem {
+  productId: ID!
+  quantity: Int!
+  price: Float!
+}
+
+input CreateOrderInput {
+  status: String!
+  items: [OrderItemInput!]!
+}
+
+input OrderItemInput {
+  productId: ID!
+  quantity: Int!
+}
+
+input OrderFilter {
+  status: String
+  customerId: ID
+}

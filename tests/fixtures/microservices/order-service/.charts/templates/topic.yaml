@@ -1,0 +1,7 @@
+apiVersion: pubsub.acme.io/v1alpha1
+kind: AcmePubSubTopicClaim
+metadata:
+  name: {{ $.Release.Name }}-{{ $.Values.global.configuration.TOPIC_NAME | lower }}
+spec:
+  projectId: {{ $.Values.global.configuration.GOOGLE_CLOUD_PROJECT }}
+  topicId: {{ $.Values.global.configuration.TOPIC_NAME }}

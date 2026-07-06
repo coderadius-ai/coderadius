@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: conduit-relay-service
+  description: Message dispatching via outbox pattern and channel consumers
+spec:
+  type: service
+  lifecycle: production
+  owner: team-checkout
+  system: ecommerce-platform
+  dependsOn:
+    - resource:rabbitmq
+    - resource:mongodb
+    - resource:google-pubsub

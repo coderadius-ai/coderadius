@@ -1,0 +1,5 @@
+{
+    "name": "acme/inventory-service",
+    "require": { "php": "^8.1", "symfony/framework-bundle": "^6.4" },
+    "autoload": { "psr-4": { "Acme\\Inventory\\": "src/" } }
+}

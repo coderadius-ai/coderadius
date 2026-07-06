@@ -1,0 +1,22 @@
+fixture: typeorm__heldout
+description: >
+  Held-out ORM check using Drizzle (not TypeORM) — a generalization test. Drizzle
+  declares tables with the pgTable('name', {...}) builder, a completely different
+  syntax from TypeORM's @Entity decorator. Golden grounded in Drizzle semantics:
+  each pgTable call maps a table (shipments, carriers). Proves the static
+  ::__class_metadata entity path handles builder-style ORMs, not just decorators.
+  Column-level fields aren't asserted — Drizzle's builder column syntax is a
+  documented non-goal of the @Column-based field parser. Static, zero LLM.
+target:
+  repo: acme/acme-shipping
+expected_nodes:
+  DataContainer:
+    - "shipments"
+    - "carriers"
+  DataStructure:
+    - "shipments"
+    - "carriers"
+negative_nodes:
+  DataContainer:
+    - "shipments_table"
+    - "schema"

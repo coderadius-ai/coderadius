@@ -1,0 +1,22 @@
+fixture: doctrine__heldout
+description: >
+  Held-out Doctrine entity using DOCBLOCK annotations (/** @ORM\Entity */) rather
+  than PHP 8 attributes — a generalization check. Different resource (products),
+  different columns, different declaration syntax, same Doctrine mapper. Golden
+  grounded in Doctrine semantics: table from @ORM\Table(name=...), columns from
+  @ORM\Column. Proves the static entity path is not overfit to attribute syntax.
+  Static, zero LLM.
+target:
+  repo: acme/acme-inventory
+expected_nodes:
+  DataContainer:
+    - "products"
+  DataStructure:
+    - "products"
+  DataField:
+    - "id"
+    - "sku"
+    - "stock_level"
+negative_nodes:
+  DataContainer:
+    - "Product"

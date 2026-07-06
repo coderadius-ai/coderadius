@@ -1,0 +1,7 @@
+messageBrokers:
+    - id: rmq-prod
+      provider: rabbitmq
+      host: rmq.example.com
+      port: 5672
+      vhost: /prod
+      env: prod

@@ -1,0 +1,1070 @@
+/* ── Design Tokens ─────────────────────────────────────────────────── */
+:root {
+    /* Quiet Operator core — aligned with Direction 03 mockup palette */
+    --cr-bg-0: #0F1014;
+    --cr-bg-1: #131419;
+    --cr-bg-strip: #16181D;
+    --cr-bg-2: #1B1E24;
+    --cr-bg-3: #1F232A;
+    --cr-line-0: #232830;
+    --cr-line-1: #2A3038;
+    --cr-line-dim: #1B1F26;
+    --cr-ink-0: #ECEEF1;
+    --cr-ink-1: #B5BCC4;
+    --cr-ink-2: #7A848D;
+    --cr-ink-3: #525B64;
+    --cr-ink-mute: #3C434C;
+    --cr-signal: #14B8A6;
+    --cr-danger: #F04A5C;
+    --cr-warn: #F2B445;
+    --cr-ok: #3CC58E;
+
+    /* Type scale */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', Menlo, ui-monospace, monospace;
+    --cr-type-display: 32px;
+    --cr-type-h1: 22px;
+    --cr-type-h2: 16px;
+    --cr-type-body: 14px;
+    --cr-type-caption: 12px;
+    --cr-type-micro: 10.5px;
+    --cr-weight-regular: 400;
+    --cr-weight-medium: 500;
+    --cr-weight-semibold: 600;
+
+    /* Quiet Operator chrome aliases. */
+    --bg-primary: var(--cr-bg-0);
+    --bg-surface: var(--cr-bg-1);
+    --bg-surface-hover: var(--cr-bg-3);
+    --bg-card: var(--cr-bg-2);
+    --bg-elevated: var(--cr-bg-2);
+    --bg-dim: var(--cr-bg-3);
+    --bg-surface-cyan: color-mix(in srgb, var(--cr-signal) 9%, var(--cr-bg-1));
+    --border-subtle: var(--cr-line-0);
+    --border-default: var(--cr-line-1);
+    --border-hover: color-mix(in srgb, var(--cr-line-1) 72%, var(--cr-ink-1));
+    --text-primary: var(--cr-ink-0);
+    --text-secondary: var(--cr-ink-1);
+    --text-tertiary: var(--cr-ink-2);
+    --text-quaternary: var(--cr-ink-3);
+    --accent: var(--cr-signal);
+    --accent-muted: color-mix(in srgb, var(--cr-signal) 12%, transparent);
+    --accent-border: color-mix(in srgb, var(--cr-signal) 35%, transparent);
+    --accent-glow: color-mix(in srgb, var(--cr-signal) 11%, transparent);
+    --cr-accent-color: var(--cr-signal);
+    --cr-border: var(--cr-line-1);
+    --cr-text-primary: var(--cr-ink-0);
+    --cr-text-secondary: var(--cr-ink-1);
+    --cr-text-tertiary: var(--cr-ink-2);
+    --cr-text-quaternary: var(--cr-ink-3);
+    --cr-bg-primary: var(--cr-bg-0);
+    --cr-bg-secondary: var(--cr-bg-1);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+
+    /* Spacing & Layout */
+    --sidebar-width: 216px;
+    --sidebar-collapsed-width: 58px;
+
+    /* ── Responsive layout tokens ──────────────────────────────────────
+       Datadog/Backstage-style fluid pages with intelligent caps. Reading
+       content sits in a narrow column; data dashboards grow up to a wide
+       cap; canvases (graph, lineage) stay fluid edge-to-edge. */
+
+    /* Semantic breakpoints (used in @media queries throughout the app). */
+    --bp-sm: 640px;     /* phone landscape */
+    --bp-md: 1024px;    /* tablet → narrow desktop boundary */
+    --bp-lg: 1440px;    /* standard desktop */
+    --bp-xl: 1920px;    /* wide desktop / 1440p */
+
+    /* Content-width tiers — pick exactly one per surface. */
+    --w-reading: 960px;   /* narrative + single-column copy */
+    --w-data:    1600px;  /* tables, dashboards, multi-col grids */
+    /* `fluid` is the absence of a cap — width: 100% with --page-padding-x */
+
+    /* Page horizontal padding: fixed Quiet Operator gutter. */
+    --page-padding-x: 16px;
+    --page-padding-y: 16px;
+
+    /* Section gutters. */
+    --gutter-sm: 12px;
+    --gutter-md: 16px;
+    --gutter-lg: 24px;
+
+    /* Domain semantic palette. Do not remap to Quiet Operator: graph relations,
+       taxonomy symbols, and evidence/status chips use these as vocabulary. */
+    --color-red: #f87171;
+    --color-red-bg: rgba(248, 113, 113, 0.12);
+    --color-red-border: rgba(248, 113, 113, 0.2);
+    --color-yellow: #facc15;
+    --color-yellow-bg: rgba(250, 204, 21, 0.12);
+    --color-yellow-border: rgba(250, 204, 21, 0.2);
+    --color-green: #4ade80;
+    --color-green-bg: rgba(74, 222, 128, 0.12);
+    --color-green-border: rgba(74, 222, 128, 0.2);
+    --color-cyan: #22d3ee;
+    --color-cyan-bg: rgba(34, 211, 238, 0.12);
+    --color-blue: #60a5fa;
+    --color-blue-bg: rgba(96, 165, 250, 0.12);
+    --color-magenta: #e879f9;
+    --color-magenta-bg: rgba(232, 121, 249, 0.12);
+    --color-dim: #a1a1aa;
+    --color-dim-bg: rgba(161, 161, 170, 0.1);
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+*:focus {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--cr-signal) 65%, transparent);
+    outline-offset: 2px;
+}
+
+a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+a:hover {
+    color: var(--accent);
+}
+
+body {
+    font-family: var(--font-sans);
+    font-size: var(--cr-type-body);
+    font-weight: var(--cr-weight-regular);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: none;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#app {
+    position: relative;
+    z-index: 1;
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+/* ── Page outer wrapper ─────────────────────────────────────────────
+   `.container` is the FLUID page outer — full width with responsive
+   horizontal padding. It does NOT cap the content; capping is done by
+   inner per-section tier wrappers (see below). */
+.container {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--page-padding-x);
+}
+
+/* ── Inner content tiers ────────────────────────────────────────────
+   Drop one of these on a SECTION (inside the page `.container`) to cap
+   that section to a specific width tier. They add NO padding of their
+   own — the outer `.container` already owns horizontal padding — they
+   just apply the max-width + center it. Pick the right one per surface:
+
+     .cr-cap-reading  → narrative blocks, briefings, headers, banners
+     .cr-cap-data     → tables, multi-col grids, leaderboards
+     (no class)        → fluid edge-to-edge (canvases, graph view)
+*/
+.cr-cap-reading {
+    width: 100%;
+    max-width: var(--w-reading);
+    margin-inline: auto;
+}
+
+.cr-cap-data {
+    width: 100%;
+    max-width: var(--w-data);
+    margin-inline: auto;
+}
+
+/* ── Animations ────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+        filter: blur(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+.stagger-1 {
+    animation: fadeUp 0.6s ease-out 0.1s both;
+}
+
+.stagger-2 {
+    animation: fadeUp 0.6s ease-out 0.2s both;
+}
+
+.stagger-3 {
+    animation: fadeUp 0.6s ease-out 0.3s both;
+}
+
+.stagger-4 {
+    animation: fadeUp 0.6s ease-out 0.4s both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Header ────────────────────────────────────────────────────────── */
+header {
+    padding: 0;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+/* ──  Stats subheader (legacy, kept for backward compat) ─────── */
+.cr-subheader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0 28px;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+/* ── Generic page identity strip ─────────────────────────────────── */
+/* Operator pages use cr-page-identity from registry.css (inside cr-page-shell). */
+
+.cr-subheader-subtitle {
+    font-size: var(--cr-type-body);
+    color: var(--text-secondary);
+    flex: 1;
+    min-width: 0;
+    line-height: 1.5;
+}
+
+.cr-subheader-stats {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-shrink: 0;
+}
+
+.h-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.h-stat-val {
+    font-size: var(--cr-type-h1);
+    font-weight: var(--cr-weight-semibold);
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+.h-stat-lbl {
+    font-size: var(--cr-type-micro);
+    font-weight: var(--cr-weight-semibold);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.cr-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--cr-type-caption);
+    font-weight: var(--cr-weight-semibold);
+    color: var(--text-primary);
+    letter-spacing: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.cr-logo svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* The page title inside the top bar */
+.cr-page-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+    text-align: left;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+/* h1 used elsewhere (section headings etc.) */
+h1 {
+    font-size: var(--cr-type-h1);
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: var(--cr-type-body);
+    max-width: 600px;
+}
+
+.btn-icon {
+    background: transparent;
+    color: var(--text-tertiary);
+    border: 1px solid transparent;
+    padding: 7px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.btn-icon:hover {
+    color: var(--text-primary);
+    background: var(--bg-surface-hover);
+}
+
+.btn-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+
+
+.meta {
+    font-size: var(--cr-type-micro);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    text-align: right;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--cr-type-caption);
+    font-weight: var(--cr-weight-medium);
+    color: var(--text-tertiary);
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+}
+
+.footer-logo svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.6;
+}
+
+/* ── Typography & Layout ───────────────────────────────────────────── */
+section {
+    margin-bottom: 48px;
+    width: 100%;
+}
+
+h2 {
+    font-size: var(--cr-type-h2);
+    font-weight: var(--cr-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0;
+}
+
+.text-truncate {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+.cr-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+/* ── Smart Middle Ellipsis ────────────────────────────────────────── */
+.cr-mid-ellipsis {
+    display: inline-flex;
+    white-space: nowrap;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.cr-mid-ellipsis__head {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.cr-mid-ellipsis__tail {
+    flex-shrink: 0;
+}
+
+/* ── Cell Items (semantic replacement for inline HTML consumer chips) ── */
+.cell-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.cell-item-chip {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ── Color Helpers ─────────────────────────────────────────────────── */
+.color-text-red {
+    color: var(--color-red);
+}
+
+.color-text-yellow {
+    color: var(--color-yellow);
+}
+
+.color-text-green {
+    color: var(--color-green);
+}
+
+.color-text-cyan {
+    color: var(--color-cyan);
+}
+
+.color-text-teal {
+    color: var(--accent);
+}
+
+.color-text-blue {
+    color: var(--color-blue);
+}
+
+.color-text-magenta {
+    color: var(--color-magenta);
+}
+
+.color-text-dim {
+    color: var(--color-dim);
+}
+
+.color-bg-red {
+    background-color: var(--color-red);
+}
+
+.color-bg-yellow {
+    background-color: var(--color-yellow);
+}
+
+.color-bg-green {
+    background-color: var(--color-green);
+}
+
+.color-bg-cyan {
+    background-color: var(--color-cyan);
+}
+
+.color-bg-blue {
+    background-color: var(--color-blue);
+}
+
+.color-bg-dim {
+    background-color: var(--color-dim);
+}
+
+.color-bg-magenta {
+    background-color: var(--color-magenta);
+}
+
+.color-bg-teal {
+    background-color: var(--accent);
+}
+
+.color-bg-gray {
+    background-color: var(--text-tertiary);
+}
+
+.color-stroke-red {
+    stroke: var(--color-red);
+}
+
+.color-stroke-yellow {
+    stroke: var(--color-yellow);
+}
+
+.color-stroke-green {
+    stroke: var(--color-green);
+}
+
+.color-stroke-cyan {
+    stroke: var(--color-cyan);
+}
+
+.color-stroke-blue {
+    stroke: var(--color-blue);
+}
+
+.color-stroke-magenta {
+    stroke: var(--color-magenta);
+}
+
+.color-stroke-dim {
+    stroke: var(--color-dim);
+}
+
+.color-stroke-teal {
+    stroke: var(--accent);
+}
+
+.color-stroke-gray {
+    stroke: var(--text-tertiary);
+}
+
+/* ── Layout & Responsive ─────────────────────────────────────────────── */
+.cr-app-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.cr-main-pane {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sticky header — stays visible during scroll on long pages. The surface
+   spans the viewport (continuous bottom border edge-to-edge); inner
+   content is constrained by the same `.container` rule used by the page
+   below so the title/logo/actions stay aligned with the content column. */
+.cr-header-global {
+    position: relative;
+    z-index: 50;
+    padding: 0;
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    background: color-mix(in srgb, var(--cr-bg-0) 94%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--cr-line-0);
+    box-shadow: none;
+}
+
+.cr-header-global__inner {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding-inline: 16px;
+}
+
+.cr-header-global__inner.container {
+    padding-inline: 16px;
+}
+
+.cr-header-global__inner--page {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+}
+
+.cr-header-global--blast {
+    background: color-mix(in srgb, var(--cr-bg-0) 96%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.cr-header-global__inner--blast {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+}
+
+.cr-page-title--blast {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.cr-page-title--page {
+    justify-content: flex-start;
+    text-align: left;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cr-main-blast {
+    padding-bottom: 0 !important;
+}
+
+.cr-header-global .cr-logo {
+    justify-self: start;
+}
+
+.cr-header-global .header-actions {
+    justify-self: end;
+}
+
+.cr-header-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.cr-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    margin-top: auto;
+    margin-bottom: 0;
+    border-top: 1px solid var(--border-default);
+    color: var(--text-tertiary);
+    font-size: var(--cr-type-caption);
+    width: 100%;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────── */
+.cr-sidebar {
+    position: relative;
+    width: var(--sidebar-width);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    flex-shrink: 0;
+    border-right: 1px solid var(--cr-line-0);
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--cr-bg-1);
+}
+
+.cr-sidebar-collapsed {
+    width: var(--sidebar-collapsed-width) !important;
+}
+
+.cr-sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 0 6px 0;
+}
+
+.cr-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 2px 0;
+    position: relative;
+}
+
+.cr-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    height: 36px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.cr-sidebar-collapsed .cr-sidebar-header {
+    justify-content: center;
+}
+
+.cr-sidebar-brand-main {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    height: 34px;
+    padding: 0 7px;
+    color: var(--text-primary);
+    text-decoration: none !important;
+    opacity: 0.92;
+}
+
+.cr-sidebar-brand-main:hover {
+    opacity: 1;
+}
+
+.cr-sidebar-brand-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--text-primary);
+}
+
+.cr-sidebar-brand-logo svg {
+    width: 20px;
+    height: 20px;
+}
+
+.cr-sidebar-brand-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+    font-size: 15.5px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+/* ── Toggle Button ───────────────────────────────────────────────── */
+.cr-sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    margin: 0;
+    transition: color 0.15s ease, background 0.15s ease;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.cr-sidebar-toggle:focus-visible {
+    outline-offset: -2px;
+}
+
+.cr-sidebar-toggle:hover {
+    color: var(--text-primary);
+    background: var(--bg-surface-hover);
+}
+
+.cr-sidebar-toggle__logo,
+.cr-sidebar-toggle__open {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.cr-sidebar-toggle__logo svg {
+    width: 18px;
+    height: 18px;
+}
+
+.cr-sidebar-toggle--collapsed .cr-sidebar-toggle__logo {
+    color: var(--text-primary);
+}
+
+.cr-sidebar-toggle__open {
+    opacity: 0;
+    transform: translateX(-2px);
+}
+
+.cr-sidebar-toggle--collapsed:hover .cr-sidebar-toggle__logo {
+    opacity: 0;
+    transform: scale(0.86);
+}
+
+.cr-sidebar-toggle--collapsed:hover .cr-sidebar-toggle__open {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ── Nav Items ────────────────────────────────────────────────────── */
+.cr-sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 9px;
+    height: 34px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 12.5px;
+    font-weight: var(--cr-weight-regular);
+    text-align: left;
+    white-space: nowrap;
+    position: relative;
+    width: 100%;
+    transition: color 0.12s ease, background 0.12s ease;
+}
+
+.cr-sidebar-item svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity 0.12s ease;
+}
+
+.cr-sidebar-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    letter-spacing: 0;
+    transition: opacity 0.2s ease;
+    font-size: 12.5px;
+}
+
+.cr-sidebar-item:hover {
+    color: var(--text-secondary);
+    background: var(--bg-surface-hover);
+}
+
+.cr-sidebar-item:hover svg {
+    opacity: 0.9;
+}
+
+.cr-sidebar-item.active {
+    color: var(--text-primary);
+    background: var(--bg-surface-hover);
+    font-weight: var(--cr-weight-medium);
+}
+
+.cr-sidebar-item.active svg {
+    opacity: 1;
+}
+
+.cr-sidebar-active-rail {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: var(--cr-active-rail-y, 6px);
+    width: 3px;
+    height: 22px;
+    border-radius: 0 2px 2px 0;
+    background: #a78bfa;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.cr-sidebar-item.active:hover {
+    background: var(--bg-surface-hover);
+}
+
+.cr-sidebar-item:focus-visible {
+    outline: 1px solid var(--cr-line-1);
+    outline-offset: -1px;
+}
+
+.cr-sidebar-item.disabled,
+.cr-sidebar-item[aria-disabled="true"] {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.cr-sidebar-item.disabled:hover,
+.cr-sidebar-item[aria-disabled="true"]:hover {
+    background: transparent;
+    color: var(--text-tertiary);
+}
+
+/* ── Collapsed ───────────────────────────────────────────────────── */
+.cr-sidebar-collapsed .cr-sidebar-content {
+    align-items: center;
+    overflow-x: visible;
+}
+
+.cr-sidebar-collapsed .cr-sidebar-nav {
+    align-items: center;
+    overflow: visible;
+    width: 100%;
+}
+
+.cr-sidebar-collapsed .cr-sidebar-item {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+    border-radius: 8px;
+    overflow: visible;
+}
+
+.cr-sidebar-collapsed .cr-sidebar-label {
+    display: none;
+}
+
+
+/* ── Reduced Motion ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .cr-sidebar,
+    .cr-sidebar-item,
+    .cr-sidebar-item svg,
+    .cr-sidebar-label,
+    .cr-sidebar-toggle,
+    .cr-sidebar-toggle__logo,
+    .cr-sidebar-toggle__open,
+    .cr-footer-meta {
+        transition-duration: 0ms !important;
+    }
+}
+
+/* ── Sidebar Footer ──────────────────────────────────────────────── */
+.cr-sidebar-footer {
+    margin-top: auto;
+    padding: 8px 4px 2px;
+    border-top: 1px solid var(--cr-line-0);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    min-height: 40px;
+}
+
+.cr-sidebar-collapsed .cr-sidebar-footer {
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    border-top-color: transparent;
+}
+
+.cr-footer-meta {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    letter-spacing: 0;
+    color: var(--text-tertiary);
+    opacity: 0.4;
+    white-space: nowrap;
+    transition: opacity 0.3s, height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    padding: 0 2px;
+}
+
+.cr-sidebar-collapsed .cr-footer-meta {
+    opacity: 0;
+    height: 0;
+}
+
+.cr-footer-meta-inner {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .cr-header-global {
+        padding: 0;
+    }
+
+    .cr-subheader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px 0 20px;
+    }
+
+    .cr-subheader-stats {
+        gap: 20px;
+    }
+
+    .cr-page-title {
+        font-size: 13px;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .filter-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

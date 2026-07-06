@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Acme\Inventory\:
+        resource: '../src/'
+        exclude: '../src/Tests'
+
+    acme.notification.publisher:
+        class: Acme\Inventory\Notification\NotificationPublisher

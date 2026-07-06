@@ -1,0 +1,8 @@
+framework:
+    messenger:
+        transports:
+            inventory: 'amqp://rmq.example.com:5672/prod'
+            async-doctrine: 'doctrine://default'
+        routing:
+            'Acme\Inventory\Message\OrderRequested': inventory
+            'Acme\Inventory\Message\OrderUpdated': [inventory, async-doctrine]

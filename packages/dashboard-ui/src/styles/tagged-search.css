@@ -1,0 +1,298 @@
+/* ─── TaggedSearch — Reusable prefix-scoped search ───────────────── */
+
+.tagged-search {
+    position: relative;
+    width: 100%;
+}
+
+.tagged-search__input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-elevated, #161618);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 0 12px;
+    height: 40px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.tagged-search__input-wrap:focus-within {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.03);
+}
+
+.tagged-search__icon {
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    opacity: 0.5;
+}
+
+.tagged-search__input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    letter-spacing: 0;
+}
+
+.tagged-search__input::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.6;
+}
+
+/* ── Scope Tag (intermediate: scope active, no value locked) ────── */
+
+.tagged-search__scope-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    color: var(--scope-color);
+    background: var(--scope-bg);
+    border: 1px solid var(--scope-border);
+    animation: tagged-search-tag-in 0.15s ease;
+}
+
+@keyframes tagged-search-tag-in {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tagged-search__scope-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.tagged-search__scope-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: transparent;
+    border: none;
+    color: var(--scope-color);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.1s, background 0.1s;
+}
+
+.tagged-search__scope-remove:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Compound Tag (scope + locked value in one pill) ─────────────── */
+
+.tagged-search__compound-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: var(--font-mono, 'JetBrains Mono', Menlo, ui-monospace, monospace);
+    font-size: 12px;
+    line-height: 1;
+    /* Optical baseline nudge: the 12px mono tag is center-aligned in the row next
+       to a larger 14-15px input, which seats the tag's baseline ~1px high. Drop it
+       onto the input's text baseline. Uses top (not transform) to avoid colliding
+       with the pop-in scale animation below. */
+    position: relative;
+    top: 1px;
+    animation: tagged-search-tag-in 0.15s ease;
+}
+
+.tagged-search__compound-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+}
+
+.tagged-search__compound-scope {
+    color: var(--scope-color);
+    font-weight: 500;
+}
+
+.tagged-search__compound-sep {
+    color: var(--cr-ink-3, #7A848D);
+}
+
+.tagged-search__compound-value {
+    font-weight: 600;
+    color: var(--cr-ink-0, #ECEEF1);
+}
+
+.tagged-search__compound-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    margin-left: 4px;
+    background: transparent;
+    border: none;
+    color: var(--cr-ink-3, #7A848D);
+    cursor: pointer;
+    transition: color 0.1s;
+}
+
+.tagged-search__compound-remove:hover {
+    color: var(--cr-ink-0, #ECEEF1);
+}
+
+/* ── Clear Button ──────────────────────────────────────────────────── */
+
+.tagged-search__clear {
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.tagged-search__clear--hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tagged-search__clear:hover {
+    background: var(--cr-bg-3);
+    color: var(--cr-ink-0);
+}
+
+/* ── Dropdown ──────────────────────────────────────────────────────── */
+
+.tagged-search__dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--bg-elevated, #161618);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    z-index: 100;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    animation: tagged-search-drop-in 0.12s ease;
+}
+.tagged-search__dropdown:empty { display: none; }
+
+@keyframes tagged-search-drop-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Scope Hints ───────────────────────────────────────────────────── */
+
+.tagged-search__scope-hints {
+    padding: 4px;
+}
+
+.tagged-search__scope-hints-label {
+    padding: 4px 10px 2px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+
+.tagged-search__scope-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+}
+
+.tagged-search__scope-hint:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tagged-search__scope-hint-icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.tagged-search__scope-hint-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--scope-color);
+}
+
+.tagged-search__scope-hint-key {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    margin-left: auto;
+}
+
+.tagged-search__scope-hint-kbd {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+
+.tagged-search__scope-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.04);
+    margin: 4px 0;
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .tagged-search__scope-tag,
+    .tagged-search__compound-tag,
+    .tagged-search__dropdown {
+        animation: none;
+    }
+}

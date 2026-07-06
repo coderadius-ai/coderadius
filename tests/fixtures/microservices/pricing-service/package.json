@@ -1,0 +1,9 @@
+{
+  "name": "pricing-service",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@zodios/core": "^10.9.6",
+    "zod": "^3.22.4"
+  }
+}

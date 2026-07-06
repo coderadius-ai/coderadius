@@ -1,0 +1,15 @@
+{
+  "name": "acme/metrics-writer",
+  "type": "project",
+  "require": {
+    "php": ">=8.2",
+    "symfony/runtime": "^7.0",
+    "influxdb/influxdb-php": "^1.15",
+    "doctrine/dbal": "^3.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Acme\\": "classes/Acme/"
+    }
+  }
+}

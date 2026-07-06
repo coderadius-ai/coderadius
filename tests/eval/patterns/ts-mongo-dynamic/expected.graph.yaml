@@ -1,0 +1,45 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — ts-mongo-dynamic
+#
+# Regression fixture: TypeScript service with dynamic MongoDB collection
+# names using string template (`event_${tablePrefix}`). Verifies that
+# the pipeline + database_scope wildcard expand the dynamic name into
+# concrete DataContainer nodes.
+#
+# Bug origin: Dynamic collection names were either dropped as hallucinations
+# or persisted as literal template strings (`event_${tablePrefix}`).
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: ts-mongo-dynamic
+description: "Dynamic MongoDB collection name + database_scope wildcard expansion"
+
+expected_nodes:
+  Service:
+    - ts-mongo-dynamic
+
+  Function:
+    - findEvents
+
+  Team:
+    - team-metrics
+
+expected_edges:
+  - from: ts-mongo-dynamic
+    rel: STORED_IN
+    to: ts-mongo-dynamic
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEGATIVE: template stubs and raw variable names must NOT survive
+# ═══════════════════════════════════════════════════════════════════════════════
+
+negative_nodes:
+  DataContainer:
+    - "event_${tablePrefix}"
+    - "${tablePrefix}"
+
+negative_patterns:
+  DataContainer:
+    # Template variable stubs
+    - ".*\\$\\{.*\\}.*"
+    # Raw JS variable names
+    - "^tablePrefix$"

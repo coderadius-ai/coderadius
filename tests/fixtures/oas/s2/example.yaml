@@ -1,0 +1,192 @@
+#
+# Example third-party OpenAPI 3.0 document used as a fixture.
+#
+# Models a vendored copy of an external partner spec: it exercises
+# vendor extensions, external $refs, and shared component sections.
+#
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  # Public catalog name of the API.
+  title: |-
+    Acme Inventory Lookup API
+  x-summary: >-
+    Read-only lookup over the Acme inventory catalog.
+  description: |
+    #### Overview
+
+    Read-only lookup API over the Acme inventory catalog. Consumers can
+    fetch a single item by SKU or search the catalog by item name.
+
+    #### Usage notes
+
+    * Responses are JSON.
+    * Every response carries the standard Acme rate-limit headers.
+    * Error responses reuse the shared Acme error components.
+
+    #### Getting started
+
+    Point a client at the test server below and request
+    `GET /inventory/{sku}` with any known SKU (for example `sku_9001`).
+
+  termsOfService: 'https://acme.com/terms/'
+  contact:
+    email: dev@acme.com
+    name: Acme Dev Team
+    url: https://acme.com/dev
+  # Intended consumers of the API.
+  x-audience:
+    - public
+  # Stable identifier, independent of the `title`.
+  x-api-id: 4c1f2a9e-7d3b-4e0a-9c58-2b6f8d1e5a70
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  x-lifecycle:
+    maturity: developing
+# Tags group the operations exposed by the API; each tag may link to
+#   its own documentation page.
+tags:
+  - name: public
+    description: Retrieve information
+    externalDocs:
+      url: https://docs.acme.com/inventory-operations.html
+# One or more servers (test, development, ...).
+servers:
+  - description: Test server
+    url: https://api.acme.com/inventory/v1
+    x-sandbox: true
+    x-healthCheck:
+      interval: 5
+      timeout: 10
+      url: https://api.acme.com/inventory/v1/status
+  - description: Development server
+    url: https://localhost:8443/inventory/v1
+#
+# All paths go here.
+#
+paths:
+  /inventory/{sku}:
+    get:
+      summary: Retrieve the details of an inventory item.
+      description: |
+        Connects to the Acme inventory catalog and retrieves the
+        details of an item by its SKU.
+      operationId: get_inventory_item
+      tags:
+      - public
+      parameters:
+        - $ref: "#/components/parameters/sku"
+      responses:
+        '200':
+          description: |
+            The item was found and its details were retrieved
+            successfully.
+          # Throttling headers required by the Acme API guidelines.
+          headers:
+            X-RateLimit-Limit:
+              $ref: 'https://schemas.acme.com/common/definitions.yaml#/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: 'https://schemas.acme.com/common/definitions.yaml#/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: 'https://schemas.acme.com/common/definitions.yaml#/headers/X-RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '429':
+          $ref: '#/components/responses/429TooManyRequests'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/default'
+  /inventory:
+    get:
+      summary: Search inventory items by name.
+      description: |
+        Connects to the Acme inventory catalog and searches items by name.
+      operationId: search_inventory
+      tags:
+      - public
+      parameters:
+        - $ref: "#/components/parameters/name"
+        - $ref: 'https://schemas.acme.com/common/definitions.yaml#/parameters/limit'
+        - $ref: 'https://schemas.acme.com/common/definitions.yaml#/parameters/offset'
+        - $ref: 'https://schemas.acme.com/common/definitions.yaml#/parameters/sort'
+      responses:
+        '200':
+          description: |
+            Matching items were found and their details were retrieved
+            successfully.
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '429':
+          $ref: '#/components/responses/429TooManyRequests'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+        default:
+          $ref: '#/components/responses/default'
+
+components:
+  parameters:
+    sku:
+      name: sku
+      in: path
+      description: The stock keeping unit of the inventory item.
+      required: true
+      example: sku_9001
+      schema:
+        type: string
+    name:
+      name: name
+      in: query
+      description: The string to search for in the item name.
+      required: true
+      example: widget
+      schema:
+        type: string
+
+  headers:
+    X-RateLimit-Limit:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/headers/X-RateLimit-Limit'
+    X-RateLimit-Remaining:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/headers/X-RateLimit-Remaining'
+    X-RateLimit-Reset:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/headers/X-RateLimit-Reset'
+    Retry-After:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/headers/Retry-After'
+
+  responses:
+    # Predefined error codes for this API
+    400BadRequest:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/responses/400BadRequest'
+    404NotFound:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/responses/404NotFound'
+    429TooManyRequests:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/responses/429TooManyRequests'
+    503ServiceUnavailable:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/responses/503ServiceUnavailable'
+    default:
+      $ref: 'https://schemas.acme.com/common/definitions.yaml#/responses/default'
+
+  schemas:
+    InventoryItem:
+      type: object
+      description: An item in the Acme inventory catalog.

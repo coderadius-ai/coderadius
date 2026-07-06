@@ -1,0 +1,15 @@
+services:
+  orders-api:
+    build:
+      context: ./ts-provider
+      dockerfile: apps/orders-api/Dockerfile
+    ports:
+      - "4000:4000"
+
+  orders-aggregator:
+    build:
+      context: ./php-caller
+    ports:
+      - "8080:8080"
+    environment:
+      ORDERS_API_URL: "http://orders-api:4000"

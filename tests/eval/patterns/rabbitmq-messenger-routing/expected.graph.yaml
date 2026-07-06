@@ -1,0 +1,26 @@
+fixture: rabbitmq-messenger-routing
+description: |
+    End-to-end deterministic broker topology extraction.
+    RabbitMQ definitions.json declares 2 exchanges + 2 queues + 2 bindings (one pattern
+    `acme.order.#`, one exact). messenger.yaml declares 2 transports and routes 2
+    message classes. A coderadius.yaml customer-declaration anchors the AMQP broker.
+
+    The pattern pins:
+        - MessageBroker emitted with declaredVia='coderadius.yaml', confidence=1.0
+        - Exchanges + queues with scope='physical' and brokerUrn matching the declared broker
+        - ROUTES_TO edge with isPattern=true + patternRegex resolving "acme.order.#"
+        - Symfony Messenger emits meta-broker + transport channels + logical channels
+        - LogicalChannel→Transport via MANIFESTS_AS for every routed MessageClass
+
+expected_nodes:
+    MessageBroker:
+        - rmq.example.com
+        - symfony-messenger
+    MessageChannel:
+        - acme.orders
+        - acme.inventory.order.requested
+        - acme.payment.order.requested
+        - inventory
+        - async-doctrine
+        - Acme\Inventory\Message\OrderRequested
+        - Acme\Inventory\Message\OrderUpdated

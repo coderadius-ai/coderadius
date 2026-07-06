@@ -1,0 +1,15 @@
+openapi: 3.0.3
+info:
+  title: Acme Orders API
+  version: 2.0.0
+servers:
+  - url: https://api.acme.example.com/v2
+    description: production public
+paths:
+  /orders:
+    post:
+      operationId: createOrder
+      summary: Create a new order
+      responses:
+        '201':
+          description: Order created

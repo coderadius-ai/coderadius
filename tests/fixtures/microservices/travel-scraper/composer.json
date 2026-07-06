@@ -1,0 +1,16 @@
+{
+    "name": "acme-corp/travel-scraper",
+    "description": "Legacy travel booking and scraping monolith",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "google/cloud-pubsub": "^1.39",
+        "doctrine/orm": "^2.17",
+        "symfony/messenger": "^6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "TravelApp\\": "./"
+        }
+    }
+}

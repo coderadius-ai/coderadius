@@ -1,0 +1,14 @@
+{
+  "_comment": "Coverage factory target list, priority order. status lives in _factory-state.json. language drives which plugin the improve-loop may edit. 'hint' seeds the scout step.",
+  "targets": [
+    { "name": "express",     "language": "typescript", "hint": "Express 4/5: app.get/post/put/delete('/path', handler), express.Router(), router.get(...). Programmatic routing." },
+    { "name": "koa",         "language": "typescript", "hint": "Koa + @koa/router: router.get('/path', ctx => ...). Programmatic routing." },
+    { "name": "hono",        "language": "typescript", "hint": "Hono: const app = new Hono(); app.get('/path', c => c.json(...)). Edge/Bun-native." },
+    { "name": "nestjs",      "language": "typescript", "hint": "NestJS: @Controller('/orders') class + @Get(':id')/@Post() method decorators. Decorator-based, NOT app.get()." },
+    { "name": "laravel",     "language": "php",        "hint": "Laravel: Route::get('/path', ...), Route::resource('orders', ...), Route::apiResource. route-extractor-php already supports this — expect PASS." },
+    { "name": "slim",        "language": "php",        "hint": "Slim 4: $app->get('/path', ...), $app->group('/prefix', fn). Already supported — expect PASS." },
+    { "name": "symfony",     "language": "php",        "hint": "Symfony: #[Route('/path', methods:['GET'])] attributes + @Route annotations. Already supported — expect PASS." },
+    { "name": "spring-boot", "language": "java",       "hint": "Spring Boot: @RestController class + @GetMapping('/path')/@PostMapping/@RequestMapping. Java is UNSUPPORTED (no tree-sitter grammar/plugin) — this needs a language bootstrap first; likely FLAGGED, not auto-closed overnight." },
+    { "name": "jax-rs",      "language": "java",       "hint": "JAX-RS / Quarkus / Jakarta: @Path('/orders') class + @GET/@POST/@Path methods. Same Java-bootstrap dependency as spring-boot." }
+  ]
+}

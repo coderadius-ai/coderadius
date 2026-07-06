@@ -1,0 +1,21 @@
+services:
+  orders-api:
+    build:
+      context: .
+      dockerfile: apps/orders-api/Dockerfile
+    ports:
+      - "4000:4000"
+
+  orders-worker:
+    build:
+      context: .
+      dockerfile: apps/orders-worker/Dockerfile
+
+  orders-client:
+    build:
+      context: .
+      dockerfile: apps/orders-client/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ORDERS_API_URL: "http://orders-api:4000"

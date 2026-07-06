@@ -1,0 +1,43 @@
+{
+  "type": "record",
+  "name": "PaymentProcessed",
+  "namespace": "com.acme.payments",
+  "fields": [
+    { "name": "paymentId", "type": "string" },
+    {
+      "name": "billingAddress",
+      "type": ["null", {
+        "type": "record",
+        "name": "BillingAddress",
+        "fields": [
+          { "name": "street", "type": "string" },
+          { "name": "city", "type": "string" },
+          { "name": "country", "type": "string" }
+        ]
+      }],
+      "default": null
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "LineItem",
+          "fields": [
+            { "name": "sku", "type": "string" },
+            { "name": "quantity", "type": "int" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "transactionId",
+      "type": { "type": "string", "logicalType": "uuid" }
+    },
+    {
+      "name": "checksum",
+      "type": { "type": "fixed", "name": "MD5", "size": 16 }
+    }
+  ]
+}

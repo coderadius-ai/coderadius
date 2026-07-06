@@ -1,0 +1,20 @@
+fixture: crossplane-pubsub-microservices
+description: |
+  Cross-service PubSub topology via Crossplane CRD claims.
+  order-service defines a Topic, notification-service subscribes to it.
+  The plugin should auto-emit ROUTES_TO edge linking the two.
+
+expected_nodes:
+  MessageChannel:
+    - Platform-OrderCreated
+    - order-notifications
+
+expected_edges:
+  - from: order-notifications
+    rel: ROUTES_TO
+    to: Platform-OrderCreated
+
+negative_nodes:
+  MessageChannel:
+    - __CR_VAL_global|configuration|TOPIC_NAME__
+    - __CR_RELEASE_NAME__

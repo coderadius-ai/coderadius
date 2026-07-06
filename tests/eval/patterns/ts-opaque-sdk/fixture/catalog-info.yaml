@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ts-opaque-sdk
+  title: "Opaque SDK Eval Fixture"
+  description: "Eval fixture for typed packages.analyze SDK wrapper auto-hint generation"
+  annotations:
+    coderadius.ai/eval-fixture: "true"
+spec:
+  type: service
+  lifecycle: experimental
+  owner: coderadius-team

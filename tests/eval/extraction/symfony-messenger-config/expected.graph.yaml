@@ -1,0 +1,32 @@
+fixture: symfony-messenger-config
+description: >
+  Anonymized Symfony Messenger config (config/packages/messenger.yaml) exercising
+  the CONFIG-declared broker topology that the ephemeral pipeline never sees (it
+  only walks source files). The structural symfony-messenger plugin emits, per
+  transport, a MessageChannel{scope:'transport'} (name = transport name) and, per
+  routing entry, a MessageChannel{scope:'logical'} (name = the routed message
+  class FQN) with a MANIFESTS_AS edge to its transport. Both transport DSNs are
+  unresolvable here ('%env(...)%' has no scheme; 'doctrine://' is not an AMQP
+  scheme), so NO physical broker/channel is emitted — the golden asserts exactly
+  the four MessageChannels the plugin really produces. Zero LLM calls: structural
+  extraction is deterministic. Proves the in-memory structural pass wires into
+  the coverage harness end-to-end.
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  MessageChannel:
+    - "async"
+    - "failed"
+    - 'Acme\Inventory\Message\OrderCreated'
+    - 'Acme\Payment\Message\PaymentProcessed'
+expected_edges:
+  - from: 'Acme\Inventory\Message\OrderCreated'
+    rel: MANIFESTS_AS
+    to: "async"
+  - from: 'Acme\Payment\Message\PaymentProcessed'
+    rel: MANIFESTS_AS
+    to: "async"
+negative_patterns:
+  MessageChannel:
+    - "%"
+    - "::"

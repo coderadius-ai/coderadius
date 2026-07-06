@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pricing-service
+  description: Computes product pricing and discount rules via external Pricing API
+spec:
+  type: service
+  lifecycle: production
+  owner: team-checkout
+  system: ecommerce-platform

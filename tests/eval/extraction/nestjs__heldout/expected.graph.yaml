@@ -1,0 +1,40 @@
+fixture: nestjs__heldout
+description: >
+  Held-out NestJS (TS) notification service — a generalization check, NOT a copy
+  of the primary nestjs fixture. Different resource (notifications), a different
+  param name (:key), a different verb mix (GET/POST/PATCH, no DELETE), a bare
+  collection route (@Get() → /notifications), and a param in the MIDDLE of a
+  nested path (@Patch(':key/read') → /notifications/{key}/read). Golden grounded
+  in what NestJS exposes after controller-prefix composition: lossless path form
+  preserves each param name verbatim (:key → {key}), never {param} and never a
+  raw colon. Proves the decorator route composition is not overfit to the primary
+  fixture's exact paths/verbs/param name.
+
+  Like the primary fixture, these decorator routes now resolve statically (zero
+  LLM calls) via composeDecoratorRoutes in chunk-extraction.
+target:
+  repo: acme/acme-notification
+expected_nodes:
+  APIEndpoint:
+    - "GET /notifications"
+    - "GET /notifications/{key}"
+    - "POST /notifications"
+    - "PATCH /notifications/{key}/read"
+expected_edges:
+  - from_service: acme-notification
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /notifications"
+  - from_service: acme-notification
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /notifications/{key}"
+  - from_service: acme-notification
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /notifications"
+  - from_service: acme-notification
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PATCH /notifications/{key}/read"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

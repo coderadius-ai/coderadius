@@ -1,0 +1,226 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — microservices mega-fixture
+#
+# Declarative specification of what the ingested graph MUST contain
+# (expected_nodes, expected_edges, expected_symbols) and MUST NOT
+# contain (negative_nodes, negative_patterns).
+#
+# Fed into the eval-scorer to compute precision/recall per category.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: microservices
+description: "Full pipeline E2E — 10 service roots, cross-ecosystem coupling (PHP/TS/Python/Go)"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SYMBOL RESOLUTION: DI key → physical name (Pass 0.5 + Sanitizer)
+#
+# These assert that the ConfigSymbolExtractor + Sanitizer pipeline correctly
+# resolves abstract DI container keys to physical infrastructure names.
+# If any fails, the DI resolution chain is broken.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+expected_symbols:
+  - diKey: "payment.completed.publisher"
+    resolvedTo: "payment.completed.v2"
+    source: "config/services.php"
+
+  - diKey: "refund.initiated.publisher"
+    resolvedTo: "refund.initiated"
+    source: "config/services.php"
+
+  - diKey: "notredeemable.publisher"
+    resolvedTo: "loyalty.not_redeemable"
+    source: "config/services.php"
+
+  - diKey: "order.events.consumer"
+    resolvedTo: "payment_order_queue"
+    source: "config/services.php"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NODES: exact names that MUST exist after ingestion
+# ═══════════════════════════════════════════════════════════════════════════════
+
+expected_nodes:
+  Service:
+    - order-service
+    - loyalty-service
+    - notification-service
+    - travel-scraper
+    - payment-service
+    - conduit-relay-service
+    - logistics-routing-service
+    - pricing-service   # NEW: Zodios client consumer fixture
+
+  System:
+    - ecommerce-platform
+    - logistics-platform
+    - travel-platform
+
+  Team:
+    - team-checkout
+    - team-logistics
+    - team-travel
+    - team-payments
+
+  DataStructure:
+    - RewardCreated
+
+  DataContainer:
+    - users
+    - orders
+    - risk_factors
+    - loyalty_audits
+    - loyalty_rewards
+    - api_traces
+    - payment_queue
+    - delivery_orders
+    - delivery_history_express
+
+  Package:
+    - "@acme-corp/common-utils"
+    - "acme-corp/logistics-math-lib"
+    - "acme-corp/logger-php"
+
+  APIEndpoint:
+    - "GRAPHQL QUERY order"
+    - "GRAPHQL QUERY orders"
+    - "GRAPHQL MUTATION createOrder"
+    - "GRAPHQL MUTATION cancelOrder"
+    - "GRAPHQL SUBSCRIPTION orderUpdated"
+    # ── Zodios OUTBOUND (pricing-service, deterministic post-LLM injection) ──
+    - "/api/v1/pricing/discount"  # POST — from calculateDiscount() alias
+
+  MessageChannel:
+    - "conduit.subscriptions.reward_created"
+    # ── Crossplane PubSub (structural) ──
+    - "Platform-OrderCreated"    # Topic from order-service Helm chart
+    - "order-notifications"     # Subscription from notification-service Helm chart
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EDGES: critical relationships — exact assertions
+# ═══════════════════════════════════════════════════════════════════════════════
+
+expected_edges:
+  # ── Backstage C4 Skeleton ──
+  - from: notification-service
+    rel: DEPENDS_ON
+    to: order-service
+
+  - from: order-service
+    rel: STORED_IN
+    to: microservices
+
+  - from: loyalty-service
+    rel: STORED_IN
+    to: microservices
+
+  - from: notification-service
+    rel: STORED_IN
+    to: microservices
+
+  - from: travel-scraper
+    rel: STORED_IN
+    to: microservices
+
+  # ── System → Service containment ──
+  - from: ecommerce-platform
+    rel: CONTAINS
+    to: order-service
+
+  - from: ecommerce-platform
+    rel: CONTAINS
+    to: notification-service
+
+  - from: logistics-platform
+    rel: CONTAINS
+    to: loyalty-service
+
+  - from: travel-platform
+    rel: CONTAINS
+    to: travel-scraper
+
+  # ── Team ownership (governance) ──
+  - from: team-checkout
+    rel: OWNS
+    to: order-service
+
+  - from: team-checkout
+    rel: OWNS
+    to: notification-service
+
+  - from: team-logistics
+    rel: OWNS
+    to: loyalty-service
+
+  - from: team-travel
+    rel: OWNS
+    to: travel-scraper
+
+  # ── OpenAPI (Service → APIInterface direct edge) ──
+  - from: loyalty-service
+    rel: EXPOSES_API
+    to: "Loyalty Service API"
+
+  # ── Crossplane PubSub (structural: cross-service topology) ──
+  - from: order-notifications
+    rel: ROUTES_TO
+    to: Platform-OrderCreated
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEGATIVE: exact names that MUST NOT exist (false positives)
+# Each violation = critical regression → CI hard fail
+# ═══════════════════════════════════════════════════════════════════════════════
+
+negative_nodes:
+  DataContainer:
+    - database-unknown-db
+    - mysql-unknown-db
+    - booking_slot
+    - "delivery_history_{type}"
+
+  MessageChannel:
+    # ── DI keys that should have been resolved by Pass 0.5 ──
+    - payment.completed.publisher
+    - notredeemable.publisher
+    - refund.initiated.publisher
+    - order.events.consumer
+    # ── Generic noise that sanitizer must drop ──
+    - MessageBus
+    - message-bus
+    - rabbitmq
+    - kafka
+    - queue
+    - amqp
+    - bus
+    - notificationsender
+    - SendOrderToConduitUseCase
+    - conduit
+    - "<DYNAMIC>"
+    - "<dynamic>"
+    - outbox
+
+  APIEndpoint:
+    # ── Zodios wrapper method names must NEVER become APIEndpoint nodes ──
+    - "calculateDiscount"      # alias name — not a path
+    - "getPricing"             # alias name — not a path
+    - "IPricingApiRepository"  # type name — not a path
+    - "PricingApiRepository"   # class name — not a path
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEGATIVE PATTERNS: regex that MUST NOT match any node name
+# ═══════════════════════════════════════════════════════════════════════════════
+
+negative_patterns:
+  DataContainer:
+    # Template variable stubs — should be expanded or dropped
+    - ".*\\{.*\\}.*"
+    # Trailing underscore stubs (should be expanded by DataEntityPostProcessor)
+    - ".*_$"
+    # PHP variable names leaking from LLM
+    - ".*\\$.*"
+
+  MessageChannel:
+    # PascalCase class names (7+ chars, no separators) — these are code identifiers, not physical names.
+    # Exception: CQRS message classes (Symfony Messenger / MediatR style) ending in
+    # Command/Event/Message/Query are legitimate routing contracts — see sanitizer.ts.
+    - "^(?!.*(?:Command|Event|Message|Query)$)[A-Z][a-z]+([A-Z][a-z]+){2,}$"

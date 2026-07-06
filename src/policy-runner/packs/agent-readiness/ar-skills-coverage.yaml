@@ -1,0 +1,26 @@
+id: ar-skills-coverage
+name: Skills coverage
+description: >-
+  Requires at least one agent skill: a reusable, self-contained capability
+  an agent can invoke.
+level: warning
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  OPTIONAL MATCH (r)<-[:STORED_IN]-(s:Service)-[:HAS_AGENTIC_CONFIG]->(c1:AgenticConfig)
+  WHERE c1.configType = 'skill'
+  OPTIONAL MATCH (r)-[:HAS_AGENTIC_CONFIG]->(c2:AgenticConfig)
+  WHERE c2.configType = 'skill'
+  WITH r, count(DISTINCT c1) + count(DISTINCT c2) AS skillCount
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE WHEN skillCount > 0 THEN 'pass' ELSE 'fail' END AS status,
+    CASE
+      WHEN skillCount = 1 THEN '1 skill defined'
+      WHEN skillCount > 1 THEN toString(skillCount) + ' skills defined'
+      ELSE 'No skills configured'
+    END AS detail

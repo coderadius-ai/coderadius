@@ -1,0 +1,48 @@
+@media print {
+    /* Reset layout constraints to allow multi-page printing */
+    html, body, #root, #app, .cr-app-layout, .cr-main-pane {
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        display: block !important;
+        position: static !important;
+    }
+
+    body::before { display: none; }
+    body { background: #fff !important; color: #000 !important; padding-bottom: 0; }
+    
+    /* Hide non-printable elements */
+    .cr-sidebar, .cr-sidebar-toggle-wrapper, .header-actions, .table-pagination, .table-toolbar { 
+        display: none !important; 
+    }
+
+    header { padding: 0 !important; margin-bottom: 24px !important; }
+
+    /* Fix box styling */
+    .summary-card, .lb-item, .table-wrap, .tree-root, .alert { 
+        background: #fff !important; 
+        box-shadow: none !important; 
+        border: 1px solid #ddd !important; 
+    }
+
+    /* Force black text */
+    * { color: #000 !important; }
+    .cr-logo svg { fill: #000 !important; }
+    
+    /* Formatting badges & colors */
+    .badge { border: 1px solid #aaa !important; color: #333 !important; background: transparent !important; }
+    .color-bg-red, .color-bg-yellow, .color-bg-green, .color-bg-cyan { background-color: #555 !important; }
+    .score-bar { border: 1px solid #aaa !important; }
+    
+    /* Ensure tables don't get truncated or scroll */
+    .table-container, .table-wrap, table {
+        overflow: visible !important;
+        page-break-inside: auto;
+    }
+
+    /* Prevent awkward page breaks */
+    .summary-card, .lb-item, .alert, .h-stat, tr, td, th {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+}

@@ -1,0 +1,102 @@
+/* ── Teaser · Quiet Operator ─────────────────────────────────────────
+   Page-level empty state for domains excluded from the current build.
+   Confident, present-tense product copy. No decorative chrome.        */
+
+.cr-teaser {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+    max-width: 620px;
+    padding: 72px 0 96px;
+    margin: 0 auto;
+}
+
+.cr-teaser__rule {
+    width: 36px;
+    height: 1.5px;
+    background: var(--cr-ink-3);
+    opacity: 0.4;
+    border-radius: 1px;
+}
+
+.cr-teaser__header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cr-teaser__title {
+    font-family: var(--font-sans);
+    font-size: var(--cr-type-h1);
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: var(--cr-ink-0);
+    margin: 0;
+}
+
+.cr-teaser__tagline {
+    font-family: var(--font-sans);
+    font-size: var(--cr-type-body);
+    font-weight: var(--cr-weight-medium);
+    letter-spacing: 0;
+    line-height: 1.4;
+    color: var(--cr-ink-1);
+    margin: 0;
+}
+
+.cr-teaser__body {
+    font-family: var(--font-sans);
+    font-size: var(--cr-type-body);
+    font-weight: var(--cr-weight-regular);
+    line-height: 1.7;
+    color: var(--cr-ink-2);
+    margin: 0;
+}
+
+.cr-teaser__bullets {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cr-teaser__bullet {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: var(--cr-weight-regular);
+    line-height: 1.5;
+    color: var(--cr-ink-1);
+}
+
+.cr-teaser__bullet-dot {
+    flex-shrink: 0;
+    width: 3.5px;
+    height: 3.5px;
+    border-radius: 50%;
+    background: var(--cr-ink-3);
+    transform: translateY(1px);
+}
+
+.cr-teaser__footer {
+    margin-top: 4px;
+    padding-top: 20px;
+    border-top: 1px solid var(--cr-line-0);
+    width: 100%;
+}
+
+.cr-teaser__footer-text {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    font-weight: var(--cr-weight-medium);
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    color: var(--cr-ink-3);
+    margin: 0;
+}

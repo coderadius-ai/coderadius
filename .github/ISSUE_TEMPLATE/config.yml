@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & discussions
+    url: https://github.com/coderadius-ai/coderadius/discussions
+    about: Ask questions, share ideas, or discuss usage — anything that isn't a concrete bug or feature request.
+  - name: Security vulnerabilities
+    url: https://github.com/coderadius-ai/coderadius/security
+    about: Please report security issues privately via "Report a vulnerability" — never as a public issue.

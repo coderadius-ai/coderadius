@@ -1,0 +1,16 @@
+fixture: "php-doctrine-schema"
+description: "Doctrine ORM entity schema extraction — Trip.php and Booking.php entities should be DTOs (no functions)"
+
+expected_nodes: {}
+
+negative_nodes:
+  Function:
+    - "getId"
+    - "getUserId"
+    - "setUserId"
+    - "getStatus"
+    - "setStatus"
+    - "getDestination"
+    - "setDestination"
+
+negative_patterns: {}

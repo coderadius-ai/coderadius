@@ -1,0 +1,576 @@
+/* ── System Registry · Quiet Operator ───────────────────────────────── */
+
+.cr-main-registry {
+    padding-bottom: 0 !important;
+}
+
+.cr-page-shell {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) 24px;
+    flex: 1;
+    min-height: 0;
+    width: calc(100% + (var(--page-padding-x) * 2));
+    margin-inline: calc(var(--page-padding-x) * -1);
+    margin-bottom: 0;
+    background: var(--cr-bg-0);
+}
+
+.cr-page-identity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 16px;
+    background: var(--cr-bg-strip);
+    border-bottom: 1px solid var(--cr-line-0);
+}
+
+.cr-page-identity__copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.cr-page-identity__copy h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+    color: var(--cr-ink-0);
+    font-size: 15px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: -0.005em;
+    line-height: 1.2;
+}
+
+.cr-page-identity__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #a78bfa;
+}
+
+.cr-page-identity__copy p {
+    max-width: 620px;
+    margin-top: 4px;
+    color: var(--cr-ink-2);
+    font-size: 12.5px;
+    line-height: 1.28;
+}
+
+.cr-page-kpis {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    min-width: 0;
+}
+
+.cr-page-kpi {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.cr-page-kpi__num {
+    color: var(--cr-ink-0);
+    font-size: 18px;
+    font-weight: var(--cr-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
+.cr-page-kpi--danger .cr-page-kpi__num {
+    color: var(--cr-danger);
+}
+
+.cr-page-kpi--warn .cr-page-kpi__num {
+    color: var(--cr-warn);
+}
+
+.cr-page-kpi--ok .cr-page-kpi__num {
+    color: var(--cr-ok);
+}
+
+.cr-page-kpi--signal .cr-page-kpi__num {
+    color: var(--cr-signal);
+}
+
+.cr-page-kpi--internal .cr-page-kpi__num {
+    color: #a78bfa;
+}
+
+.cr-page-kpi__label {
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+
+.cr-page-kpi-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--cr-line-0);
+}
+
+.cr-page-tabs-strip {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 14px;
+    min-height: 44px;
+    padding: 0 16px;
+    background: var(--cr-bg-1);
+    border-bottom: 1px solid var(--cr-line-0);
+}
+
+.cr-page-tabs {
+    display: flex;
+    align-items: end;
+    gap: 20px;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.cr-page-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.cr-page-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 44px;
+    color: var(--cr-ink-2);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: var(--cr-weight-medium);
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.cr-page-tab:hover {
+    color: var(--cr-ink-0);
+}
+
+.cr-page-tab--active {
+    color: var(--cr-ink-0);
+}
+
+.cr-page-tab--active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--cr-page-tab-accent, #a78bfa);
+}
+
+.cr-page-tab__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 17px;
+    min-width: 20px;
+    padding: 0 5px;
+    border-radius: 4px;
+    color: var(--cr-ink-2);
+    background: var(--cr-bg-2);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: var(--cr-weight-semibold);
+    line-height: 1;
+}
+
+.cr-page-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-bottom: 8px;
+    min-width: 0;
+}
+
+.cr-registry-filter {
+    display: inline-grid;
+    grid-template-columns: 14px minmax(170px, 280px);
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    padding: 0 10px;
+    color: var(--cr-ink-3);
+    background: var(--cr-bg-2);
+    border: none;
+    border-radius: 5px;
+}
+
+.cr-registry-filter:focus-within {
+    background: var(--cr-bg-3);
+}
+
+.cr-registry-filter input {
+    min-width: 0;
+    color: var(--cr-ink-1);
+    background: transparent;
+    border: 0;
+    font: inherit;
+    font-size: 12px;
+    outline: none;
+}
+
+.cr-registry-filter input:focus-visible {
+    outline: none;
+}
+
+.cr-registry-filter input::placeholder {
+    color: var(--cr-ink-3);
+}
+
+.cr-registry-export {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 11px;
+    color: var(--cr-ink-1);
+    background: var(--cr-bg-2);
+    border: none;
+    border-radius: 5px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: var(--cr-weight-medium);
+    cursor: pointer;
+}
+
+.cr-registry-export:hover:not(:disabled) {
+    color: var(--cr-ink-0);
+    background: var(--cr-bg-3);
+}
+
+.cr-registry-export:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+}
+
+.cr-page-body {
+    min-height: 0;
+    overflow: hidden;
+    background: var(--cr-bg-0);
+}
+
+.cr-registry-row--t0 {
+    background: rgba(240, 74, 92, 0.03);
+}
+
+.cr-registry-row--t0:hover {
+    background: rgba(240, 74, 92, 0.07);
+}
+
+.cr-registry-index {
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+}
+
+.cr-registry-primary-cell {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.cr-registry-name {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--cr-ink-0);
+    font-size: 13.5px;
+    font-weight: var(--cr-weight-medium);
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cr-registry-owner {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cr-registry-team {
+    color: var(--cr-ink-2);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cr-registry-tier {
+    font-size: 10.5px;
+}
+
+.cr-registry-depth {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--cr-ink-1);
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.cr-registry-depth__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    border: 1px solid var(--cr-ink-1);
+    background: transparent;
+}
+
+.cr-registry-depth--ok .cr-registry-depth__dot {
+    background: var(--cr-ok);
+    border-color: var(--cr-ok);
+}
+
+.cr-registry-depth--neutral .cr-registry-depth__dot {
+    background: var(--cr-ink-0);
+    border-color: var(--cr-ink-0);
+}
+
+.cr-registry-depth--muted .cr-registry-depth__dot {
+    background: transparent;
+    border-color: var(--cr-ink-1);
+}
+
+.cr-registry-stack {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.cr-registry-stack-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    color: var(--cr-ink-1);
+    background: transparent;
+    border: 1px solid var(--cr-line-0);
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.cr-registry-stack-chip--more {
+    color: var(--cr-ink-3);
+    background: var(--cr-bg-strip);
+    border-color: var(--cr-line-dim);
+}
+
+svg.cr-tech-icon-quiet {
+    fill: var(--cr-ink-2);
+    flex-shrink: 0;
+    transition: fill 150ms ease;
+}
+svg.cr-tech-icon-quiet:hover { fill: var(--tech-brand, var(--cr-ink-1)); }
+span.cr-tech-icon-quiet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--cr-ink-3);
+    flex-shrink: 0;
+}
+
+.cr-registry-cell--num {
+    color: var(--cr-ink-0);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--cr-weight-semibold);
+    text-align: right;
+}
+
+.cr-registry-endpoints {
+    font-size: 14px;
+}
+
+.cr-registry-empty-num,
+.cr-registry-last--missing {
+    color: var(--cr-ink-3);
+}
+
+.cr-registry-last {
+    color: var(--cr-ink-3);
+    font-size: 11px;
+    font-weight: var(--cr-weight-medium);
+}
+
+.cr-registry-muted {
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+}
+
+/* Empty / placeholder surfaces use the shared <EmptyState> component
+   (design-system.css → .cr-empty-state). No registry-specific styles. */
+
+/* cr-registry-statusbar is now additive on top of the shared cr-statusbar
+   from design-system.css. No registry-specific overrides needed. */
+
+/* ── Page entrance cascade ───────────────────────────────────────── */
+@keyframes cr-reg-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cr-reg-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.cr-page-identity {
+    animation: cr-reg-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cr-page-tabs-strip {
+    animation: cr-reg-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+}
+
+.cr-page-body {
+    animation: cr-reg-fade 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.cr-page-shell .cr-statusbar {
+    animation: cr-reg-fade 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+.cr-operator-table__row {
+    animation: cr-reg-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(0.14s + var(--row-index, 0) * 0.035s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cr-page-identity,
+    .cr-page-tabs-strip,
+    .cr-page-body,
+    .cr-page-shell .cr-statusbar,
+    .cr-operator-table__row {
+        animation: none;
+    }
+}
+
+@media (max-width: 1080px) {
+    .cr-page-identity {
+        grid-template-columns: 22px minmax(0, 1fr);
+    }
+
+    .cr-page-kpis {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-top: 6px;
+    }
+
+    .cr-page-tabs-strip {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding-bottom: 8px;
+    }
+
+    .cr-page-actions {
+        justify-content: flex-start;
+        padding-bottom: 0;
+    }
+
+    .cr-registry-filter {
+        grid-template-columns: 14px minmax(0, 1fr);
+        width: min(100%, 420px);
+    }
+
+    .cr-registry-statusbar {
+        gap: 8px;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 720px) {
+    .cr-page-identity {
+        min-height: 0;
+        padding-block: 12px;
+    }
+
+    .cr-page-kpis {
+        gap: 16px;
+    }
+
+    .cr-page-kpi__num {
+        font-size: 17px;
+    }
+
+    .cr-page-actions {
+        flex-wrap: wrap;
+    }
+
+    .cr-page-table {
+        min-width: 900px;
+    }
+}
+
+/* ── API catalog — spec deep link in the expanded-row header ─────── */
+
+.cr-api-spec-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--cr-ink-2);
+    text-decoration: none;
+    transition: color 120ms;
+}
+/* House link convention: hover turns signal, no underline. */
+.cr-api-spec-link:hover {
+    color: var(--cr-signal);
+}
+.cr-api-spec-link__kind {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--cr-ink-3);
+}
+.cr-api-spec-link__path {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

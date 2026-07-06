@@ -1,0 +1,10 @@
+version: 1
+database_scope:
+  metrics_mongodb:
+    - "event_*"
+datastores:
+  - id: metrics_mongodb
+    technology: mongodb
+    shared: true
+    tables:
+      - "event_*"

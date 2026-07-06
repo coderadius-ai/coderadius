@@ -1,0 +1,6 @@
+{
+    "name": "acme/acme-inventory",
+    "description": "Acme inventory service (Symfony attribute + annotation routing)",
+    "require": { "php": "^8.1", "symfony/framework-bundle": "^6.4" },
+    "autoload": { "psr-4": { "Acme\\Inventory\\": "src/" } }
+}

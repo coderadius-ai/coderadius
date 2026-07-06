@@ -1,0 +1,25 @@
+id: ar-tests-present
+name: Tests
+description: >-
+  Requires a CI pipeline with a test stage. Without one, the repo stays gated
+  for manual review regardless of other signals.
+level: error
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  OPTIONAL MATCH (r)-[:HAS_CI_PIPELINE]->(p1:CIPipeline)
+  WHERE p1.hasTestStage = true
+  OPTIONAL MATCH (r)<-[:STORED_IN]-(s:Service)-[:HAS_CI_PIPELINE]->(p2:CIPipeline)
+  WHERE p2.hasTestStage = true
+  WITH r, count(DISTINCT p1) + count(DISTINCT p2) AS testPipelineCount
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE WHEN testPipelineCount > 0 THEN 'pass' ELSE 'fail' END AS status,
+    CASE
+      WHEN testPipelineCount > 0 THEN 'CI pipeline includes test stage'
+      ELSE 'No CI test stage detected'
+    END AS detail

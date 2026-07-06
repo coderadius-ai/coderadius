@@ -1,0 +1,8 @@
+{
+    "name": "acme/acme-orders",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "symfony/messenger": "^6.4"
+    }
+}

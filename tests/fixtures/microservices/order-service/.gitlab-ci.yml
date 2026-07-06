@@ -1,0 +1,55 @@
+stages:
+  - build
+  - test
+  - deploy
+
+include:
+  - project: 'devops/acme-ci-toolkit'
+    ref: main
+    file: '/templates/base.yml'
+  - component: gitlab.acme-corp.com/components/node/runner@main
+    inputs:
+      stage: test
+      node_version: "20-alpine"
+
+variables:
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+build:
+  stage: build
+  script:
+    - make build
+
+test-unit:
+  stage: test
+  script:
+    - make test
+  coverage: '/Coverage: \d+\.\d+%/'
+
+lint:
+  stage: test
+  script:
+    - make lint
+
+deploy-review:
+  stage: deploy
+  script:
+    - make deploy
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.review.example.com
+  only:
+    - merge_requests
+
+deploy-production:
+  stage: deploy
+  script:
+    - make deploy-prod
+  environment: production
+  only:
+    - main

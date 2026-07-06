@@ -1,0 +1,13 @@
+{
+  "name": "@acme/orders-api",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/graphql": "^12.0.0"
+  }
+}

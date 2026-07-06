@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inventory
+  namespace: default
+  description: Inventory service
+spec:
+  type: service
+  lifecycle: production
+  owner: team-inventory
+  system: commerce
+  dependsOn:
+    - component:default/orders
+    - resource:default/acme-postgres
+    - payment
+  providesApis:
+    - inventory-api
+  consumesApis:
+    - api:default/orders-api

@@ -1,0 +1,12 @@
+fixture: "ts-conduit-publisher"
+description: "Taint propagation through Conduit wrapper"
+
+expected_nodes:
+  MessageChannel:
+    - "Platform-OrderCreated"
+
+negative_nodes:
+  Function:
+    - "calculateDiscount"
+
+negative_patterns: {}

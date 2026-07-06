@@ -1,0 +1,22 @@
+fixture: typeorm
+description: >
+  Anonymized TypeORM entity (TS). @Entity('orders') maps the class to the
+  `orders` table; @Column decorators declare the columns. Golden grounded in
+  TypeORM's mapping semantics: table name from the @Entity argument, columns
+  from @Column (explicit `name:` or the property name). Static, zero LLM — via
+  the ::__class_metadata chunk path.
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  DataContainer:
+    - "orders"
+  DataStructure:
+    - "orders"
+  DataField:
+    - "reference"
+    - "total_amount"
+    - "status"
+negative_nodes:
+  DataContainer:
+    - "Order"
+    - "OrderEntity"

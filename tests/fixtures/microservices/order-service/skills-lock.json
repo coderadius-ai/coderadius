@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "skills": {
+    "review-order-flow": {
+      "source": "acme/order-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/acme/order-skills",
+      "ref": "main",
+      "skillPath": "skills/review-order-flow",
+      "skillFolderHash": "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6",
+      "installedAt": "2026-04-15T09:00:00Z",
+      "updatedAt": "2026-05-10T11:00:00Z"
+    },
+    "payment-retry-handler": {
+      "source": "acme/payment-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/acme/payment-skills",
+      "skillFolderHash": "d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5"
+    }
+  }
+}

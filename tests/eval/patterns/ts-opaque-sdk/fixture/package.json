@@ -1,0 +1,6 @@
+{
+  "name": "ts-opaque-sdk-fixture",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Eval fixture: typed packages.analyze SDK wrapper auto-hint"
+}

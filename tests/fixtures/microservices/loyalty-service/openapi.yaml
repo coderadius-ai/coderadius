@@ -1,0 +1,47 @@
+openapi: 3.0.3
+info:
+  title: Acme Payment Gateway
+  version: "1.0.0"
+  description: External API for processing payments
+servers:
+  - url: https://api.payments.acme.com/v1
+paths:
+  /charge:
+    post:
+      summary: Create a charge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                currency:
+                  type: string
+                source:
+                  type: string
+      responses:
+        '200':
+          description: Successful charge
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+components:
+  schemas:
+    ChargeRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+        currency:
+          type: string
+        source:
+          type: string

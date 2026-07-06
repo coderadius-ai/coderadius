@@ -1,0 +1,11 @@
+services:
+  memgraph-test:
+    image: memgraph/memgraph:latest
+    container_name: coderadius-memgraph-test
+    environment:
+      - MEMGRAPH_USER=coderadius
+      - MEMGRAPH_PASSWORD=coderadius
+    ports:
+      - "7688:7687"  # Bolt protocol mappato sulla 7688 come prima
+    command: ["--log-level=WARNING"] # Riduciamo il rumore nei log durante i test
+    # Niente volumi: i test girano in RAM e si azzerano quando distruggi il container!

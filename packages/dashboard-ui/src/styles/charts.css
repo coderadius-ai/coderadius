@@ -1,0 +1,730 @@
+/* ── Bar Chart ───────────────────────────────────────────────────────── */
+.bc-container {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.bc-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.bc-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    width: 140px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.bc-track-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.bc-track {
+    flex: 1;
+    height: 8px;
+    background: var(--border-subtle);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.bc-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-radius: 4px;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.bc-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.20));
+    border-radius: 4px;
+}
+
+.bc-value {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    width: 32px;
+    text-align: right;
+    letter-spacing: 0;
+}
+
+/* ── Histogram ─────────────────────────────────────────────────────── */
+.histogram-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 16px;
+}
+
+.hist-label {
+    width: 140px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.hist-bar-container {
+    flex: 1;
+    height: 6px;
+    background: var(--bg-surface);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+}
+
+.hist-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hist-value {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+}
+
+.hv-count {
+    width: 24px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.hv-pct {
+    width: 48px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.hist-subtitle {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    margin-bottom: 16px;
+    margin-top: -8px;
+}
+
+/* ── Gravity View (Operator Table) ───────────────────────────────────── */
+/* The no-SPOF empty state uses the shared <EmptyState> (design-system.css). */
+
+.cr-page-identity__mark.gravity-mark {
+    color: var(--cr-warn);
+}
+
+.cr-page-identity.gravity-identity {
+    align-items: center;
+}
+
+.gravity-name {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+}
+
+.gravity-name__icon {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.gravity-name__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gravity-score-bar {
+    --cr-barred-height: 16px;
+    --cr-barred-width: 6px;
+    --cr-barred-gap: 2px;
+}
+
+/* ── Gravity Expanded Row ────────────────────────────────────────────── */
+.gravity-expanded {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 6px 16px 10px 62px;
+}
+
+.gravity-expanded__body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 24px;
+    flex: 1;
+    min-width: 0;
+}
+
+.gravity-expanded__group {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.gravity-expanded__label {
+    font-size: var(--cr-type-caption);
+    font-weight: var(--cr-weight-medium);
+    color: var(--cr-ink-3);
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.gravity-expanded__services {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 3px 10px;
+}
+
+.gravity-expanded__srv {
+    font-size: var(--cr-type-caption);
+    color: var(--cr-ink-1);
+    white-space: nowrap;
+}
+
+.gravity-expanded__ctx {
+    color: var(--cr-ink-2);
+}
+
+.gravity-expanded__sep {
+    color: var(--cr-ink-mute);
+    margin: 0 1px;
+}
+
+.gravity-expanded__name {
+    color: var(--cr-ink-1);
+}
+
+.gravity-expanded__count {
+    color: var(--cr-ink-3);
+}
+
+.gravity-expanded__empty {
+    font-size: var(--cr-type-caption);
+    color: var(--cr-ink-3);
+}
+
+.gravity-expanded__blast-link {
+    font-size: var(--cr-type-caption);
+    font-weight: var(--cr-weight-medium);
+    color: var(--cr-signal);
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: color 120ms ease;
+}
+
+.gravity-expanded__blast-link:hover {
+    color: var(--cr-ink-0);
+}
+
+.dependency-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.dependency-title {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    width: 140px;
+    flex-shrink: 0;
+    padding-top: 4px;
+}
+
+.dependency-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dep-chip {
+    padding: 2px 8px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hover);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+}
+
+/* ── Tree ──────────────────────────────────────────────────────────── */
+.tree-root {
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+.tree-node {
+    position: relative;
+    margin-top: 10px;
+}
+
+.tree-node-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.tree-children {
+    margin-left: 10px;
+    padding-left: 20px;
+    border-left: 1px solid var(--border-default);
+    margin-top: 4px;
+}
+
+.tree-meta {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+    padding-left: 24px;
+}
+
+.tree-fn {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ── Scatter Plot ──────────────────────────────────────────────────── */
+.scatter-container {
+    position: relative;
+    width: 100%;
+    height: 480px; /* Expansive field for data density */
+    margin-top: 24px;
+    padding: 0 0 32px 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+}
+
+.scatter-y-label {
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: var(--font-sans);
+}
+
+.scatter-x-label {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: var(--font-sans);
+}
+
+.scatter-plot {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-left: 1px solid var(--border-hover);
+    border-bottom: 1px solid var(--border-hover);
+}
+
+.scatter-quadrant {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    pointer-events: none;
+    text-align: center;
+}
+
+.q-tl {
+    top: 0;
+    left: 0;
+    border-right: 1px dashed var(--border-subtle);
+    border-bottom: 1px dashed var(--border-subtle);
+}
+.q-tl::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle at top left, rgba(255, 180, 0, 0.08) 0%, transparent 70%);
+}
+
+.q-tr {
+    top: 0;
+    left: 50%;
+    border-bottom: 1px dashed var(--border-subtle);
+}
+.q-tr::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle at top right, rgba(40, 255, 100, 0.06) 0%, transparent 70%);
+}
+
+.q-bl {
+    top: 50%;
+    left: 0;
+    border-right: 1px dashed var(--border-subtle);
+}
+.q-bl::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
+}
+
+.q-br {
+    top: 50%;
+    left: 50%;
+}
+.q-br::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle at bottom right, rgba(255, 60, 60, 0.06) 0%, transparent 70%);
+}
+
+.scatter-point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    border: 1.5px solid var(--bg-card);
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    cursor: pointer;
+    z-index: 2;
+}
+
+.scatter-point:hover {
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 4px rgba(255, 255, 255, 0.5);
+    z-index: 10;
+}
+
+/* ── Pulse Dot (liveness indicator) ────────────────────────────────── */
+.pulse-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 5px;
+    flex-shrink: 0;
+    background: currentColor;
+    animation: pulse-dot-anim 2s ease-out infinite;
+}
+
+@keyframes pulse-dot-anim {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+/* Removed background fills to keep the Cartesian map pristine */
+
+/* ── UI Layout ─────────────────────────────────────────────────────── */
+.tab-pane.active {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+.tab-pane > * {
+    width: 100%;
+}
+.dashboard-chart-container {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.dashboard-chart-container .chart-wrapper {
+    flex-grow: 1;
+}
+
+/* ── Executive Briefing ────────────────────────────────────────────── */
+.executive-briefing-wrapper {
+    margin-bottom: 24px;
+    width: 100%;
+}
+.eb-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+@media (max-width: 900px) {
+    .eb-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+.eb-brief {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px;
+    background: transparent;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+}
+.eb-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.eb-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.eb-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.eb-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+.text-glow {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* ── SVG Charts ────────────────────────────────────────────────────── */
+.chart-wrapper {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+.chart-header {
+    margin-bottom: 24px;
+}
+.chart-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+.chart-subtitle {
+    font-size: 13px;
+    color: var(--text-tertiary);
+}
+.svg-container-mini {
+    width: 100%;
+    max-width: 220px;
+    aspect-ratio: 1;
+    position: relative;
+    margin: 0 auto;
+}
+.radar-svg, .donut-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* Radar */
+.radar-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.radar-grid {
+    fill: none;
+    stroke: var(--border-hover);
+    stroke-width: 1.5;
+}
+.radar-axis {
+    stroke: var(--border-subtle);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+}
+.radar-label {
+    font-size: 14.5px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    fill: rgba(237, 237, 237, 0.85);
+}
+.radar-data-poly {
+    fill: rgba(0, 200, 255, 0.1);
+    stroke: rgba(0, 200, 255, 0.8);
+    stroke-width: 2;
+    stroke-linejoin: round;
+}
+.radar-data-dot {
+    fill: var(--text-primary);
+    stroke: var(--bg-card);
+    stroke-width: 2px;
+    r: 4.5px;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-origin: center;
+    transform-box: fill-box;
+}
+.radar-data-dot:hover {
+    transform: scale(1.3);
+    stroke-width: 2px;
+}
+
+/* Donut */
+.donut-wrapper {
+    display: flex;
+    align-items: center;
+    min-height: 220px;
+}
+.donut-layout-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: auto 0;
+    gap: 32px;
+}
+@media (max-width: 600px) {
+    .donut-layout-row {
+        flex-direction: column;
+    }
+}
+.donut-wrapper .svg-container-mini {
+    margin: 0;
+    max-width: 180px;
+    flex-shrink: 0;
+}
+.donut-bg {
+    stroke: var(--bg-surface);
+}
+.donut-slice {
+    transition: stroke-width 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+}
+
+/* Dim siblings if either SVG slice or legend item is hovered */
+.donut-layout-row:has(.donut-slice:hover, .donut-legend-item:hover) .donut-slice,
+.donut-layout-row:has(.donut-slice:hover, .donut-legend-item:hover) .donut-legend-item {
+    opacity: 0.3;
+}
+
+/* Reactivate the correctly mapped slice and legend dynamically */
+.donut-slice:hover,
+.donut-legend-item:hover,
+.donut-layout-row:has(.donut-legend-item.slice-0:hover) .donut-slice.slice-0,
+.donut-layout-row:has(.donut-slice.slice-0:hover) .donut-legend-item.slice-0,
+.donut-layout-row:has(.donut-legend-item.slice-1:hover) .donut-slice.slice-1,
+.donut-layout-row:has(.donut-slice.slice-1:hover) .donut-legend-item.slice-1,
+.donut-layout-row:has(.donut-legend-item.slice-2:hover) .donut-slice.slice-2,
+.donut-layout-row:has(.donut-slice.slice-2:hover) .donut-legend-item.slice-2,
+.donut-layout-row:has(.donut-legend-item.slice-3:hover) .donut-slice.slice-3,
+.donut-layout-row:has(.donut-slice.slice-3:hover) .donut-legend-item.slice-3,
+.donut-layout-row:has(.donut-legend-item.slice-4:hover) .donut-slice.slice-4,
+.donut-layout-row:has(.donut-slice.slice-4:hover) .donut-legend-item.slice-4,
+.donut-layout-row:has(.donut-legend-item.slice-5:hover) .donut-slice.slice-5,
+.donut-layout-row:has(.donut-slice.slice-5:hover) .donut-legend-item.slice-5 {
+    opacity: 1 !important;
+}
+
+.donut-slice:hover,
+.donut-layout-row:has(.donut-legend-item.slice-0:hover) .donut-slice.slice-0,
+.donut-layout-row:has(.donut-legend-item.slice-1:hover) .donut-slice.slice-1,
+.donut-layout-row:has(.donut-legend-item.slice-2:hover) .donut-slice.slice-2,
+.donut-layout-row:has(.donut-legend-item.slice-3:hover) .donut-slice.slice-3,
+.donut-layout-row:has(.donut-legend-item.slice-4:hover) .donut-slice.slice-4,
+.donut-layout-row:has(.donut-legend-item.slice-5:hover) .donut-slice.slice-5 {
+    stroke-width: 21.5px;
+    cursor: pointer;
+}
+.donut-center-text {
+    font-size: 24px;
+    font-weight: 600;
+    fill: var(--text-primary);
+    font-family: var(--font-sans);
+}
+.donut-center-subtext {
+    font-size: 10px;
+    fill: var(--text-tertiary);
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.donut-legend-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+}
+.donut-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: opacity 0.2s ease;
+    cursor: default;
+}
+.donut-legend-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.donut-legend-color {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.donut-legend-text-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.donut-legend-label {
+    color: var(--text-secondary);
+}
+.donut-legend-val {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--text-primary);
+}

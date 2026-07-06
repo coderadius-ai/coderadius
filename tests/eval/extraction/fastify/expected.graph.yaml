@@ -1,0 +1,35 @@
+fixture: fastify
+description: >
+  Anonymized Fastify (TS) order service exercising shorthand route methods
+  (app.get/post/put) and the Fastify-specific object form (app.route({method,url})).
+  The golden is grounded in the endpoints Fastify actually exposes — NOT in
+  current analyzer output. Fastify programmatic routing is explicitly deferred
+  in route-extractor.ts V1, so this fixture pins the gap the coverage loop must
+  close: static detection of app.<method>(path) + app.route({...}) → APIEndpoint
+  (canonical path form: lossless preserves the param name, :id → {id}).
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders/{id}"
+    - "POST /orders"
+    - "PUT /orders/{id}"
+    - "DELETE /orders/{id}"
+expected_edges:
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /orders/{id}"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

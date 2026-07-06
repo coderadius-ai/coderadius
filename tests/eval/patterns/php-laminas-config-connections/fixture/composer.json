@@ -1,0 +1,16 @@
+{
+  "name": "acme/platform-app",
+  "type": "project",
+  "require": {
+    "php": ">=8.2",
+    "laminas/laminas-mvc": "^3.6",
+    "laminas/laminas-config-aggregator": "^1.14",
+    "doctrine/doctrine-orm-module": "^6.0",
+    "doctrine/dbal": "^3.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Acme\\Platform\\": "src/"
+    }
+  }
+}

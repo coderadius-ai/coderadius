@@ -1,0 +1,158 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Typecheck
+        run: bun run build
+
+  test:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: bun install
+
+      # No secrets required: unit tests are pure logic and any LLM-adjacent
+      # suites run in replay mode against the committed cache.
+      - name: Run unit tests with coverage
+        run: bun vitest run tests/unit --coverage --coverage.reporter=json-summary --coverage.reporter=json --coverage.reporter=text
+
+      - name: Verify coverage output
+        if: always()
+        run: ls -la coverage/ || echo "⚠️ No coverage directory found"
+
+      # Fork PRs run with a read-only GITHUB_TOKEN, so the PR-comment step is
+      # skipped for them; the tests above still run and gate the job.
+      - name: Report Coverage
+        if: >-
+          always() &&
+          hashFiles('coverage/coverage-summary.json') != '' &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  pattern-evals:
+    name: Pattern evals (deterministic)
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: bun install
+
+      # Anonymised multi-file fixtures exercising the full static pipeline.
+      # Scoped to the deterministic patterns (zero LLM calls, no database):
+      # `grep -L` selects the test files that do NOT wire the LLM replay
+      # cache, so newly added deterministic patterns are picked up
+      # automatically while replay-variant patterns stay out of this job.
+      # Replay mode is pinned defensively: if a replay-wired test slips into
+      # the selection it fails loudly on a cache miss instead of attempting
+      # a live LLM call (fork PRs have no API keys).
+      # Retried once: tree-sitter's native finalizers can abort a worker
+      # process during teardown (Napi::Error / "Channel closed") after every
+      # test has already passed. A deterministic test failure fails both
+      # attempts, so real regressions still turn the job red.
+      - name: Run pattern eval tests (deterministic subset)
+        run: |
+          FILES=$(grep -L "helpers/with-replay" tests/eval/patterns/*/*.eval.test.ts)
+          bun vitest run --config vitest.eval.config.ts $FILES || \
+            bun vitest run --config vitest.eval.config.ts $FILES
+        env:
+          EVAL_LLM_MODE: replay
+
+  welding-invariants:
+    name: Welding invariants (Memgraph)
+    runs-on: ubuntu-latest
+
+    services:
+      memgraph:
+        image: memgraph/memgraph-mage:latest
+        ports:
+          - 7687:7687
+        options: >-
+          --health-cmd "echo 'RETURN 1;' | mgconsole --host localhost --port 7687"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+
+    env:
+      MEMGRAPH_URI: bolt://localhost:7687
+      MEMGRAPH_USER: ''
+      MEMGRAPH_PASSWORD: ''
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Wait for Memgraph
+        run: |
+          for i in $(seq 1 30); do
+            if (echo > /dev/tcp/127.0.0.1/7687) >/dev/null 2>&1; then exit 0; fi
+            sleep 2
+          done
+          echo "Memgraph not reachable" && exit 1
+
+      - name: Run welding-invariants integration test
+        run: bun vitest run tests/integration/welding-invariants.test.ts --config vitest.integration.config.ts

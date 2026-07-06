@@ -1,0 +1,11 @@
+fixture: "ts-taint-propagation"
+description: "Taint propagation via DI alias — FulfillmentController has ZERO direct I/O imports but uses ApiGateway (axios wrapper)"
+
+expected_nodes: {}
+
+negative_nodes:
+  Function:
+    - "calculateShippingCost"
+    - "isValidAddress"
+
+negative_patterns: {}

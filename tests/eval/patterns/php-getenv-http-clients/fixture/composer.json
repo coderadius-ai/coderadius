@@ -1,0 +1,14 @@
+{
+  "name": "acme/orders-aggregator",
+  "type": "project",
+  "require": {
+    "php": ">=8.2",
+    "symfony/runtime": "^7.0",
+    "guzzlehttp/guzzle": "^7.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Acme\\Orders\\": "src/"
+    }
+  }
+}

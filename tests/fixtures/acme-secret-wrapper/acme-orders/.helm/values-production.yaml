@@ -1,0 +1,4 @@
+app:
+  customEnvs:
+    RABBITMQ_HOST: mq.acme-prod.consul
+    SHARED_FEATURE_FLAG: 'on'

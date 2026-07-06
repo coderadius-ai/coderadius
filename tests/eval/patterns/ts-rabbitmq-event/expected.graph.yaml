@@ -1,0 +1,47 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — ts-rabbitmq-event
+#
+# Regression fixture: NestJS service with a static readonly class constant
+# used as event name via emitEvent(). Verifies that the pipeline extracts
+# the physical topic name from the constant, not the class/method name.
+#
+# Bug origin: LLM was extracting "emitEvent" or "SystemEventService"
+# as MessageChannel names instead of the actual routing key.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: ts-rabbitmq-event
+description: "NestJS static constant → MessageChannel extraction"
+
+expected_nodes:
+  Service:
+    - ts-rabbitmq-event
+
+  Function:
+    - emit
+
+  MessageChannel:
+    - system.event.created
+
+  Team:
+    - team-system
+
+expected_edges:
+  - from: ts-rabbitmq-event
+    rel: STORED_IN
+    to: ts-rabbitmq-event
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEGATIVE: class/method names that MUST NOT become MessageChannels
+# ═══════════════════════════════════════════════════════════════════════════════
+
+negative_nodes:
+  MessageChannel:
+    - SystemEventService
+    - emitEvent
+    - messageEmitterService
+    - EVENT_NAME
+
+negative_patterns:
+  MessageChannel:
+    # PascalCase class names — code identifiers, not physical topics
+    - "^[A-Z][a-z]+([A-Z][a-z]+){2,}$"

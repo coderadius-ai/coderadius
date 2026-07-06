@@ -1,0 +1,49 @@
+fixture: laravel
+description: >
+  Anonymized Laravel (PHP) orders service exercising the call-expression
+  routing forms route-extractor-php.ts already supports: explicit verb routes
+  (Route::get/post) and Route::apiResource. The golden is grounded in the
+  endpoints Laravel actually exposes — Route::apiResource('inventory', ...)
+  registers the 5-endpoint REST surface (index/store/show/update/destroy, no
+  create/edit HTML views). Path params canonicalize to {id}: Laravel's {id} is
+  preserved verbatim, and the apiResource expansion emits the route param as
+  {id} (RESOURCE_ROUTES in route-extractor-php.ts). Controllers are sink-free
+  (return arrays) so extraction is deterministic and makes zero LLM calls.
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders/{id}"
+    - "POST /orders"
+    - "GET /inventory"
+    - "POST /inventory"
+    - "GET /inventory/{id}"
+    - "PUT /inventory/{id}"
+    - "DELETE /inventory/{id}"
+expected_edges:
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /inventory"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /inventory"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /inventory/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /inventory/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /inventory/{id}"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

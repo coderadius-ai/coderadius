@@ -1,0 +1,8 @@
+framework:
+    messenger:
+        transports:
+            events: '%env(MESSENGER_TRANSPORT_DSN)%'
+            retry: 'doctrine://default?queue_name=retry'
+        routing:
+            'Acme\Shipping\Message\ShipmentDispatched': events
+            'Acme\Notification\Message\NotificationSent': events

@@ -1,0 +1,19 @@
+stages:
+  - build
+  - deploy
+
+# Non-compliant pipeline: missing toolkit include and MR pipeline configuration
+
+build:
+  stage: build
+  script:
+    - composer install
+    - composer build
+
+deploy-production:
+  stage: deploy
+  script:
+    - make deploy
+  environment: production
+  only:
+    - main

@@ -1,0 +1,9 @@
+services:
+  orders-aggregator:
+    build:
+      context: .
+      dockerfile: apps/orders-aggregator/Dockerfile
+    env_file:
+      - apps/orders-aggregator/.env
+    ports:
+      - "8080:8080"

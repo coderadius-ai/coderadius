@@ -1,0 +1,37 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — ts-opaque-sdk
+#
+# Regression fixture: TypeScript service using an opaque SDK wrapper where
+# the HTTP transport is hidden inside the pre-compiled package.
+#
+# Root cause of bug:
+#   packages.analyze marks @acme/notification-client as an I/O sink (Taint Engine).
+#   The LLM then sees the call but refuses to extract it as an APIEndpoint because
+#   the system prompt says: "Do NOT extract custom domain SDK wrappers".
+#
+#   Fix: typed entries in packages.analyze automatically generate an LLM hint that
+#   overrides the generic wrapper suppression rule.
+#
+# Key assertions:
+#   ✓ buildCustomKnowledgePrompt generates a hint for NotificationClient
+#   ✓ The generated hint contains the label "Notification API"
+#   ✓ The generated hint targets methods on "NotificationClient"
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: ts-opaque-sdk
+description: "Typed packages.analyze SDK entry → auto-generated LLM hint"
+
+expected_nodes:
+  # The hint generation is the testable surface (deterministic, no LLM needed).
+  # We verify that the hint text is produced correctly.
+  # Full end-to-end LLM verification is out of scope for a deterministic eval.
+  CustomKnowledge:
+    - "Notification API"
+
+negative_nodes:
+  CustomKnowledge:
+    # A plain-string entry in packages.analyze (no kind) must NOT generate a hint
+    - "urql"
+    - "plain-package-no-hint"
+
+negative_patterns: {}

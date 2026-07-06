@@ -1,0 +1,9 @@
+# coderadius.yaml — conduit-relay-service fixture
+#
+# Registers the proprietary @ConduitHandler decorator so the framework-signals
+# engine can detect it as a message-consumer signal.
+
+decorators:
+  - name: ConduitHandler
+    args: [routingKey, queue]
+    kind: message-consumer

@@ -1,0 +1,35 @@
+id: ar-makefile-targets
+name: Makefile targets
+description: >-
+  Requires a Makefile exposing the standard setup, test, and run targets, so
+  agents have one discoverable entry point for building, testing, and running
+  the repository instead of inferring commands.
+level: warning
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  WHERE r.valid_to_commit IS NULL
+  OPTIONAL MATCH (r)-[:HAS_TASK]->(t1:Task)
+    WHERE coalesce(t1.taskOrigin, t1.source) = 'makefile'
+  OPTIONAL MATCH (svc:Service)-[:STORED_IN]->(r)
+    WHERE svc.valid_to_commit IS NULL
+  OPTIONAL MATCH (svc)-[:HAS_TASK]->(t2:Task)
+    WHERE coalesce(t2.taskOrigin, t2.source) = 'makefile'
+  WITH r, collect(DISTINCT t1.name) + collect(DISTINCT t2.name) AS rawTargets
+  WITH r, [x IN rawTargets WHERE x IS NOT NULL] AS targets
+  WITH r, targets,
+    [x IN ['setup', 'test', 'run'] WHERE NOT x IN targets] AS missing,
+    [x IN ['setup', 'test', 'run'] | { label: x, status: CASE WHEN x IN targets THEN 'pass' ELSE 'fail' END }] AS checks
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE WHEN size(missing) = 0 THEN 'pass' ELSE 'fail' END AS status,
+    CASE
+      WHEN size(missing) = 0 THEN 'Makefile defines setup, test, and run.'
+      WHEN size(targets) = 0 THEN 'No Makefile targets found. Add setup, test, and run.'
+      ELSE 'Makefile missing targets: ' + reduce(a = '', x IN missing | a + CASE WHEN a = '' THEN '' ELSE ', ' END + x)
+    END AS detail,
+    { checks: checks, found: targets } AS structuredDetail

@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: travel-platform
+  description: Legacy travel booking platform for price scraping and reservations
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: travel-scraper
+  description: Legacy PHP monolith for travel price scraping, booking, and provider integration
+spec:
+  type: service
+  lifecycle: production
+  owner: team-travel
+  system: travel-platform
+  dependsOn:
+    - resource:mysql
+    - resource:google-pubsub

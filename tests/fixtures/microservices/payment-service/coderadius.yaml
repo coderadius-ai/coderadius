@@ -1,0 +1,12 @@
+hints:
+  custom_knowledge: |
+    payment-service uses DI container keys for message broker access.
+    The physical routing keys are defined in config/services.php.
+
+symbols:
+  - key: legacy.audit.publisher
+    value: audit.events.v1
+    category: di_service
+  - key: alert.sender
+    value: ops.critical.alerts
+    category: di_service

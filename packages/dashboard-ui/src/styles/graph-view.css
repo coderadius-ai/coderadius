@@ -1,0 +1,1350 @@
+/* ── Blast Explorer — Graph View ──────────────────────────────────────
+   Unicorno-grade D3 force-directed graph UI.
+   Design: Vercel/Linear dark — precise, minimal, enterprise-ready.
+   ─────────────────────────────────────────────────────────────────── */
+
+/* ── Shell ──────────────────────────────────────────────────────────── */
+/* Flex-grown to fill whatever vertical space the parent leaves after the
+   sticky header + Blast Target banner. The chain that makes this work:
+     .cr-app-layout (height 100vh)
+       └─ .cr-main-pane (flex column, fills remaining height)
+            └─ <main.container> (flex column, flex:1)
+                 └─ .blast-explorer (flex column, flex:1)
+                      └─ .igv-shell (flex:1 1 0, min-height 480)
+   No magic numbers — the canvas auto-resizes for any viewport height. */
+.igv-shell {
+    position: relative;
+    display: flex;
+    width: 100%;
+    flex: 1 1 0;
+    min-height: 480px;
+    animation: fadeUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ── Canvas Wrapper ───────────────────────────────────────────────────
+   Deep-tech canvas. Flat dark base + tight micro-dot grid (16px pitch,
+   1px dot, ~0.05 alpha) as the only texture. Subtle enough that it reads
+   as "working surface", not "wireframe". The previous radial vignette
+   produced a visible darker oval at the centre (gradient banding); a
+   flat colour avoids the artifact entirely. The pivot card carries its
+   own focus treatment, so the canvas stays neutral. */
+.igv-canvas-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    background:
+        url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='1.5' cy='1.5' r='1' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E"),
+        #0a0b0f;
+    background-repeat: repeat, no-repeat;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+/* SVG canvas fill — only the main canvas svg */
+.igv-canvas-wrap > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Prevent nested SVGs (icons, etc) from inheriting 100% size */
+.igv-canvas-wrap svg svg,
+.igv-topology-label svg,
+.igv-command-surface svg,
+.igv-legend svg {
+    width: auto;
+    height: auto;
+    display: inline;
+}
+
+/* ── ResourceRow — shared row used by sidebar list + cluster popover ─────
+   Layout: [icon] [name fills] [hover-actions] [trailing] [rels]
+   Hover state reveals action buttons; rest stays static. */
+.cr-resource-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 120ms;
+    font-size: 12px;
+    color: var(--text-secondary, #d4d4d8);
+}
+.cr-resource-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--cr-ink-0);
+}
+.cr-resource-row__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+.cr-resource-row__name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cr-resource-row__actions {
+    display: inline-flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 120ms;
+}
+.cr-resource-row:hover .cr-resource-row__actions { opacity: 1; }
+.cr-resource-row__actions button {
+    background: transparent;
+    border: none;
+    color: var(--cr-ink-2);
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    transition: background 120ms, color 120ms;
+}
+.cr-resource-row__actions button:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--cr-ink-0);
+}
+.cr-resource-row__rels {
+    display: inline-flex;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+/* ── Card meta strip (bottom row, inside foreignObject) ──────────────────
+   Single flex container per card. justify-content: space-between glues the
+   left chunk to the leading edge and the right chunk to the trailing edge,
+   regardless of content width. No more SVG x/y arithmetic per element. */
+.cr-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    gap: 8px;
+    font-family: var(--font-sans);
+}
+.cr-card-meta__left {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+.cr-card-meta__tech,
+.cr-card-meta__identity {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--cr-ink-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* Fallback token — type label rendered when no first-class descriptor
+   (technology / team / channelKind / ...) is available. Dimmer + italic
+   so the user reads at a glance which cards have real metadata vs which
+   collapse to a default. */
+.cr-card-meta__type-fallback {
+    font-family: var(--font-sans);
+    font-size: var(--cr-type-micro);
+    color: var(--cr-ink-3);
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cr-card-meta__team {
+    font-size: 10px;
+    color: var(--cr-ink-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cr-card-meta__pivot-team,
+.cr-card-meta__pivot-type {
+    font-size: 10px;
+    color: var(--cr-ink-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cr-card-meta__conf {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.cr-card-meta__bar {
+    display: inline-flex;
+    gap: 1px;
+}
+.cr-card-meta__cell {
+    width: 4px;
+    height: 6px;
+    border-radius: 1px;
+    display: inline-block;
+}
+.cr-card-meta__pct {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--cr-ink-1);
+}
+
+/* ── Background Grid ────────────────────────────────────────────────── */
+.igv-grid-pattern {
+    /* defined via SVG pattern, just hook for overrides */
+}
+
+/* ── Topology Label ─────────────────────────────────────────────────── */
+.igv-topology-label {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    opacity: 0.65;
+    pointer-events: none;
+    font-family: var(--font-mono);
+    user-select: none;
+}
+
+.igv-topology-label__icon {
+    color: var(--accent);
+    opacity: 0.8;
+    flex-shrink: 0;
+}
+
+.igv-topology-label__sep {
+    color: rgba(255, 255, 255, 0.15);
+    margin: 0 2px;
+}
+
+.igv-topology-label__stat {
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+
+/* ── Unified command surface (top-right) ──
+   Single modular entity that holds icon controls AND the filter/list panel.
+   Collapsed: only the icon row is visible (height 36px). Expanded: same
+   width, height grows to reveal chips, search, list, footer below the bar.
+   One border, one shadow, one radius — reads as a single fluid object.
+
+   Surface treatment matches the legacy floating toolbars: glass over
+   blur, soft border. Slight radius bump (12px vs 10px) to feel right at
+   container scale. */
+.igv-command-surface {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 320px;
+    height: 36px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(13, 13, 16, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    font-family: var(--font-sans);
+    z-index: 3;
+    transition: height 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.igv-command-surface--open {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 320px;
+    height: auto;
+    flex: 1;
+    border-radius: 0;
+    border: 0;
+    border-left: 1px solid var(--cr-line-0);
+    background: var(--cr-bg-1);
+    box-shadow: none;
+    overflow-y: auto;
+}
+
+@media (min-width: 1440px) {
+    .igv-command-surface { width: 360px; }
+    .igv-command-surface--open { width: 360px; }
+}
+
+@media (max-width: 1023px) {
+    .igv-command-surface {
+        left: 12px;
+        right: 12px;
+        width: auto;
+    }
+    .igv-command-surface--open {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        height: auto;
+        max-height: 60vh;
+        border: 0;
+        border-top: 1px solid var(--cr-line-0);
+        border-radius: 0;
+        background: var(--cr-bg-1);
+        box-shadow: none;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 1023px) {
+    .blast-explorer--sidebar {
+        flex-direction: column;
+    }
+
+    .blast-explorer--sidebar .blast-explorer__sidebar-portal {
+        width: 100%;
+        max-height: 60vh;
+        overflow-y: auto;
+        border-top: 1px solid var(--cr-line-0);
+    }
+}
+
+/* ── Bar: always-visible icon row at the top of the surface ── */
+.igv-cs__bar {
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 6px;
+    height: 36px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 200ms ease;
+}
+/* Once the surface is open, the bar grows a hairline divider between
+   itself and the content below. Uses transition so the line fades in
+   together with the panel expansion. */
+.igv-command-surface--open .igv-cs__bar {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Zoom group: cluster the three zoom buttons inside the 1fr column,
+   right-aligned so the rightmost icon (fit) sits next to the divider
+   that precedes the fullscreen button. */
+.igv-cs__bar-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    justify-self: end;
+}
+
+.igv-cs__divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.07);
+    flex-shrink: 0;
+}
+
+.igv-cs__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color 120ms ease, background 120ms ease;
+    padding: 0;
+}
+.igv-cs__btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+/* Active state for the filter toggle when the panel is open. Same calm
+   highlight pattern as the legacy toolbar: background-only, no glow. */
+.igv-cs__btn--active {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+.igv-cs__btn--active:hover {
+    background: rgba(255, 255, 255, 0.11);
+}
+
+/* Chevron rotation on the filter toggle: 0deg closed, 180deg open. */
+.igv-cs__btn-chevron {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.igv-cs__btn--active .igv-cs__btn-chevron {
+    transform: rotate(180deg);
+}
+
+/* ── Expandable sections (chips, search, list, footer) ──
+   Collapsed: height 0, opacity 0, no pointer events. Expanded: max-height
+   generous + opacity 1 + pointer events. Stagger via transition-delay so
+   the open animation cascades top-to-bottom. */
+.igv-cs__chips,
+.igv-cs__search-row,
+.igv-cs__list,
+.igv-cs__footer {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+}
+.igv-command-surface--open .igv-cs__chips,
+.igv-command-surface--open .igv-cs__search-row,
+.igv-command-surface--open .igv-cs__list,
+.igv-command-surface--open .igv-cs__footer {
+    opacity: 1;
+    pointer-events: auto;
+}
+/* Stagger: chips first, then search, then list, then footer. */
+.igv-command-surface--open .igv-cs__chips     { transition-delay: 30ms; }
+.igv-command-surface--open .igv-cs__search-row { transition-delay: 60ms; }
+.igv-command-surface--open .igv-cs__list      { transition-delay: 90ms; }
+.igv-command-surface--open .igv-cs__footer    { transition-delay: 120ms; }
+
+/* Filters block: vertically stacked sections (Type / Relation), each with
+   a label header and chip row. Replaces the legacy "chips + Clear/Show All"
+   strip — gives each filter dimension its own row, makes the IA scannable
+   and ready for additional facets. */
+.igv-cs__filters {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+.igv-cs__filter-section {
+    padding: 10px 12px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.igv-cs__filter-section:last-child {
+    border-bottom: 0;
+}
+.igv-cs__filter-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    min-height: 14px;
+}
+.igv-cs__filter-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.igv-cs__ghost-link {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--cr-ink-2);
+    letter-spacing: 0.06em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s ease;
+}
+.igv-cs__ghost-link:hover { color: #f4f4f5; }
+.igv-cs__filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Rel chips row: clickable wrappers around RelBadge letter chips.
+   "Off" state desaturates and dims, mirroring the legend's dim treatment
+   so the toggle reads as the same vocabulary the user already knows. */
+.igv-cs__rel-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.igv-cs__rel-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    line-height: 0;
+    transition: opacity 140ms ease, filter 140ms ease;
+}
+/* The inner .blast-rel-badge sets `cursor: default` globally (it's used
+   in many read-only contexts). Inside a clickable rel chip we override
+   so the hover affordance matches the type chips' hand cursor. */
+.igv-cs__rel-chip .blast-rel-badge {
+    cursor: pointer;
+}
+.igv-cs__rel-chip:hover { opacity: 1; filter: none; }
+.igv-cs__rel-chip--off {
+    opacity: 0.32;
+    filter: grayscale(0.7);
+}
+.igv-cs__rel-chip--off:hover { opacity: 0.6; }
+
+/* Search row: inset card-like field with subtle bg + border, focus
+   ring on focus-within. More substantial than the legacy plain input,
+   reads as "this is a real input field" without screaming. */
+.igv-cs__search-row {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.igv-cs__search-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    color: var(--text-tertiary);
+    transition: border-color 140ms ease, background 140ms ease;
+}
+.igv-cs__search-field:hover {
+    border-color: rgba(255, 255, 255, 0.10);
+}
+.igv-cs__search-field:focus-within {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+.igv-cs__search-field svg {
+    flex-shrink: 0;
+    opacity: 0.55;
+}
+.igv-cs__search-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-family: inherit;
+    letter-spacing: 0;
+    padding: 0;
+}
+.igv-cs__search-input::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.55;
+}
+.igv-cs__search-clear {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    opacity: 0.6;
+    transition: opacity 0.12s ease, color 0.12s ease, background 0.12s ease;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.igv-cs__search-clear:hover {
+    opacity: 1;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* List: scrollable resource rows. Takes remaining vertical space. */
+.igv-cs__list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 6px 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+}
+.igv-cs__list::-webkit-scrollbar      { width: 4px; }
+.igv-cs__list::-webkit-scrollbar-track { background: transparent; }
+.igv-cs__list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
+
+/* ── Type group headers inside the sidebar list ──
+   Subtle sticky label so the user can tell "I'm in the API section" as
+   they scroll. Matches the filter-section header vocabulary: uppercase
+   9px mono + muted hairline divider above. */
+.igv-cs__group-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px 4px;
+    margin-top: 2px;
+}
+.igv-cs__group-header:first-child {
+    margin-top: 0;
+    padding-top: 6px;
+}
+.igv-cs__group-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    opacity: 0.55;
+    font-family: var(--font-sans);
+}
+.igv-cs__group-count {
+    font-size: 9px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--text-tertiary);
+    opacity: 0.38;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    padding: 0 4px;
+    line-height: 1.5;
+}
+
+
+.igv-cs__footer {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ── Vercel-grade switch ─────────────────────────────────────────────
+   Hover affordance is scoped tight: only the SWITCH TRACK reacts,
+   not a wide background area. The label stays passive. */
+.igv-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 8px 0 4px;
+    height: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+.igv-switch input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.igv-switch__track {
+    position: relative;
+    width: 24px;
+    height: 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background 160ms ease, border-color 160ms ease;
+    flex-shrink: 0;
+}
+.igv-switch:hover .igv-switch__track { border-color: rgba(255, 255, 255, 0.14); }
+.igv-switch__thumb {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cr-ink-2);
+    transition: left 180ms cubic-bezier(0.16, 1, 0.3, 1), background 180ms ease;
+}
+.igv-switch--on .igv-switch__track {
+    background: rgba(91,124,255, 0.30);
+    border-color: rgba(91,124,255, 0.45);
+}
+.igv-switch--on .igv-switch__thumb {
+    left: 11px;
+    background: #5B7CFF;
+}
+
+.igv-switch__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    transition: color 160ms ease;
+    line-height: 1;
+}
+.igv-switch--on .igv-switch__label { color: var(--text-primary); }
+
+/* ── Fullscreen mode (CSS pseudo-fullscreen) ───────────────────────────
+   We use a CSS class instead of the native Fullscreen API so Escape
+   stays on the page (handled by the shared overlay stack), instead of
+   being intercepted by the browser to exit fullscreen. The visual
+   effect is identical for an analysis tool: canvas covers the viewport,
+   drawers/modals (z-index ≥ 1000) still mount on top. */
+.igv-canvas-wrap--fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body.cr-canvas-is-fullscreen .blast-explorer--sidebar .blast-explorer__sidebar-portal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 101;
+}
+
+/* `position: fixed` is relative to the nearest ancestor whose computed
+   `transform` / `filter` / `backdrop-filter` is not `none` (containing-
+   block trap). `.blast-explorer` and `.igv-shell` use
+   `animation: fadeUp ... both`, and `fadeUp`'s `to` keyframe persists
+   `transform: translateY(0)` + `filter: blur(0)` forever — both non-
+   `none` values that create such a containing block. When the canvas
+   is fullscreen, the body gets `cr-canvas-is-fullscreen` (toggled in
+   BlastRadiusGraphView.tsx) and we neutralise those properties on the
+   ancestor chain so the wrap is fixed to the viewport, not to the
+   trapped ancestor's box. */
+body.cr-canvas-is-fullscreen .blast-explorer,
+body.cr-canvas-is-fullscreen .blast-results,
+body.cr-canvas-is-fullscreen .igv-shell,
+body.cr-canvas-is-fullscreen .blast-explorer__main {
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+}
+
+/* ── Zone Labels (UPSTREAM / DOWNSTREAM) ───────────────────────────── */
+.igv-zone-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+    font-family: var(--font-mono);
+}
+
+/* ── Orbit Rings ────────────────────────────────────────────────────── */
+.igv-orbit {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.03);
+    stroke-dasharray: 3 6;
+    pointer-events: none;
+}
+
+/* ── Edges (Links) ──────────────────────────────────────────────────── */
+.igv-link {
+    fill: none;
+    stroke-width: 1.5;
+    opacity: 0.5;
+    transition: opacity 0.2s ease, stroke-width 0.2s ease;
+}
+
+.igv-link:hover {
+    opacity: 0.9;
+    stroke-width: 2.5;
+}
+
+/* Animated flow stream on the active edge */
+.igv-link-stream {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-dasharray: 4 10;
+    animation: igv-flow 3s linear infinite;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.igv-link-stream--upstream {
+    animation-direction: reverse;
+    animation-duration: 4s;
+}
+
+@keyframes igv-flow {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -140; }
+}
+
+/* Arrowhead markers — defined per color in SVG defs */
+
+/* ── Nodes ──────────────────────────────────────────────────────────── */
+.igv-node {
+    cursor: pointer;
+}
+
+.igv-node-body {
+    transition: filter 0.15s ease;
+}
+
+.igv-node:hover .igv-node-body {
+    filter: brightness(1.15);
+}
+
+/* Center / blast target node */
+.igv-node--center .igv-node-body {
+    stroke-width: 2;
+}
+
+/* Tier-2 transitive nodes — slightly more muted */
+.igv-node--tier2 {
+    opacity: 0.8;
+}
+
+.igv-node--tier2 .igv-node-body {
+    stroke-dasharray: 3 3;
+}
+
+/* Node label */
+.igv-node-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    fill: var(--text-secondary, var(--cr-ink-1));
+    dominant-baseline: middle;
+    text-anchor: middle;
+    pointer-events: none;
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+}
+
+.igv-node-label--center {
+    font-size: var(--cr-type-caption);
+    font-weight: 600;
+    fill: var(--text-primary, var(--cr-ink-0));
+}
+
+.igv-node-context-label {
+    font-size: 8.5px;
+    font-weight: 500;
+    fill: var(--text-tertiary, var(--cr-ink-2));
+    dominant-baseline: middle;
+    text-anchor: middle;
+    pointer-events: none;
+    font-family: var(--font-mono);
+    letter-spacing: 0;
+    opacity: 0.7;
+}
+
+/* Badge pill inside / below center node */
+.igv-node-type-badge {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    dominant-baseline: middle;
+    text-anchor: middle;
+    pointer-events: none;
+    font-family: var(--font-mono);
+    fill: rgba(255, 255, 255, 0.45);
+}
+
+/* ── Center Glow Halo ───────────────────────────────────────────────── */
+.igv-center-halo {
+    fill: none;
+    stroke-width: 1;
+    pointer-events: none;
+    animation: igv-halo-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes igv-halo-pulse {
+    0%, 100% { opacity: 0.15; r: 30; }
+    50%       { opacity: 0.08; r: 36; }
+}
+
+/* ── Tier Ring Bands (visual T1/T2 orbits) ─────────────────────────── */
+.igv-tier-ring {
+    fill: none;
+    pointer-events: none;
+}
+
+.igv-tier-ring--t1 {
+    stroke: rgba(94, 234, 212, 0.04);
+    stroke-width: 48;
+}
+
+.igv-tier-ring--t2 {
+    stroke: rgba(250, 204, 21, 0.025);
+    stroke-width: 60;
+}
+
+/* ── Tooltip ────────────────────────────────────────────────────────── */
+.igv-tooltip {
+    position: absolute;
+    background: #1a1a1f;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: var(--cr-type-caption);
+    color: var(--text-secondary);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transform: translate(-50%, -110%);
+    transition: opacity 0.1s ease;
+}
+
+.igv-tooltip__name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.igv-tooltip__type {
+    color: var(--text-tertiary);
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.igv-tooltip__urn {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    margin-top: 3px;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Legend ─────────────────────────────────────────────────────────── */
+.igv-legend {
+    position: absolute;
+    bottom: 14px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.igv-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 120ms;
+}
+
+/* Dim non-active items when the user hovers a node or edge — the rest of
+   the legend recedes so the involved rels read as the focus signal. */
+.igv-legend-item--dim {
+    opacity: 0.18;
+}
+
+.igv-legend-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    letter-spacing: 0.02em;
+}
+
+/* (Filter panel + sidebar header rules removed: superseded by the unified
+   .igv-command-surface above. The .igv-cs__list has its own scrollbar
+   styling and replaces .igv-sidebar__list.) */
+
+/* ── Sidebar Row ────────────────────────────────────────────────────── */
+.igv-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+    min-width: 0;
+}
+
+.igv-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.igv-row--active {
+    background: color-mix(in srgb, var(--cr-signal) 8%, transparent);
+}
+
+.igv-row__status {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    color: var(--text-tertiary);
+}
+
+.igv-row__status--check {
+    color: var(--color-green);
+    opacity: 0.7;
+}
+
+.igv-row__type {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+}
+
+.igv-row__name {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--cr-type-caption);
+    font-weight: 500;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 0;
+}
+
+.igv-row__badges {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.igv-row__fn-count {
+    font-size: 9px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--text-tertiary);
+    opacity: 0.6;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    padding: 0px 4px;
+    letter-spacing: 0;
+}
+
+.igv-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    padding: 1px 5px;
+    border-radius: 3px;
+    line-height: 1.4;
+}
+
+.igv-badge--reads {
+    background: rgba(96, 165, 250, 0.1);
+    color: #7eaedd;
+    border: 1px solid rgba(96, 165, 250, 0.15);
+}
+
+.igv-badge--writes {
+    background: rgba(248, 113, 113, 0.1);
+    color: #c87171;
+    border: 1px solid rgba(248, 113, 113, 0.15);
+}
+
+.igv-badge--calls {
+    background: rgba(192, 132, 252, 0.1);
+    color: #a87dcc;
+    border: 1px solid rgba(192, 132, 252, 0.15);
+}
+
+.igv-badge--publishes {
+    background: rgba(250, 204, 21, 0.08);
+    color: #c8a82e;
+    border: 1px solid rgba(250, 204, 21, 0.12);
+}
+
+.igv-badge--listens {
+    background: rgba(34, 211, 238, 0.08);
+    color: #5bb8c8;
+    border: 1px solid rgba(34, 211, 238, 0.12);
+}
+
+.igv-badge--implements {
+    background: rgba(74, 222, 128, 0.08);
+    color: #5ea86e;
+    border: 1px solid rgba(74, 222, 128, 0.12);
+}
+
+.igv-badge--default {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-tertiary);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.igv-badge--tier {
+    background: rgba(250, 204, 21, 0.08);
+    color: #c8a82e;
+    border: 1px solid rgba(250, 204, 21, 0.1);
+    font-size: 8px;
+}
+
+/* ── Surface Footer CTA ──────────────────────────────────────────────── */
+
+/* ── Header Toggle ───────────────────────────────────────────────────── */
+.cr-view-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    height: 32px;
+    box-sizing: border-box;
+}
+
+.cr-view-toggle__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    height: 100%;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-tertiary);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: color 0.12s ease, background 0.12s ease;
+    white-space: nowrap;
+}
+
+.cr-view-toggle__btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+}
+
+.cr-view-toggle__btn:hover {
+    color: var(--text-secondary);
+    background: var(--bg-surface-hover);
+}
+
+.cr-view-toggle__btn--active {
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.cr-view-toggle__btn--active:hover {
+    color: var(--text-primary);
+    background: var(--bg-surface-hover);
+}
+
+/* ── Header Search Shortcut ─────────────────────────────────────────── */
+.cr-header-search-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    height: 28px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 5px;
+    color: var(--text-tertiary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    white-space: nowrap;
+    letter-spacing: 0;
+    min-width: 220px;
+}
+
+.cr-header-search-btn:hover {
+    color: var(--text-secondary);
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.cr-header-search-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+}
+
+.cr-header-search-kbd {
+    margin-left: auto;
+    font-size: 10.5px;
+    font-family: var(--font-mono);
+    background: rgba(255, 255, 255, 0.07);
+    border: none;
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+    letter-spacing: 0;
+}
+
+/* ── Header Actions Group ───────────────────────────────────────────── */
+.cr-header-blast-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: end;
+}
+
+@media (max-width: 640px) {
+    .cr-header-global__inner--blast {
+        grid-template-columns: minmax(120px, 1fr) auto;
+        gap: 10px;
+    }
+
+    .cr-header-blast-actions {
+        gap: 4px;
+    }
+
+    .cr-view-toggle {
+        height: 30px;
+    }
+
+    .cr-view-toggle__btn {
+        padding: 0 7px;
+        font-size: var(--cr-type-micro);
+    }
+
+    .cr-header-search-btn {
+        width: 32px;
+        min-width: 0;
+        height: 30px;
+        justify-content: center;
+        padding: 0;
+        gap: 0;
+        font-size: 0;
+    }
+
+    .cr-header-search-kbd {
+        display: none;
+    }
+}
+
+/* ── Empty State ────────────────────────────────────────────────────── */
+.igv-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-tertiary);
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.igv-empty svg {
+    width: 32px;
+    height: 32px;
+    opacity: 0.5;
+}
+
+.igv-empty__label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
+/* Active edge flow animation */
+.igv-edge-active {
+    stroke-dasharray: 6 6;
+    animation: igv-edge-flow 0.5s linear infinite;
+}
+@keyframes igv-edge-flow {
+    to {
+        stroke-dashoffset: -12;
+    }
+}
+
+@keyframes igv-tooltip-fade-in {
+    from { opacity: 0; transform: translate(-50%, -95%) scale(0.98); }
+    to { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+}
+
+/* ── Fuzzy Match Highlight (reusable across entire UI) ──────────────── */
+.cr-fuzzy-hl {
+    color: var(--color-cyan);
+    background: rgba(34, 211, 238, 0.10);
+    border-radius: 2px;
+    padding: 0 1px;
+    /* No font-weight change — keeps layout stable */
+}
+
+/* ── Sidebar Inline Search ──────────────────────────────────────────── */
+.igv-sidebar__search {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-tertiary);
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.igv-sidebar__search svg {
+    flex-shrink: 0;
+    opacity: 0.45;
+    width: 12px;
+    height: 12px;
+}
+
+.igv-sidebar__search-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: var(--cr-type-caption);
+    font-family: inherit;
+    letter-spacing: 0;
+}
+
+.igv-sidebar__search-input::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+
+.igv-sidebar__search-clear {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 2px;
+    opacity: 0.5;
+    transition: opacity 0.12s ease, color 0.12s ease;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.igv-sidebar__search-clear:hover {
+    opacity: 1;
+    color: var(--text-primary);
+}

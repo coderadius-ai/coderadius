@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: notification-service
+  description: Handles notification delivery via email, SMS, and push across channels
+spec:
+  type: service
+  lifecycle: production
+  owner: team-checkout
+  system: ecommerce-platform
+  dependsOn:
+    - component:order-service
+    - resource:postgres
+    - resource:rabbitmq
+    - resource:google-pubsub

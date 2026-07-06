@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: Order Service
+  version: "1.0.0"
+  description: API for managing customer orders and fulfillment callbacks
+servers:
+  - url: http://order-service:3000
+paths:
+  /orders:
+    post:
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - customerId
+                - items
+              properties:
+                customerId:
+                  type: string
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: string
+                      quantity:
+                        type: integer
+      responses:
+        '200':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: string
+                  status:
+                    type: string
+
+  /orders/{id}:
+    get:
+      summary: Get order status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  customer_id:
+                    type: string
+                  status:
+                    type: string
+                  items:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+
+  /orders/forward-webhook:
+    post:
+      summary: Forward webhook to fulfillment service
+      description: Tests API passthrough functionality by forwarding dynamic data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                merchant_id:
+                  type: string
+      responses:
+        '200':
+          description: Webhook forwarded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  merchant_id:
+                    type: string
+                  status:
+                    type: string

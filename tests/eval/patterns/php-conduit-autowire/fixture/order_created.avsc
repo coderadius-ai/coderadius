@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.acme.orders",
+  "doc": "Event emitted when an order is created.",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "acme-orders-consumer",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@nestjs/common": "^10.3.0",
+    "@nestjs/microservices": "^10.3.0"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "record",
+  "name": "OrderSave",
+  "namespace": "com.acme.platform.order",
+  "doc": "Event emitted when an order is saved to the database.",
+  "fields": [
+    {
+      "name": "orderId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      },
+      "doc": "Unique identifier for the order"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "OrderStatus",
+        "symbols": ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"]
+      },
+      "default": "PENDING"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "doc": "Additional metadata map"
+    }
+  ]
+}

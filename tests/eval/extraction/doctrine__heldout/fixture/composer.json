@@ -1,0 +1,13 @@
+{
+    "name": "acme/acme-inventory",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "doctrine/orm": "^2.17"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}

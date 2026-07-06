@@ -1,0 +1,15 @@
+{
+    "name": "acme/inventory-service",
+    "description": "Acme inventory service. Symfony Messenger configured via PHP-Factory (no messenger.yaml).",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "symfony/messenger": "^6.4",
+        "symfony/amqp-messenger": "^6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acme\\Inventory\\": "src/"
+        }
+    }
+}

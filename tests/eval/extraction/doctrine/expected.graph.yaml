@@ -1,0 +1,23 @@
+fixture: doctrine
+description: >
+  Anonymized Doctrine entity (PHP 8 attributes). #[ORM\Entity] +
+  #[ORM\Table(name: 'orders')] map the class to the `orders` table; #[ORM\Column]
+  declares columns (explicit `name:` or the property name). Golden grounded in
+  Doctrine's mapping semantics. Static, zero LLM — via the ::__class_metadata
+  chunk path (orm-static).
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  DataContainer:
+    - "orders"
+  DataStructure:
+    - "orders"
+  DataField:
+    - "id"
+    - "reference"
+    - "total_amount"
+    - "status"
+negative_nodes:
+  DataContainer:
+    - "Order"
+    - "App\\Entity\\Order"

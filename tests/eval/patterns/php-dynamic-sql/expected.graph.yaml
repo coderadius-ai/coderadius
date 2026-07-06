@@ -1,0 +1,16 @@
+fixture: "php-dynamic-sql"
+description: "Dynamic SQL Guardrails (READS vs WRITES, Stub extraction)"
+
+expected_nodes:
+  DataContainer:
+    - "audit_log"
+    - "sync_checkpoints"
+    - "booking_slot_{type}"
+    - "shipment_log_{carrierType}"
+    - "shipment_log_express"
+    - "shipment_log_freight"
+  APIEndpoint:
+    - "/api/v1/partner/push"
+
+negative_nodes: {}
+negative_patterns: {}

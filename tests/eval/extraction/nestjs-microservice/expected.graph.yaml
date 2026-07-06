@@ -1,0 +1,41 @@
+fixture: nestjs-microservice
+description: >
+  Anonymized NestJS microservice consumer (TS). Message-handler decorators
+  (@MessagePattern / @EventPattern) bind a method to a named channel; the
+  channel name is the decorator's string argument (order.created,
+  payment.processed, order.cancelled). The golden asserts the MessageChannel
+  each handler LISTENS_TO.
+
+  These consumers now resolve statically with ZERO LLM calls: framework-signals
+  already parses the message-consumer decorators and resolves the channel name,
+  and chunk-extraction composes them into a static `::__message_handler` chunk
+  (composeMessageChannels) — the broker analog of the decorator-route extractor.
+  Previously LLM-gated (recall 0 in replay); closed by the static broker
+  extractor.
+target:
+  repo: acme/acme-orders-consumer
+expected_nodes:
+  MessageChannel:
+    - "order.created"
+    - "payment.processed"
+    - "order.cancelled"
+expected_edges:
+  - from_service: acme-orders-consumer
+    rel: LISTENS_TO
+    to: "order.created"
+  - from_service: acme-orders-consumer
+    rel: LISTENS_TO
+    to: "payment.processed"
+  - from_service: acme-orders-consumer
+    rel: LISTENS_TO
+    to: "order.cancelled"
+negative_nodes:
+  MessageChannel:
+    - "OrderConsumer"
+    - "handler"
+    - "bus"
+    - "client"
+negative_patterns:
+  MessageChannel:
+    - "__message_handler"
+    - "::"

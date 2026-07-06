@@ -1,0 +1,21 @@
+fixture: laravel-eloquent
+description: >
+  Anonymized Laravel Eloquent models (PHP). Eloquent is convention-based: a
+  class extends Model and maps to a table given either explicitly by $table
+  ('orders') or by convention (snake_case plural of the class name —
+  ShippingAddress → shipping_addresses). Golden grounded in Eloquent's
+  documented table-resolution rules, not analyzer output. Static, zero LLM.
+target:
+  repo: acme/acme-catalog
+expected_nodes:
+  DataContainer:
+    - "orders"
+    - "shipping_addresses"
+  DataStructure:
+    - "orders"
+    - "shipping_addresses"
+negative_nodes:
+  DataContainer:
+    - "Order"
+    - "ShippingAddress"
+    - "Model"

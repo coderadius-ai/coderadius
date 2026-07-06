@@ -1,0 +1,9 @@
+{
+    "name": "acme/inventory",
+    "autoload": {
+        "psr-4": {
+            "Acme\\Inventory\\": "src/Inventory",
+            "Acme\\Security\\": "src/Security"
+        }
+    }
+}

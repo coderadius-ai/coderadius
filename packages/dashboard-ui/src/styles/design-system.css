@@ -1,0 +1,953 @@
+/* ── Design System · Shared chrome ────────────────────────────────── */
+
+/* PageTopBar — thin page header bar.
+   Replaces the ad-hoc cr-header-global rendering that lived inline in
+   App.tsx. Structural properties (44px height, blurred backdrop, sticky
+   z-index) are shared across every page. */
+
+.cr-topbar {
+    position: relative;
+    z-index: 50;
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    flex-shrink: 0;
+    background: var(--cr-bg-1);
+    border-bottom: 1px solid var(--cr-line-0);
+}
+
+.cr-topbar__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    height: 100%;
+    padding-inline: 16px;
+}
+
+.cr-topbar__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    margin: 0;
+    color: var(--cr-ink-0);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cr-topbar__heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.cr-topbar__section {
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: var(--cr-weight-medium);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.cr-topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: end;
+}
+
+@media (max-width: 640px) {
+    .cr-topbar__inner {
+        grid-template-columns: minmax(120px, 1fr) auto;
+        gap: 10px;
+    }
+
+    .cr-topbar__actions {
+        gap: 4px;
+    }
+}
+
+/* ── OperatorFilter — table filter wrapper ────────────────────────── */
+
+.cr-opfilter {
+    position: relative;
+    width: 260px;
+    flex-shrink: 0;
+}
+
+.cr-opfilter .tagged-search__input-wrap {
+    height: 28px;
+    padding: 0 10px;
+    background: var(--cr-bg-2);
+    border: none;
+    border-radius: 5px;
+}
+
+.cr-opfilter .tagged-search__input-wrap:focus-within {
+    background: var(--cr-bg-3);
+    box-shadow: none;
+}
+
+.cr-opfilter .tagged-search__input {
+    font-size: 12px;
+}
+
+.cr-opfilter .tagged-search__input::placeholder {
+    color: var(--cr-ink-3);
+    opacity: 1;
+}
+
+.cr-opfilter .tagged-search__icon {
+    opacity: 0.4;
+}
+
+.cr-opfilter .tagged-search__clear {
+    width: 18px;
+    height: 18px;
+}
+
+.cr-opfilter .tagged-search__clear:focus-visible,
+.tagged-search__clear:focus-visible {
+    outline-offset: -2px;
+}
+
+.cr-opfilter .tagged-search__scope-tag {
+    font-size: 10px;
+    padding: 1px 5px 1px 6px;
+}
+
+.cr-opfilter .tagged-search__compound-tag {
+    font-size: 11px;
+}
+
+.cr-opfilter .tagged-search__compound-scope {
+    font-size: 10px;
+}
+
+.cr-opfilter .tagged-search__compound-value {
+    font-size: 10px;
+}
+
+.cr-opfilter .tagged-search__compound-remove {
+    width: 12px;
+    height: 12px;
+}
+
+.cr-opfilter .tagged-search__dropdown {
+    min-width: 200px;
+    width: min(520px, calc(100vw - 32px));
+    max-width: min(520px, calc(100vw - 32px));
+    left: auto;
+    right: 0;
+    background: var(--cr-bg-2);
+    border: 1px solid var(--cr-line-1);
+    border-radius: 5px;
+    overflow-x: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.cr-opfilter .tagged-search__scope-hints {
+    padding: 6px;
+}
+
+.cr-opfilter .tagged-search__scope-hints-label {
+    padding: 2px 8px;
+    font-size: 9.5px;
+    color: var(--cr-ink-3);
+    opacity: 0.6;
+}
+
+.cr-opfilter .tagged-search__scope-hint {
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.cr-opfilter .tagged-search__scope-hint:hover {
+    background: var(--cr-bg-3);
+}
+
+.cr-opfilter .tagged-search__scope-hint-label {
+    font-size: 12px;
+}
+
+.cr-opfilter .tagged-search__scope-hint-key {
+    font-size: 10px;
+    color: var(--cr-ink-3);
+}
+
+.cr-opfilter .tagged-search__scope-hint-kbd {
+    font-size: 9px;
+    padding: 1px 4px;
+    background: var(--cr-bg-3);
+    border: 1px solid var(--cr-line-0);
+    color: var(--cr-ink-3);
+    opacity: 0.7;
+}
+
+.cr-opfilter__values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-width: 100%;
+    max-height: 176px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.cr-opfilter__chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 8px;
+    color: var(--cr-ink-1);
+    background: var(--cr-bg-3);
+    border: 1px solid var(--cr-line-0);
+    border-radius: 4px;
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cr-opfilter__chip:hover {
+    color: var(--cr-ink-0);
+    background: var(--cr-bg-strip);
+    border-color: var(--cr-line-1);
+}
+
+/* ── MetadataGrid — label:value dl layout ────────────────────────── */
+
+.cr-meta-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.cr-meta-grid--responsive {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    column-gap: 16px;
+    row-gap: 8px;
+}
+
+.cr-meta-grid--dense {
+    gap: 5px;
+}
+
+.cr-meta-grid__row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+
+.cr-meta-grid__row--span {
+    grid-column: 1 / -1;
+}
+
+.cr-meta-grid__key {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: var(--cr-weight-medium);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--cr-ink-3);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.cr-meta-grid:not(.cr-meta-grid--responsive) .cr-meta-grid__key {
+    width: 72px;
+    flex-shrink: 0;
+}
+
+.cr-meta-grid__value {
+    font-size: 12.5px;
+    color: var(--cr-ink-0);
+    margin: 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    line-height: 1.5;
+}
+
+/* ── ToggleGroup — segmented pill control ─────────────────────────── */
+
+.cr-toggle-group {
+    display: inline-flex;
+    align-items: center;
+    background: var(--cr-bg-2);
+    border-radius: 6px;
+    padding: 2px;
+    gap: 1px;
+}
+
+.cr-toggle-group__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 10px;
+    height: 26px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--cr-ink-2);
+    font: inherit;
+    font-size: 12px;
+    font-weight: var(--cr-weight-medium);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 120ms ease, background 120ms ease;
+}
+
+.cr-toggle-group__btn:hover {
+    color: var(--cr-ink-0);
+}
+
+.cr-toggle-group__btn--active {
+    color: var(--cr-ink-0);
+    background: var(--cr-bg-strip);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.cr-toggle-group__count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--cr-ink-3);
+    opacity: 0.6;
+}
+
+.cr-toggle-group__btn--active .cr-toggle-group__count {
+    color: var(--cr-ink-1);
+    opacity: 1;
+}
+
+.cr-toggle-group--sm .cr-toggle-group__btn {
+    height: 24px;
+    padding: 0 9px;
+    font-size: 11px;
+}
+
+.cr-toggle-group--sm .cr-toggle-group__count {
+    font-size: 9.5px;
+}
+
+/* ── SectionShell — grid wrapper for SectionRenderer pages ───────── */
+
+.cr-section-shell {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) 24px;
+    flex: 1;
+    min-height: 0;
+    width: calc(100% + (var(--page-padding-x) * 2));
+    margin-inline: calc(var(--page-padding-x) * -1);
+    margin-bottom: 0;
+    background: var(--cr-bg-0);
+}
+
+.cr-section-shell__body {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 var(--page-padding-x);
+}
+
+/* ── PageIdentityStrip — shared page header ──────────────────────── */
+
+.cr-id-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 16px;
+    background: var(--cr-bg-strip);
+    border-bottom: 1px solid var(--cr-line-0);
+}
+
+.cr-id-strip__copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.cr-id-strip__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: var(--cr-ink-0);
+    font-size: 15px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: -0.005em;
+    line-height: 1.2;
+}
+
+.cr-id-strip__icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.cr-id-strip__subtitle {
+    margin: 0;
+    color: var(--cr-ink-1);
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.cr-id-strip__title + .cr-id-strip__subtitle {
+    margin-top: 4px;
+    color: var(--cr-ink-2);
+    font-size: 12.5px;
+}
+
+.cr-id-strip__right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-shrink: 0;
+}
+
+.cr-id-strip__kpis {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.cr-id-strip__kpi {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
+    white-space: nowrap;
+}
+
+.cr-id-strip__num {
+    color: var(--cr-ink-0);
+    font-size: 18px;
+    font-weight: var(--cr-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
+.cr-id-strip__kpi--danger .cr-id-strip__num { color: var(--cr-danger); }
+.cr-id-strip__kpi--warn .cr-id-strip__num   { color: var(--cr-warn); }
+.cr-id-strip__kpi--ok .cr-id-strip__num     { color: var(--cr-ok); }
+.cr-id-strip__kpi--signal .cr-id-strip__num { color: var(--cr-signal); }
+.cr-id-strip__kpi--internal .cr-id-strip__num { color: #a78bfa; }
+
+.cr-id-strip__label {
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+
+.cr-id-strip__sep {
+    display: inline-block;
+    width: 1px;
+    height: 20px;
+    background: var(--cr-line-0);
+    vertical-align: middle;
+}
+
+@media (max-width: 1080px) {
+    .cr-id-strip {
+        flex-wrap: wrap;
+    }
+
+    .cr-id-strip__kpis {
+        overflow-x: auto;
+    }
+}
+
+/* ── ExtLink — inline external link with hover icon ─────────────── */
+
+.cr-ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+    transition: none;
+}
+.cr-ext-link:hover,
+.cr-ext-link:hover * { color: var(--cr-signal); }
+
+/* ── SegmentedBar — continuous proportional bar ──────────────────── */
+
+.cr-segbar {
+    display: flex;
+    width: 100%;
+    height: var(--segbar-h, 6px);
+    border-radius: calc(var(--segbar-h, 6px) / 2);
+    overflow: hidden;
+    background: var(--cr-line-0);
+}
+
+.cr-segbar__seg {
+    min-width: 2px;
+    height: 100%;
+}
+
+/* ── RowExpand — trailing expand chevron for OperatorTable rows ──── */
+
+.cr-row-expand {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    color: var(--cr-ink-3);
+    border-radius: 3px;
+    transition: transform 150ms, color 100ms;
+}
+
+.cr-operator-table__row:hover .cr-row-expand { color: var(--cr-ink-1); }
+/* Expanded wins over hover: the open state keeps the signal color. */
+.cr-operator-table__row--expanded .cr-row-expand,
+.cr-operator-table__row--expanded:hover .cr-row-expand { color: var(--cr-signal); transform: rotate(90deg); }
+/* The generic last-cell icon brightener (components.css targets the svg
+   directly, beating inheritance) must not wash out the open state either. */
+.cr-operator-table__row--expanded:hover .cr-operator-table__cell:last-child .cr-row-expand svg {
+    color: var(--cr-signal);
+}
+
+/* ── CrSearch — icon search input ───────────────────────────────── */
+
+.cr-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 28px;
+    padding: 0 10px;
+    flex: 1;
+    min-width: 0;
+    background: var(--cr-bg-strip);
+    border: 1px solid var(--cr-line-0);
+    border-radius: 6px;
+    color: var(--cr-ink-3);
+    cursor: text;
+    transition: border-color 120ms ease, background 120ms ease;
+}
+.cr-search:focus-within {
+    border-color: var(--cr-line-1);
+    background: var(--cr-bg-2);
+}
+.cr-search--flat {
+    background: var(--cr-bg-2);
+    border: none;
+}
+.cr-search--flat:focus-within {
+    background: var(--cr-bg-3);
+}
+.cr-search svg { flex-shrink: 0; }
+.cr-search input {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--cr-ink-0);
+    font: inherit;
+    font-size: 12px;
+}
+.cr-search input::placeholder { color: var(--cr-ink-3); }
+.cr-search input::-webkit-search-cancel-button { appearance: none; }
+
+/* ── CrChipGroup — multi-toggle filter chips ───────────────────── */
+
+.cr-chip-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.cr-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 999px;
+    background: var(--cr-bg-2);
+    color: var(--cr-ink-2);
+    font: inherit;
+    font-size: 11px;
+    font-weight: var(--cr-weight-medium);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease;
+}
+.cr-chip:hover {
+    color: var(--cr-ink-0);
+    background: var(--cr-bg-3);
+}
+.cr-chip--active {
+    color: var(--cr-ink-0);
+    background: var(--cr-bg-3);
+}
+
+.cr-chip__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cr-ink-mute);
+    flex-shrink: 0;
+}
+.cr-chip__count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--cr-ink-3);
+    opacity: 0.6;
+}
+.cr-chip--active .cr-chip__count {
+    color: var(--cr-ink-1);
+    opacity: 1;
+}
+
+/* Chip tone: signal (blue) */
+.cr-chip--signal .cr-chip__dot { background: var(--cr-signal); }
+.cr-chip--signal.cr-chip--active {
+    color: var(--cr-signal);
+    background: color-mix(in srgb, var(--cr-signal) 10%, transparent);
+}
+
+/* Chip tone: warn (amber) */
+.cr-chip--warn .cr-chip__dot { background: var(--cr-warn); }
+.cr-chip--warn.cr-chip--active {
+    color: var(--cr-warn);
+    background: color-mix(in srgb, var(--cr-warn) 12%, transparent);
+}
+
+/* Chip tone: danger (red) */
+.cr-chip--danger .cr-chip__dot { background: var(--cr-danger); }
+.cr-chip--danger.cr-chip--active {
+    color: var(--cr-danger);
+    background: color-mix(in srgb, var(--cr-danger) 12%, transparent);
+}
+
+/* Chip tone: ok (green) */
+.cr-chip--ok .cr-chip__dot { background: var(--cr-ok); }
+.cr-chip--ok.cr-chip--active {
+    color: var(--cr-ok);
+    background: color-mix(in srgb, var(--cr-ok) 12%, transparent);
+}
+
+/* Chip tone: muted (gray) */
+.cr-chip--muted .cr-chip__dot { background: var(--cr-ink-2); }
+
+/* ── CrSortSelect — labeled sort dropdown ──────────────────────── */
+
+.cr-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+.cr-sort__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cr-ink-3);
+    white-space: nowrap;
+}
+.cr-sort select {
+    height: 28px;
+    padding: 0 26px 0 10px;
+    background-color: var(--cr-bg-2);
+    border: none;
+    border-radius: 6px;
+    color: var(--cr-ink-1);
+    font: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10' fill='none'%3E%3Cpath d='M2.5 4l2.5 2.5L7.5 4' stroke='%23a1a1aa' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 10px 10px;
+    transition: background-color 120ms ease;
+}
+.cr-sort select:hover { background-color: var(--cr-bg-3); }
+.cr-sort select:focus { outline: none; }
+
+/* ── CrButton — flat action buttons ─────────────────────────────── */
+
+.cr-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 11px;
+    border: none;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: var(--cr-weight-medium);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease;
+}
+.cr-btn:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+}
+.cr-btn svg { flex-shrink: 0; }
+
+.cr-btn--secondary {
+    background: var(--cr-bg-2);
+    color: var(--cr-ink-1);
+}
+.cr-btn--secondary:hover:not(:disabled) {
+    background: var(--cr-bg-3);
+    color: var(--cr-ink-0);
+}
+
+.cr-btn--primary {
+    background: color-mix(in srgb, var(--cr-signal) 10%, transparent);
+    color: var(--cr-signal);
+}
+.cr-btn--primary:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--cr-signal) 16%, transparent);
+    color: var(--cr-ink-0);
+}
+
+.cr-btn--ghost {
+    background: transparent;
+    color: var(--cr-ink-2);
+}
+.cr-btn--ghost:hover:not(:disabled) {
+    background: var(--cr-bg-2);
+    color: var(--cr-ink-0);
+}
+
+/* ── CrPill — colored status/value pill ─────────────────────────── */
+
+.cr-pill {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.cr-pill--signal {
+    color: var(--cr-signal);
+    background: color-mix(in srgb, var(--cr-signal) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cr-signal) 25%, transparent);
+}
+.cr-pill--warn {
+    color: var(--cr-warn);
+    background: color-mix(in srgb, var(--cr-warn) 7%, transparent);
+}
+.cr-pill--danger {
+    color: var(--cr-danger);
+    background: color-mix(in srgb, var(--cr-danger) 8%, transparent);
+}
+.cr-pill--ok {
+    color: var(--cr-ok);
+    background: color-mix(in srgb, var(--cr-ok) 7%, transparent);
+}
+.cr-pill--muted {
+    color: var(--cr-ink-1);
+    background: transparent;
+    border: 1px solid var(--cr-line-0);
+}
+.cr-pill--outline {
+    background: transparent;
+    border: 1px solid currentColor;
+}
+
+/* ── CrFilterBar — composite toolbar layout ────────────────────── */
+
+.cr-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--cr-line-dim);
+    flex-shrink: 0;
+}
+
+/* ── StatusBar — sticky bottom chrome ────────────────────────────── */
+
+.cr-statusbar {
+    position: sticky;
+    bottom: 0;
+    z-index: 16;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 24px;
+    padding: 0 16px;
+    gap: 14px;
+    border-top: 1px solid var(--cr-line-0);
+    background: var(--cr-bg-1);
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.cr-statusbar__group {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    line-height: 1;
+}
+
+.cr-statusbar__sep {
+    color: var(--cr-ink-3);
+    opacity: 0.45;
+    line-height: 1;
+}
+
+.cr-statusbar__dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+.cr-statusbar__dot--ok {
+    background: var(--cr-ok);
+}
+
+.cr-statusbar__dot--warn {
+    background: var(--cr-warn);
+}
+
+.cr-statusbar__dot--danger {
+    background: var(--cr-danger);
+}
+
+.cr-statusbar__ok {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--cr-ok);
+    line-height: 1;
+}
+
+.cr-statusbar__group > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cr-statusbar kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 14px;
+    padding: 0 4px;
+    color: var(--cr-ink-2);
+    background: var(--cr-bg-2);
+    border-radius: 2px;
+    font: inherit;
+    font-size: 9.5px;
+    letter-spacing: 0;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+/* ── EmptyState ──────────────────────────────────────────────────────── */
+/* One shared empty/placeholder surface for every page, tab, and panel.   */
+.cr-empty-state {
+    --cr-empty-accent: #a78bfa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+}
+
+/* A wholly-empty tab or panel: generous top breathing room. */
+.cr-empty-state--page {
+    padding: 72px 24px;
+}
+
+/* A table or list filtered down to nothing: sits closer under its header. */
+.cr-empty-state--inline {
+    padding: 48px 24px;
+}
+
+.cr-empty-state--positive { --cr-empty-accent: var(--cr-ok); }
+.cr-empty-state--muted { --cr-empty-accent: var(--cr-ink-3); }
+
+.cr-empty-state__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--cr-empty-accent);
+    background: var(--cr-bg-1);
+    border: 1px solid var(--cr-line-0);
+    border-radius: 9px;
+}
+
+.cr-empty-state__text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-width: 420px;
+}
+
+.cr-empty-state__title {
+    margin: 0;
+    color: var(--cr-ink-0);
+    font-size: 16px;
+    font-weight: var(--cr-weight-semibold);
+    line-height: 1.25;
+}
+
+.cr-empty-state__detail {
+    margin: 0;
+    color: var(--cr-ink-2);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.cr-empty-state__action {
+    margin-top: 4px;
+}

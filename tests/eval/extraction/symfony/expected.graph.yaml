@@ -1,0 +1,44 @@
+fixture: symfony
+description: >
+  Anonymized Symfony (PHP) order service exercising PHP 8 #[Route] attributes
+  with class-level prefix concatenation (#[Route('/orders')] on the controller +
+  method-level #[Route('/{id}', methods: ['GET'])] / #[Route('', methods: ['POST'])])
+  and the methods-default-to-GET behavior (#[Route('/health')] with no methods:).
+  route-extractor-php.ts already supports Symfony attributes, so this golden is
+  grounded in the endpoints the extractor actually exposes after concatenation —
+  canonical path form preserves the {id} param verbatim. Expect PASS, zero LLM
+  calls (sink-free handlers → the synthetic ::__route_handler static bypass).
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders"
+    - "POST /orders"
+    - "GET /orders/{id}"
+    - "PUT /orders/{id}"
+    - "DELETE /orders/{id}"
+    - "GET /health"
+expected_edges:
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /health"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

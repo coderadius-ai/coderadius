@@ -1,0 +1,54 @@
+name: Feature request
+description: Propose a new capability or improvement for CodeRadius
+title: "[feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! For open-ended questions or early-stage brainstorming, please use [GitHub Discussions](https://github.com/coderadius-ai/coderadius/discussions) instead.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that CodeRadius doesn't support today? Describe the underlying need, not only the solution you have in mind.
+      placeholder: "When analyzing a repository that uses <framework/pattern>, CodeRadius misses ..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work? CLI flags, graph model changes, new extractors — sketch whatever level of detail you have.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you use today, or other approaches you evaluated and why they fall short.
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Code ingestion / language support
+        - Graph model / persistence
+        - Blast radius / impact analysis
+        - Governance policies
+        - Catalog drift
+        - MCP server / IDE integration
+        - Dashboard UI
+        - CLI / developer experience
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, examples (synthetic only — no proprietary code), or anything else that helps us understand the request.
+    validations:
+      required: false

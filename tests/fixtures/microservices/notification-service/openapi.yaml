@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: Notification Service
+  version: "1.0.0"
+  description: REST mapping for notification service (simulated GraphQL bridge)
+servers:
+  - url: http://notification-service:8080
+paths:
+  /notifications:
+    get:
+      summary: List notifications for a recipient
+      parameters:
+        - name: recipientId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+
+  /notifications/{id}/read:
+    post:
+      summary: Mark a notification as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Updated notification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+
+components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        recipientId:
+          type: string
+        message:
+          type: string
+        channel:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string

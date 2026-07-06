@@ -1,0 +1,18 @@
+fixture: "php-legacy-scraper"
+description: "Legacy PHP procedural scraper — AbstractScraper, TravelGlobal, MagicDbEntity, top-level scripts"
+
+expected_nodes:
+  DataContainer:
+    - "trip_quotes"
+    - "telemetry"
+    - "bookings"
+
+negative_nodes:
+  DataContainer:
+    - "$tableName"
+    - "tableName"
+
+negative_patterns:
+  DataContainer:
+    - "^\\$"
+    - "\\{\\$"

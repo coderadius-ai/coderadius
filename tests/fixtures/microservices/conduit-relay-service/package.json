@@ -1,0 +1,16 @@
+{
+    "name": "@acme-corp/conduit-relay-service",
+    "version": "1.0.0",
+    "description": "Handles message dispatching via outbox pattern and channel consumers",
+    "dependencies": {
+        "@nestjs/common": "^10.0.0",
+        "@nestjs/config": "^3.0.0",
+        "@acme-corp/conduit-nest": "^2.1.0",
+        "@acme-corp/conduit-consumer": "^1.5.0",
+        "mongoose": "^7.5.0",
+        "amqplib": "^0.10.3"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3"
+    }
+}

@@ -1,0 +1,52 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.acme.events",
+  "doc": "Emitted when a new order is placed",
+  "fields": [
+    { "name": "orderId", "type": "string" },
+    { "name": "customerId", "type": "string", "doc": "The unique customer identifier" },
+    {
+      "name": "amount",
+      "type": { "type": "bytes", "logicalType": "decimal", "precision": 10, "scale": 2 }
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "OrderStatus",
+        "symbols": ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"]
+      }
+    },
+    {
+      "name": "shippingAddress",
+      "type": {
+        "type": "record",
+        "name": "Address",
+        "fields": [
+          { "name": "street", "type": "string" },
+          { "name": "city", "type": "string" },
+          { "name": "zip", "type": ["null", "string"], "default": null }
+        ]
+      }
+    },
+    {
+      "name": "tags",
+      "type": { "type": "array", "items": "string" }
+    },
+    {
+      "name": "metadata",
+      "type": ["null", { "type": "map", "values": "string" }],
+      "default": null
+    },
+    {
+      "name": "priority",
+      "type": ["null", "int", "string"],
+      "default": null
+    },
+    {
+      "name": "createdAt",
+      "type": { "type": "long", "logicalType": "timestamp-millis" }
+    }
+  ]
+}

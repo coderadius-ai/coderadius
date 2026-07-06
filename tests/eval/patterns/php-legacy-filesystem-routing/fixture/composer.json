@@ -1,0 +1,13 @@
+{
+    "name": "acme/storefront-legacy",
+    "description": "Legacy storefront with filesystem-routed page scripts",
+    "type": "project",
+    "require": {
+        "php": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acme\\Storefront\\": "src/"
+        }
+    }
+}

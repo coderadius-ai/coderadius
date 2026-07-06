@@ -1,0 +1,23 @@
+id: ar-codeowners
+name: CODEOWNERS
+description: >-
+  Requires at least one owning team, so incidents have a clear point of contact.
+level: warning
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  OPTIONAL MATCH (t:Team)-[:OWNS]->(owner)
+  WHERE owner = r OR (owner:Service AND EXISTS { MATCH (owner)-[:STORED_IN]->(r) })
+  WITH r, count(DISTINCT t) AS teamCount
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE WHEN teamCount > 0 THEN 'pass' ELSE 'fail' END AS status,
+    CASE
+      WHEN teamCount = 1 THEN '1 team assigned'
+      WHEN teamCount > 1 THEN toString(teamCount) + ' teams assigned'
+      ELSE 'No team ownership detected'
+    END AS detail

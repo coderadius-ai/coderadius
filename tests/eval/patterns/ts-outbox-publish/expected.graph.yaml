@@ -1,0 +1,38 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Expected Graph Manifest — ts-outbox-publish
+#
+# Transactional Outbox pattern: service publishes events via an outbox SDK.
+# The LLM must recognize that outboxService.publish() is a MessageChannel
+# operation, not just a database write. The topic name comes from a config
+# property (orderCreatedTopic).
+#
+# With the correct coderadius.yaml hint, the LLM should emit a MessageChannel
+# entry with the config key as the name.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+fixture: ts-outbox-publish
+description: "NestJS transactional outbox → MessageChannel extraction"
+
+expected_nodes:
+  Function:
+    - publishOrderCreated
+
+  MessageChannel:
+    - orderCreatedTopic
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NEGATIVE: class/method names that MUST NOT become MessageChannels
+# ═══════════════════════════════════════════════════════════════════════════════
+
+negative_nodes:
+  MessageChannel:
+    - outboxService
+    - OrderPublisher
+    - publishOrderCreated
+    - OUTBOX_SERVICE
+    - TOPIC_CONFIG
+
+negative_patterns:
+  MessageChannel:
+    # PascalCase class names — code identifiers, not physical topics
+    - "^[A-Z][a-z]+([A-Z][a-z]+){2,}$"

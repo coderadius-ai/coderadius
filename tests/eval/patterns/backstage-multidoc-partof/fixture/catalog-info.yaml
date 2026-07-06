@@ -1,0 +1,40 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: inventory
+  description: Acme inventory system
+spec:
+  owner: group:default/acme-platform
+  domain: commerce
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inventory-service
+  description: Core service for inventory management and stock reservations
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/acme-platform
+  system: inventory
+  dependsOn:
+    - component:default/orders-service
+    - resource:default/inventory-rabbitmq
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inventory-consumers
+  description: Background workers that process stock reservation messages
+spec:
+  type: worker
+  lifecycle: production
+  owner: group:default/acme-platform
+  system: inventory
+  partOf:
+    - component:default/inventory-service
+  dependsOn:
+    - component:default/inventory-service
+    - resource:default/inventory-rabbitmq

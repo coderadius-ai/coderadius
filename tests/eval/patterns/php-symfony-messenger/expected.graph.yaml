@@ -1,0 +1,10 @@
+fixture: "php-symfony-messenger"
+description: "Symfony Messenger handler — BookingConfirmedHandler with Doctrine, MessageBus, and cURL I/O"
+
+expected_nodes: {}
+
+negative_nodes:
+  Function:
+    - "calculateCommission"
+
+negative_patterns: {}

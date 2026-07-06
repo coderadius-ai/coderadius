@@ -1,0 +1,14 @@
+{
+  "name": "acme/quote-engine",
+  "type": "project",
+  "require": {
+    "php": ">=8.2",
+    "ext-memcached": "*",
+    "doctrine/dbal": "^3.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Acme\\": "classes/Acme/"
+    }
+  }
+}

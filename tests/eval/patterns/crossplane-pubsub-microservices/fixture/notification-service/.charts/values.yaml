@@ -1,0 +1,6 @@
+global:
+  configuration:
+    SUBSCRIPTION_NAME: order-notifications
+    TOPIC_NAME: Platform-OrderCreated
+    GOOGLE_CLOUD_PROJECT: acme-ecommerce
+    ENVIRONMENT: production

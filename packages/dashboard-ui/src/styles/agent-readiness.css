@@ -1,0 +1,530 @@
+/* ── Agent Readiness Tab ──────────────────────────────────────────────────── */
+
+/* ── Fleet header ──────────────────────────────────────────────────────── */
+
+.cr-readiness__fleet {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px 24px 22px;
+    border-bottom: 1px solid var(--cr-line-dim);
+}
+
+/* Eyebrow + trend caption share one line above the metric band. */
+.cr-readiness__fleet-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+}
+.cr-readiness__fleet-caption {
+    font-size: 12px;
+    color: var(--cr-ink-3);
+}
+.cr-readiness__fleet-delta {
+    color: var(--cr-ok);
+    font-family: var(--font-mono);
+    opacity: 0.85;
+    margin-right: 6px;
+}
+
+/* Metric band: score │ verdict metrics │ distribution bar — one row, the way
+   the Blast Radius node header reads (lead value, labelled metrics, gauge). */
+.cr-readiness__fleet-band {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    row-gap: 12px;
+}
+
+/* Distribution module: labels on top, bar bounded beneath. Sizes to the labels
+   (content width), so the bar never stretches to the viewport edge — it reads
+   as a contained widget, not a lonely full-width line. */
+.cr-readiness__fleet-module {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.cr-readiness__fleet-score {
+    font-size: 48px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+.cr-readiness__fleet-score--ok     { color: var(--cr-ok); }
+.cr-readiness__fleet-score--warn   { color: var(--cr-warn); }
+.cr-readiness__fleet-score--danger { color: var(--cr-danger); }
+.cr-readiness__fleet-score .denom {
+    color: var(--cr-ink-3);
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.cr-readiness__fleet-metrics {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-shrink: 0;
+}
+.cr-readiness__fmetric {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+.cr-readiness__fmetric-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    opacity: 0.9;
+    flex-shrink: 0;
+}
+.cr-readiness__fmetric-dot--ok     { background: var(--cr-ok); }
+.cr-readiness__fmetric-dot--warn   { background: var(--cr-warn); }
+.cr-readiness__fmetric-dot--danger { background: var(--cr-danger); }
+.cr-readiness__fmetric-label {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cr-ink-3);
+}
+.cr-readiness__fmetric-num {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--cr-ink-0);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+/* A bucket with nothing in it stays quiet: no live colour competing for the eye. */
+.cr-readiness__fmetric--empty .cr-readiness__fmetric-dot   { background: var(--cr-ink-mute); }
+.cr-readiness__fmetric--empty .cr-readiness__fmetric-num   { color: var(--cr-ink-mute); }
+.cr-readiness__fmetric--empty .cr-readiness__fmetric-label { color: var(--cr-ink-mute); }
+
+/* Distribution bar */
+.cr-readiness__dist-bar {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--cr-line-0);
+}
+.cr-readiness__dist-bar span {
+    display: block;
+    opacity: 0.85;
+}
+.cr-readiness__dist-bar .auto    { background: var(--cr-ok); }
+.cr-readiness__dist-bar .sup     { background: var(--cr-warn); }
+.cr-readiness__dist-bar .off     { background: var(--cr-danger); }
+
+/* The bar is the gauge anchor of the band: it fills the remaining width. The
+   wrap gives the 6px bar a comfortable hover target for the threshold tooltip. */
+.cr-readiness__dist-bar-wrap {
+    width: 100%;
+    padding: 4px 0 0;
+}
+
+/* ── Readiness OperatorTable overrides ────────────────────────────────── */
+
+.cr-readiness-table .cr-operator-table__row--expanded .cr-readiness__chev {
+    color: var(--cr-signal);
+    transform: rotate(90deg);
+}
+.cr-readiness__chev {
+    transition: transform 150ms, color 100ms;
+}
+
+/* Score cell */
+.cr-readiness__score-cell {
+    display: flex;
+    align-items: baseline;
+    gap: 1px;
+    white-space: nowrap;
+}
+.cr-readiness__score-num {
+    font-size: 24px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--cr-ink-0);
+    flex-shrink: 0;
+}
+.cr-readiness__score-num--off { color: var(--cr-danger); }
+.cr-readiness__score-denom {
+    font-size: 11px;
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    margin-left: 1px;
+}
+
+/* Repo cell */
+.cr-readiness__repo-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cr-ink-0);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.cr-readiness__repo-meta {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--cr-ink-3);
+    margin-top: 4px;
+    letter-spacing: 0.01em;
+}
+/* Namespace chip, shown only when two repos collide on display name. */
+.cr-readiness__repo-qualifier {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    color: var(--cr-ink-3);
+    background: var(--cr-bg-2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    line-height: 1.5;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.cr-readiness__repo-tier {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    font-weight: 600;
+    line-height: 1;
+}
+.cr-readiness__repo-tier--t0 { color: var(--cr-danger); background: color-mix(in srgb, var(--cr-danger) 12%, transparent); }
+.cr-readiness__repo-tier--t1 { color: var(--cr-warn);   background: color-mix(in srgb, var(--cr-warn) 10%, transparent); }
+.cr-readiness__repo-tier--t2 { color: var(--cr-ink-1);  background: rgba(181,188,196,0.08); }
+.cr-readiness__repo-tier--t3 { color: var(--cr-ink-3);  background: var(--cr-bg-2); }
+
+/* Verdict pill */
+.cr-readiness__verdict {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 24px;
+    padding: 0 12px;
+    border-radius: 12px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+.cr-readiness__verdict-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.cr-readiness__verdict--auto {
+    color: var(--cr-ok);
+    background: color-mix(in srgb, var(--cr-ok) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cr-ok) 22%, transparent);
+}
+.cr-readiness__verdict--auto .cr-readiness__verdict-dot { background: var(--cr-ok); }
+.cr-readiness__verdict--sup {
+    color: var(--cr-ink-1);
+    background: transparent;
+    border: 1px solid var(--cr-line-0);
+}
+.cr-readiness__verdict--sup .cr-readiness__verdict-dot { background: var(--cr-warn); }
+.cr-readiness__verdict--off {
+    color: var(--cr-danger);
+    background: color-mix(in srgb, var(--cr-danger) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cr-danger) 22%, transparent);
+}
+.cr-readiness__verdict--off .cr-readiness__verdict-dot { background: var(--cr-danger); }
+.cr-readiness__verdict .policy-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--cr-ink-3);
+    margin-left: 6px;
+    padding-left: 7px;
+    border-left: 1px solid var(--cr-ink-mute);
+}
+
+/* Signal bar (6 segments) */
+.cr-readiness__signals { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.cr-readiness__signal-pair { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; min-width: 0; }
+.cr-readiness__signal-track { display: flex; gap: 3px; }
+.cr-readiness__signal-seg {
+    width: 28px;
+    height: 5px;
+    border-radius: 1.5px;
+}
+.cr-readiness__signal-seg--pass { background: var(--cr-ok); opacity: 0.9; }
+.cr-readiness__signal-seg--warn { background: var(--cr-warn); opacity: 0.9; }
+.cr-readiness__signal-seg--fail { background: var(--cr-danger); }
+.cr-readiness__signal-seg--none { background: var(--cr-line-0); }
+
+.cr-readiness__signal-summary {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--cr-ink-3);
+    letter-spacing: 0.02em;
+}
+.cr-readiness__signal-summary .pass { color: var(--cr-ink-1); }
+.cr-readiness__signal-summary .fail { color: var(--cr-danger); }
+
+/* Chevron */
+.cr-readiness__chev {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    color: var(--cr-ink-mute);
+    border-radius: 4px;
+    transition: transform 150ms ease, color 100ms;
+}
+.cr-readiness__repo-row:hover .cr-readiness__chev { color: var(--cr-ink-2); }
+.cr-readiness__repo-row--expanded .cr-readiness__chev {
+    color: var(--cr-signal);
+    transform: rotate(90deg);
+}
+
+/* ── Expanded detail ──────────────────────────────────────────────────── */
+
+/* Readiness pane: FleetHeader (natural height) + the scroll table share the body
+ * height as a flex column. Without this the table host (height:100%) plus the
+ * FleetHeader sibling overflow cr-page-body, and its clipped bottom edge swallows
+ * the last row against the status bar. */
+.cr-readiness-pane {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+}
+.cr-readiness-pane > .cr-readiness__fleet {
+    flex: 0 0 auto;
+}
+/* flex-basis 0 + grow gives the scroll host a flex-DEFINITE height, which the
+ * sticky table header needs to anchor (height:auto leaves it indefinite and the
+ * header scrolls away). */
+.cr-readiness-pane .cr-readiness-scroll {
+    flex: 1 1 0;
+    min-height: 0;
+}
+/* Small gap so the last row clears the sticky status bar (the expanded panel
+ * already carries its own internal bottom padding). */
+.cr-readiness-scroll { padding-bottom: 8px; }
+
+.cr-readiness__detail { background: var(--cr-bg-strip); border-bottom: 1px solid var(--cr-line-dim); }
+.cr-readiness__detail-inner {
+    padding: 6px 20px 22px 68px;
+}
+.cr-readiness__detail-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 32px;
+    padding: 14px 0 4px;
+    align-items: start;
+}
+.cr-readiness__section-head {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cr-ink-2);
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.cr-readiness__section-head .meta { color: var(--cr-ink-3); }
+
+/* Check rows */
+.cr-readiness__checks { display: flex; flex-direction: column; gap: 2px; }
+.cr-readiness__check {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: var(--cr-bg-0);
+}
+.cr-readiness__check--none { opacity: 0.55; }
+
+.cr-readiness__check-icon {
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+.cr-readiness__check-icon--pass { background: rgba(60,197,142,0.10); color: var(--cr-ok); }
+.cr-readiness__check-icon--warn { background: rgba(242,180,69,0.10); color: var(--cr-warn); }
+.cr-readiness__check-icon--fail { background: rgba(240,74,92,0.10); color: var(--cr-danger); }
+.cr-readiness__check-icon--none { background: var(--cr-bg-2); color: var(--cr-ink-3); }
+
+.cr-readiness__check-name {
+    font-size: 13px;
+    color: var(--cr-ink-0);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.2;
+}
+.cr-readiness__check-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: inherit;
+    text-decoration: none;
+}
+.cr-readiness__check-desc {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--cr-ink-3);
+    margin-top: 1px;
+    line-height: 1.2;
+}
+.cr-readiness__check-points {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--cr-ink-2);
+    font-variant-numeric: tabular-nums;
+}
+.cr-readiness__check-points--pass { color: var(--cr-ok); }
+.cr-readiness__check-points--fail { color: var(--cr-ink-3); }
+
+.cr-readiness__check-info {
+    color: var(--cr-ink-mute);
+    display: inline-flex;
+}
+.cr-readiness__check-info:hover { color: var(--cr-ink-2); }
+
+/* Actions card */
+.cr-readiness__actions-card {
+    background: var(--cr-bg-0);
+    border: 1px solid var(--cr-line-0);
+    border-radius: 6px;
+    padding: 14px 14px 12px;
+}
+.cr-readiness__actions-headline {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.cr-readiness__actions-promise {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+}
+.cr-readiness__actions-promise--ok { color: var(--cr-ok); }
+.cr-readiness__actions-list { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+/* Flat rows, not boxes: the one outer card is enough; the command box (item 1)
+   is the only contained element, and it earns it (a copy affordance). */
+.cr-readiness__action-item {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+    align-items: start;
+}
+.cr-readiness__action-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+.cr-readiness__action-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--cr-ink-3);
+    font-weight: 600;
+}
+.cr-readiness__action-text { font-size: 12.5px; color: var(--cr-ink-0); }
+
+/* Policy banner */
+.cr-readiness__policy-banner {
+    margin: 14px 0 8px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: color-mix(in srgb, var(--cr-warn) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cr-warn) 25%, transparent);
+    border-radius: 5px;
+    font-size: 12.5px;
+}
+.cr-readiness__policy-banner svg { flex-shrink: 0; color: var(--cr-warn); }
+.cr-readiness__policy-banner .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cr-warn);
+    font-weight: 600;
+}
+.cr-readiness__policy-banner .body { color: var(--cr-ink-1); }
+
+/* Activity tail */
+.cr-readiness__activity {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--cr-line-dim);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--cr-ink-2);
+}
+.cr-readiness__activity .tag { color: var(--cr-ink-1); }
+.cr-readiness__activity .tag--off { color: var(--cr-ink-mute); }
+.cr-readiness__activity .sep { color: var(--cr-ink-mute); }
+.cr-readiness__activity .ok-text { color: var(--cr-ok); }
+.cr-readiness__activity .warn-text { color: var(--cr-warn); }
+
+/* Requirement Badges */
+.cr-readiness__check-requirement {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+}
+.cr-readiness__check-requirement--error {
+    color: var(--cr-danger);
+    background: color-mix(in srgb, var(--cr-danger) 10%, transparent);
+}
+.cr-readiness__check-requirement--warning {
+    color: var(--cr-warn);
+    background: color-mix(in srgb, var(--cr-warn) 10%, transparent);
+}
+.cr-readiness__check-requirement--note {
+    color: var(--cr-signal);
+    background: color-mix(in srgb, var(--cr-signal) 10%, transparent);
+}
+/* Passing checks keep their severity word but go quiet: the level color only
+   lights up on a real fail, so a green PASS never sits next to a red badge. */
+.cr-readiness__check-requirement--muted {
+    color: var(--cr-ink-3);
+    background: color-mix(in srgb, var(--cr-ink-3) 8%, transparent);
+}
+

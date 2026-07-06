@@ -1,0 +1,35 @@
+fixture: hono__heldout
+description: >
+  Held-out Hono (TS) inventory service — a generalization check, NOT a copy of
+  the primary hono fixture. Different resource, a different param name (:sku),
+  GET/PUT/PATCH methods, a bare collection route, and a param in the MIDDLE of a
+  nested path (/inventory/:sku/restock). Golden grounded in what Hono exposes:
+  lossless path form preserves each param name verbatim (:sku → {sku}), never
+  {param} and never a raw colon. Proves the route extractor is not overfit to
+  the primary fixture's exact paths/methods/param name.
+target:
+  repo: acme/acme-inventory
+expected_nodes:
+  APIEndpoint:
+    - "GET /inventory"
+    - "GET /inventory/{sku}"
+    - "PUT /inventory/{sku}"
+    - "PATCH /inventory/{sku}/restock"
+expected_edges:
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /inventory"
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /inventory/{sku}"
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /inventory/{sku}"
+  - from_service: acme-inventory
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PATCH /inventory/{sku}/restock"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

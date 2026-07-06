@@ -1,0 +1,21 @@
+openapi: 3.0.3
+info:
+  title: Service S2
+  version: "1.0.0"
+  description: Internal service S2
+servers:
+  - url: http://s2-service:8080
+paths:
+  /s2/hello:
+    get:
+      summary: Say hello from S2
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string

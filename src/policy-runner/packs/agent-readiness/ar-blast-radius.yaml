@@ -1,0 +1,25 @@
+id: ar-blast-radius
+name: Blast radius
+description: >-
+  Requires a code-pipeline scan (scanMode semantic or contracts). Without it,
+  blast radius cannot be computed and edits ship with no impact data.
+level: warning
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  WHERE r.valid_to_commit IS NULL
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE
+      WHEN r.scanMode IN ['semantic', 'contracts'] THEN 'pass'
+      ELSE 'fail'
+    END AS status,
+    CASE
+      WHEN r.scanMode IN ['semantic', 'contracts'] THEN 'Code analyzed (' + r.scanMode + ' scan), blast radius available'
+      WHEN r.scanMode = 'structure' THEN 'Only a structural scan so far. Run cr analyze code.'
+      ELSE 'No code analysis yet. Run cr analyze code.'
+    END AS detail

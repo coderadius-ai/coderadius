@@ -1,0 +1,8 @@
+packages:
+  analyze:
+    # Typed SDK entry — provides kind + label so the pipeline can generate
+    # an LLM hint automatically without manual hint configuration.
+    - name: "@acme/notification-client"
+      kind: http-client
+      label: "Notification API"
+      baseUrl: "https://platform-notifications.internal.example.com"

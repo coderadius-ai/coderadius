@@ -1,0 +1,44 @@
+id: ar-context-actionable
+name: Context file actionability
+description: >-
+  Checks that agent context files carry actionable tooling guidance (build,
+  test, CI, dev-environment commands) rather than only a prose overview. An
+  empirical study (Gloaguen et al., 2026) found that codebase overviews do not
+  help agents locate relevant code, while specific tooling instructions are
+  reliably followed and are the main content that improves outcomes. Topics are
+  populated by the structural plugin / LLM enrichment, so run cr analyze code
+  first.
+level: warning
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  WHERE r.valid_to_commit IS NULL
+  OPTIONAL MATCH (r)<-[:STORED_IN]-(s:Service)-[:HAS_AGENTIC_CONFIG]->(c1:AgenticConfig)
+    WHERE s.valid_to_commit IS NULL
+      AND c1.configType IN ['rule', 'agent_instructions', 'global_rule']
+  OPTIONAL MATCH (r)-[:HAS_AGENTIC_CONFIG]->(c2:AgenticConfig)
+    WHERE c2.configType IN ['rule', 'agent_instructions', 'global_rule']
+  WITH r, collect(DISTINCT c1) + collect(DISTINCT c2) AS rawConfigs
+  WITH r, [c IN rawConfigs WHERE c IS NOT NULL] AS configs
+  WITH r,
+    size(configs) AS totalConfigs,
+    size([c IN configs WHERE c.topics IS NOT NULL
+      AND any(x IN split(c.topics, ',') WHERE trim(x) IN ['developer-experience', 'ci-cd', 'testing'])]) AS actionable,
+    size([c IN configs WHERE c.topics IS NOT NULL
+      AND any(x IN split(c.topics, ',') WHERE trim(x) IN ['architecture', 'documentation', 'business-domain'])]) AS descriptive
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE WHEN totalConfigs = 0 OR actionable > 0 THEN 'pass' ELSE 'fail' END AS status,
+    CASE
+      WHEN totalConfigs = 0 THEN 'No context files to assess.'
+      WHEN actionable > 0 THEN
+        toString(actionable) + ' context file(s) carry actionable tooling guidance (build/test/CI).'
+      WHEN descriptive > 0 THEN
+        'Context files are descriptive only (overview/architecture) with no tooling commands — the content shown not to help agents. Add build/test/run commands.'
+      ELSE
+        'Context files carry no recognised tooling or architectural topics. Run cr analyze code so topics are extracted.'
+    END AS detail

@@ -1,0 +1,25 @@
+fixture: symfony-pubsub-autowire__heldout
+description: >
+  Held-out Symfony Autowire Pub/Sub — a generalization check. Different resource
+  (shipping), different channel names, and different pub/sub verbs (->send() for
+  WRITES, ->subscribe() for READS) than the primary fixture's publish/consume.
+  Golden grounded in the same Autowire + transport semantics. Proves the static
+  broker path isn't overfit to specific verb spellings or channel names. Static,
+  zero LLM.
+target:
+  repo: acme/acme-shipping
+expected_nodes:
+  MessageChannel:
+    - "shipping_updates_topic"
+    - "shipping_events_subscription"
+expected_edges:
+  - from_service: acme-shipping
+    rel: PUBLISHES_TO
+    to: "shipping_updates_topic"
+  - from_service: acme-shipping
+    rel: LISTENS_TO
+    to: "shipping_events_subscription"
+negative_nodes:
+  MessageChannel:
+    - "updatesTopic"
+    - "ShippingNotifier"

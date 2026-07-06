@@ -1,0 +1,37 @@
+fixture: express__heldout
+description: >
+  Generalization set for Express (TS): same idioms as the primary express
+  fixture (app.<method> + a root-mounted express.Router()) but different
+  routes, resources, param names, and an extra verb (PATCH). Grounded in the
+  endpoints Express actually serves. Pins lossless param-name preservation:
+  :paymentId → {paymentId} and :trackingId → {trackingId} (NOT {param}).
+target:
+  repo: acme/payment
+expected_nodes:
+  APIEndpoint:
+    - "GET /payments/{paymentId}"
+    - "POST /payments"
+    - "PATCH /payments/{paymentId}"
+    - "GET /shipments/{trackingId}"
+    - "DELETE /shipments/{trackingId}"
+expected_edges:
+  - from_service: payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /payments/{paymentId}"
+  - from_service: payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /payments"
+  - from_service: payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PATCH /payments/{paymentId}"
+  - from_service: payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /shipments/{trackingId}"
+  - from_service: payment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /shipments/{trackingId}"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

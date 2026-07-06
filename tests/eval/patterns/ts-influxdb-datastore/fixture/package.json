@@ -1,0 +1,9 @@
+{
+  "name": "acme-metrics-writer",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@influxdata/influxdb-client": "^1.33.0",
+    "pg": "^8.11.0"
+  }
+}

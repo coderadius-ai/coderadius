@@ -1,0 +1,58 @@
+{
+  "targets": {
+    "express": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:24:58.334Z"
+    },
+    "koa": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:27:35.446Z"
+    },
+    "hono": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:28:53.626Z"
+    },
+    "nestjs": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:30:16.406Z"
+    },
+    "laravel": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:32:32.208Z"
+    },
+    "slim": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:35:47.071Z"
+    },
+    "symfony": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:37:26.266Z"
+    },
+    "spring-boot": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:39:18.034Z"
+    },
+    "jax-rs": {
+      "status": "done",
+      "iters": 0,
+      "note": "gate clean",
+      "at": "2026-07-02T07:41:14.278Z"
+    }
+  }
+}

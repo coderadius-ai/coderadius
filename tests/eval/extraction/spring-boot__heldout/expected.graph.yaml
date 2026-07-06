@@ -1,0 +1,25 @@
+fixture: "spring-boot__heldout"
+description: >
+  Generalization set for the Java route extractor. Different annotation
+  dialects than the training fixture: JAX-RS (@Path class + @GET/@POST/@DELETE
+  markers + method @Path), Spring @PatchMapping, and a @RestController with NO
+  class-level @RequestMapping prefix. Proves the extractor generalizes rather
+  than overfitting to the spring-boot training shapes.
+expected_nodes:
+  APIEndpoint:
+    # JAX-RS resource (com.acme.shipping.ShippingResource)
+    - "GET /shipping"
+    - "GET /shipping/{id}"
+    - "POST /shipping/dispatch"
+    - "DELETE /shipping/{id}"
+    # Spring with class prefix + @PatchMapping (com.acme.notification)
+    - "GET /notifications"
+    - "PATCH /notifications/{id}"
+    - "POST /notifications/broadcast"
+    # Spring without class prefix (com.acme.payment)
+    - "POST /payments"
+    - "GET /payments/{id}"
+
+negative_patterns:
+  APIEndpoint:
+    - "^(GET|POST|PUT|PATCH|DELETE) [^/]"

@@ -1,0 +1,4 @@
+decorators:
+  - name: "Acme\\Inventory\\InventoryGqlClient::post"
+    kind: graphql-client
+    args: [query, variables]

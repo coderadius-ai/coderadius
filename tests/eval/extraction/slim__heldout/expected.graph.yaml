@@ -1,0 +1,43 @@
+fixture: slim__heldout
+description: >
+  Held-out Slim 4 (PHP) generalization fixture — DIFFERENT routes from the
+  primary slim fixture so a pass proves the extractor generalizes rather than
+  memorizes. Exercises top-level PUT/DELETE verbs, a '/shipping' group with
+  non-root nested paths and a distinct param name ({trackingId}), and a
+  $app->map(['GET','POST'], ...) multi-method route that expands to one endpoint
+  per verb. Path params are preserved verbatim. Handlers are sink-free, so
+  routing is fully static (zero LLM calls).
+target:
+  repo: acme/acme-fulfillment
+expected_nodes:
+  APIEndpoint:
+    - "PUT /payment/{id}"
+    - "DELETE /payment/{id}"
+    - "GET /shipping/labels"
+    - "POST /shipping/labels/{trackingId}"
+    - "GET /notification/dispatch"
+    - "POST /notification/dispatch"
+expected_edges:
+  - from_service: acme-fulfillment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "PUT /payment/{id}"
+  - from_service: acme-fulfillment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "DELETE /payment/{id}"
+  - from_service: acme-fulfillment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /shipping/labels"
+  - from_service: acme-fulfillment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /shipping/labels/{trackingId}"
+  - from_service: acme-fulfillment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /notification/dispatch"
+  - from_service: acme-fulfillment
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /notification/dispatch"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

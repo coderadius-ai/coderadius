@@ -1,0 +1,13 @@
+fixture: ts-databackbone-pascalcase
+description: "DataBackbone PascalCase topics should not be dropped by the sanitizer if successfully resolved"
+
+expected_nodes:
+  Function:
+    - DataBackbone.service
+
+  MessageChannel:
+    - QuoteRequest
+
+negative_nodes:
+  MessageChannel:
+    - QUOTE_REQUEST

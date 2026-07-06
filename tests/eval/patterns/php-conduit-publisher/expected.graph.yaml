@@ -1,0 +1,12 @@
+fixture: "php-conduit-publisher"
+description: "Taint propagation through Conduit wrapper in PHP"
+
+expected_nodes:
+  MessageChannel:
+    - "Platform-OrderCreated"
+
+negative_nodes:
+  Function:
+    - "calculateDiscount"
+
+negative_patterns: {}

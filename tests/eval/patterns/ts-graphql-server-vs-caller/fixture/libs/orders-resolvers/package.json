@@ -1,0 +1,12 @@
+{
+  "name": "@acme/orders-resolvers",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@nestjs/graphql": "^12.0.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+    "name": "acme/inventory",
+    "type": "project",
+    "description": "Acme inventory service",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "slim/slim": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acme\\Inventory\\": "src/"
+        }
+    }
+}

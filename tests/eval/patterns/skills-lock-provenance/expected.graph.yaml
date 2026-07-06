@@ -1,0 +1,16 @@
+fixture: skills-lock-provenance
+description: |
+  Verifies that skills-lock.json is parsed by the agentic-config plugin and
+  produces AgenticConfig entities with provenance fields (source, sourceUrl,
+  sourceType, hash, timestamps). Also verifies that SKILL.md files in
+  .claude/skills/ and .agents/skills/ are independently discovered.
+
+expected_nodes:
+  AgenticConfig:
+    - review-pr
+    - generate-tests
+    - deploy-preview
+
+negative_nodes:
+  AgenticConfig:
+    - skills-lock.json

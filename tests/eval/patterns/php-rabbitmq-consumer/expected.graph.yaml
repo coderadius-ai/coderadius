@@ -1,0 +1,22 @@
+fixture: "php-rabbitmq-consumer"
+description: "RabbitMQ consumer + GCP PubSub publisher — NotificationConsumer and PubSubPublisher with explicit queue/topic names"
+
+expected_nodes:
+  MessageChannel:
+    - "orders_exchange"
+    - "notification-events"
+  DataContainer:
+    - "users"
+
+negative_nodes:
+  MessageChannel:
+    - "rabbitmq"
+    - "amqp"
+    - "bus"
+    - "queue"
+    - "NotificationConsumer"
+    - "PubSubPublisher"
+
+negative_patterns:
+  MessageChannel:
+    - "^[A-Z][a-zA-Z]+$"

@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: payment-service
+  description: Payment processing with DI-configured message brokers
+  annotations:
+    github.com/project-slug: acme-corp/payment-service
+spec:
+  type: service
+  lifecycle: production
+  owner: team-payments
+  system: e-commerce
+  providesApis: []
+  consumesApis: []

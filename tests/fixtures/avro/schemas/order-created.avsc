@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.acme.events",
+  "fields": [
+    { "name": "orderId", "type": "string" },
+    { "name": "customerId", "type": "string" },
+    { "name": "amount", "type": "double" },
+    { "name": "currency", "type": "string" },
+    { "name": "createdAt", "type": "long" }
+  ]
+}

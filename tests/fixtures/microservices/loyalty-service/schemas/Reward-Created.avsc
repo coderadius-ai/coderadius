@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "name": "RewardCreated",
+  "namespace": "com.acme.logistics.loyalty",
+  "doc": "Event emitted when a loyalty reward is created.",
+  "fields": [
+    {
+      "name": "memberNumber",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "coverage",
+      "type": "double",
+      "doc": "Maximum coverage amount"
+    },
+    {
+      "name": "tags",
+      "type": {
+        "type": "array",
+        "items": "string"
+      }
+    }
+  ]
+}

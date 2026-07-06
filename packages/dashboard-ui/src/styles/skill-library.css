@@ -1,0 +1,383 @@
+/* ── Skill Library Tab ────────────────────────────────────────────────────── */
+
+.cr-skill-lib {
+    min-height: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+.cr-skill-lib__main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* ── Skills scroll area ──────────────────────────────────────────────── */
+
+.cr-skill-lib__list { flex: 1; overflow-y: auto; min-height: 0; }
+/* Breathing room so the last row / expanded detail clears the sticky status bar. */
+.cr-skill-lib-scroll { padding-bottom: 24px; }
+
+/* Group header — matches Package Registry section separators */
+.cr-skill-lib__group-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cr-ink-3);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: var(--cr-weight-medium);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+}
+.cr-skill-lib__group-glyph { width: 6px; height: 6px; border-radius: 1px; }
+.cr-skill-lib__group-head--duplicate .cr-skill-lib__group-glyph { background: var(--cr-warn); }
+.cr-skill-lib__group-head > span:nth-child(2) { color: var(--cr-ink-1); font-weight: 600; }
+.cr-skill-lib__group-desc {
+    color: var(--cr-ink-3);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    font-size: 11px;
+}
+.cr-skill-lib__group-count { margin-left: auto; color: var(--cr-ink-3); }
+
+/* ── Skill Library OperatorTable overrides ──────────────────────────── */
+
+.cr-skill-lib-table .cr-operator-table__row--expanded .cr-skill-lib__chev {
+    color: var(--cr-signal);
+    transform: rotate(90deg);
+}
+.cr-skill-lib__chev { transition: transform 150ms, color 100ms; }
+
+.cr-skill-lib__name {
+    font-size: 15px;
+    color: var(--cr-ink-0);
+    font-weight: 600;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-width: 0;
+}
+.cr-skill-lib__name .file {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.cr-skill-lib__desc {
+    font-size: 12.5px;
+    color: var(--cr-ink-2);
+    margin-top: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cr-skill-lib__owner {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--cr-signal);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Consumer bar */
+.cr-skill-lib__consumers { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cr-skill-lib__consumers .cr-segbar { width: 60px; flex-shrink: 0; }
+.cr-skill-lib__consumer-num {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--cr-ink-1);
+    white-space: nowrap;
+}
+.cr-skill-lib__consumer-num .denom { color: var(--cr-ink-3); }
+
+
+/* Chevron */
+.cr-skill-lib__chev {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    color: var(--cr-ink-3);
+    border-radius: 3px;
+    transition: transform 150ms, color 100ms;
+}
+.cr-skill-lib__row:hover .cr-skill-lib__chev { color: var(--cr-ink-1); }
+.cr-skill-lib__row--expanded .cr-skill-lib__chev { color: var(--cr-signal); transform: rotate(90deg); }
+
+/* ── Expanded detail ──────────────────────────────────────────────────── */
+
+.cr-skill-lib__detail {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cr-skill-lib__detail[data-open] {
+    grid-template-rows: 1fr;
+}
+.cr-skill-lib__detail-collapse {
+    min-height: 0;
+    overflow: hidden;
+    background: var(--cr-bg-strip);
+    border-bottom: 1px solid var(--cr-line-dim);
+}
+.cr-skill-lib__detail-inner {
+    padding: 8px 20px 20px 20px;
+    opacity: 0;
+    transition: opacity 150ms ease 80ms;
+}
+.cr-skill-lib__detail[data-open] .cr-skill-lib__detail-inner {
+    opacity: 1;
+}
+.cr-skill-lib__detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+    padding: 14px 0;
+}
+.cr-skill-lib__detail-head {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cr-ink-2);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+.cr-skill-lib__detail-head .meta { color: var(--cr-ink-3); }
+
+/* Provenance line (skills.lock source) */
+.cr-skill-lib__provenance {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--cr-ink-1);
+    padding-bottom: 12px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--cr-line-dim);
+}
+.cr-skill-lib__provenance-label {
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cr-ink-3);
+    font-weight: 600;
+}
+.cr-skill-lib__provenance .meta { color: var(--cr-ink-3); }
+
+/* Duplicate card — staggered entry */
+.cr-skill-lib__dup {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 100ms ease, transform 100ms ease;
+    transition-delay: calc(var(--row-i, 0) * 40ms + 180ms);
+}
+.cr-skill-lib__detail[data-open] .cr-skill-lib__dup {
+    opacity: 1;
+    transform: none;
+}
+.cr-skill-lib__dup {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 9px 12px;
+    background: var(--cr-bg-0);
+    border: 1px solid var(--cr-line-dim);
+    border-radius: 5px;
+    margin-bottom: 6px;
+}
+.cr-skill-lib__dup-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--cr-ink-0);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+.cr-skill-lib__dup-name a,
+.cr-skill-lib__dup-name .cr-ext-link { color: var(--cr-signal); }
+.cr-skill-lib__dup-name a:hover,
+.cr-skill-lib__dup-name .cr-ext-link:hover { color: var(--cr-signal); opacity: 0.85; }
+.cr-skill-lib__dup-path {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--cr-ink-mute);
+    margin-top: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.cr-skill-lib__symlink-icon { color: var(--cr-ink-3); flex-shrink: 0; }
+.cr-skill-lib__dup-team {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--cr-ink-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.cr-skill-lib__dup-path-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Consumer list — staggered entry */
+.cr-skill-lib__consumer-row {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 100ms ease, transform 100ms ease;
+    transition-delay: calc(var(--row-i, 0) * 40ms + 180ms);
+}
+.cr-skill-lib__detail[data-open] .cr-skill-lib__consumer-row {
+    opacity: 1;
+    transform: none;
+}
+.cr-skill-lib__consumer-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--cr-line-dim);
+}
+.cr-skill-lib__consumer-row:last-child { border-bottom: none; }
+.cr-skill-lib__consumer-repo {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--cr-ink-0);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cr-skill-lib__consumer-team {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--cr-ink-3);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+
+/* ── Suggest rail ────────────────────────────────────────────────────── */
+
+.cr-skill-lib__rail {
+    border-left: 1px solid var(--cr-line-0);
+    background: var(--cr-bg-1);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+}
+.cr-skill-lib__rail-head {
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid var(--cr-line-0);
+}
+.cr-skill-lib__rail-title {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cr-ink-1);
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: block;
+}
+.cr-skill-lib__rail-desc {
+    color: var(--cr-ink-3);
+    font-size: 11.5px;
+    line-height: 1.55;
+}
+.cr-skill-lib__rail-section {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cr-line-dim);
+}
+.cr-skill-lib__rail-section-title {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cr-ink-2);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.cr-skill-lib__suggest-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: var(--cr-bg-0);
+    border: 1px solid var(--cr-line-0);
+    border-radius: 5px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+.cr-skill-lib__suggest-card:last-child { margin-bottom: 0; }
+.cr-skill-lib__suggest-card:hover { border-color: color-mix(in srgb, var(--cr-signal) 25%, transparent); }
+.cr-skill-lib__suggest-top { display: flex; align-items: center; gap: 8px; }
+.cr-skill-lib__suggest-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--cr-ink-0);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cr-skill-lib__suggest-why {
+    font-size: 11.5px;
+    color: var(--cr-ink-2);
+    line-height: 1.5;
+}
+.cr-skill-lib__suggest-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--cr-ink-3);
+}
+.cr-skill-lib__suggest-meta .sep { color: var(--cr-ink-mute); }
+
+/* ── Reduced motion ────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .cr-skill-lib__chev,
+    .cr-skill-lib__detail,
+    .cr-skill-lib__detail-inner,
+    .cr-skill-lib__consumer-row,
+    .cr-skill-lib__dup { transition: none; }
+    .cr-skill-lib__detail { grid-template-rows: 1fr; }
+    .cr-skill-lib__detail-inner,
+    .cr-skill-lib__consumer-row,
+    .cr-skill-lib__dup { opacity: 1; transform: none; }
+}
+
+/* ── Responsive: collapse suggest rail ─────────────────────────────── */
+
+@media (max-width: 1080px) {
+    .cr-skill-lib { grid-template-columns: 1fr; }
+    .cr-skill-lib__rail { display: none; }
+}

@@ -1,0 +1,13 @@
+fixture: "ts-graphql-inbound"
+description: "NestJS GraphQL Resolvers (@Query, @Mutation, @Subscription)"
+
+expected_nodes:
+  APIEndpoint:
+    - "GRAPHQL QUERY order"
+    - "GRAPHQL MUTATION createOrder"
+    - "GRAPHQL SUBSCRIPTION orderUpdated"
+  MessageChannel:
+    - "order.updated"
+
+negative_nodes: {}
+negative_patterns: {}

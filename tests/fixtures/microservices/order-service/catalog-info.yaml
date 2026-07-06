@@ -1,0 +1,27 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: ecommerce-platform
+  description: End-to-end order management and checkout platform
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: order-service
+  description: Manages order lifecycle including creation, status tracking, and payment notifications
+  links:
+    - url: https://acme.atlassian.net/jira/software/c/projects/ORD/boards/3
+      title: Jira Board
+      icon: dashboard
+    - url: https://slack.com/app_redirect?channel=alerts-order-service
+      title: '#alerts-order-service'
+      icon: slack
+spec:
+  type: service
+  lifecycle: production
+  owner: team-checkout
+  system: ecommerce-platform
+  dependsOn:
+    - component:loyalty-service
+    - resource:rabbitmq
+    - resource:postgres

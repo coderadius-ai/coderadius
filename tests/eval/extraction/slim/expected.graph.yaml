@@ -1,0 +1,35 @@
+fixture: slim
+description: >
+  Anonymized Slim 4 (PHP) orders service exercising top-level verb routes
+  ($app->get/post) and group-prefix recursion ($app->group('/inventory', fn)
+  with nested $group->get). The golden is grounded in the endpoints Slim
+  actually exposes: each nested route inherits the group prefix, so
+  $group->get('/') → GET /inventory and $group->get('/{sku}') → GET
+  /inventory/{sku}. Path params are preserved verbatim ({id}, {sku}). Handlers
+  are sink-free, so routing is fully static (zero LLM calls).
+target:
+  repo: acme/acme-orders
+expected_nodes:
+  APIEndpoint:
+    - "GET /orders/{id}"
+    - "POST /orders"
+    - "GET /inventory"
+    - "GET /inventory/{sku}"
+expected_edges:
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /orders/{id}"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "POST /orders"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /inventory"
+  - from_service: acme-orders
+    rel: IMPLEMENTS_ENDPOINT
+    to: "GET /inventory/{sku}"
+negative_patterns:
+  APIEndpoint:
+    - ":"
+    - "handler"
+    - "\\$"

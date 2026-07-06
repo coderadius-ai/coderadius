@@ -1,0 +1,8 @@
+# Anonymised fixture: customer declares their broker SDK wrapper with the
+# provider — the contract-grade source for s2 candidate emission.
+packages:
+  analyze:
+    - name: "@acme/wire"
+      kind: broker-client
+      provider: rabbitmq
+      label: "Acme Wire Bus"

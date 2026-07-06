@@ -1,0 +1,10 @@
+{
+  "type": "record",
+  "name": "UserUpdated",
+  "namespace": "com.acme.events",
+  "fields": [
+    { "name": "userId", "type": "string" },
+    { "name": "email", "type": ["null", "string"] },
+    { "name": "updatedAt", "type": "long" }
+  ]
+}

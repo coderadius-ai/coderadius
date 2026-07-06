@@ -1,0 +1,1486 @@
+.badge {
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    padding: 2px 8px; border-radius: 6px; font-size: var(--cr-type-caption); font-weight: var(--cr-weight-medium);
+    font-family: var(--font-sans); text-transform: none;
+    letter-spacing: 0; margin-left: 0; border: 1px solid transparent;
+    white-space: nowrap; color: inherit; background: transparent;
+    cursor: default; user-select: none;
+}
+
+/* QualityBadge — grounding quality tier marker.
+ *
+ * Composed single-row layout aligned with the `.blast-meta-item` scale
+ * used elsewhere in the drawer (11.5px font, gap 4-6px, --text-primary
+ * for the strong label, --text-tertiary for the qualifier). The dot is
+ * the visual anchor; the tier label is the primary statement; the source
+ * (after the `·` separator) is the contextual qualifier.
+ *
+ * Tokens used (single source of truth: styles/base.css):
+ *   --text-primary   strong label (the tier name)
+ *   --text-tertiary  qualifier (separator + source name)
+ *
+ * Colour of the dot is inlined as `background` by the component so the
+ * tier palette stays in one place (types/grounding.ts:QUALITY_META).
+ */
+.cr-quality-marker {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-sans);
+    font-size: var(--cr-type-caption);
+    user-select: none;
+    white-space: nowrap;
+}
+.cr-quality-dot {
+    display: inline-block; flex-shrink: 0;
+    width: 6px; height: 6px; border-radius: 50%;
+}
+.cr-quality-marker__primary {
+    font-weight: var(--cr-weight-medium);
+    color: var(--text-primary);
+    /* Tier words render lowercase everywhere (drawer, modal, popover, rows)
+       while QUALITY_META keeps the capitalized data for tooltips/filters. */
+    text-transform: lowercase;
+}
+.cr-quality-marker__sep {
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+.cr-quality-marker__secondary {
+    color: var(--text-tertiary);
+}
+
+/* ── Quiet Operator primitives ───────────────────────────────────── */
+.cr-tier-glyph-badge {
+    --cr-tier-glyph-color: var(--cr-ink-1);
+    --cr-tier-glyph-fg: var(--cr-bg-0);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    width: fit-content;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: var(--cr-weight-semibold);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.cr-tier-glyph-badge--badge {
+    height: 22px;
+    min-height: 22px;
+    padding: 0 8px;
+    border-radius: 4px;
+    color: var(--cr-tier-glyph-fg);
+    background: var(--cr-tier-glyph-color);
+    box-shadow: none;
+}
+
+.cr-tier-glyph-badge--minimal {
+    color: var(--cr-tier-glyph-color);
+}
+
+.cr-tier-glyph-badge--sm {
+    gap: 6px;
+    font-size: 10px;
+}
+
+.cr-tier-glyph-badge--md {
+    font-size: 10.5px;
+}
+
+.cr-tier-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    color: currentColor;
+}
+
+.cr-tier-glyph--triangle {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 9px solid currentColor;
+    transform: translateY(-1px);
+}
+
+.cr-tier-glyph--square {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    background: currentColor;
+}
+
+.cr-tier-glyph--dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: currentColor;
+}
+
+.cr-tier-glyph--dash {
+    width: 10px;
+    height: 2px;
+    background: currentColor;
+}
+
+.cr-tier-glyph-badge__grade,
+.cr-tier-glyph-badge__label,
+.cr-tier-glyph-badge__sep {
+    display: inline-flex;
+    align-items: center;
+}
+
+.cr-tier-glyph-badge--badge .cr-tier-glyph-badge__sep {
+    color: inherit;
+}
+.cr-tier-glyph-badge--minimal .cr-tier-glyph-badge__sep {
+    color: var(--cr-tier-glyph-color);
+    opacity: 0.5;
+}
+
+.cr-tier-glyph-badge--badge .cr-tier-glyph-badge__label {
+    color: inherit;
+}
+.cr-tier-glyph-badge--minimal .cr-tier-glyph-badge__label {
+    color: var(--cr-tier-glyph-color);
+}
+
+.cr-barred-progress {
+    --cr-barred-color: var(--cr-signal);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.cr-barred-progress__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--cr-barred-width, 7px);
+    gap: var(--cr-barred-gap, 3px);
+    align-items: center;
+    min-width: 0;
+}
+
+.cr-barred-progress__bar {
+    width: var(--cr-barred-width, 7px);
+    height: var(--cr-barred-height, 18px);
+    border-radius: 0.5px;
+    background: var(--cr-line-0);
+}
+
+.cr-barred-progress__bar--active {
+    background: var(--cr-barred-color);
+    box-shadow: none;
+}
+
+.cr-barred-progress--sm {
+    --cr-barred-width: 7px;
+    --cr-barred-height: 18px;
+    --cr-barred-gap: 3px;
+}
+
+.cr-barred-progress--md {
+    --cr-barred-width: 8px;
+    --cr-barred-height: 22px;
+    --cr-barred-gap: 4px;
+}
+
+.cr-barred-progress__value {
+    color: var(--cr-ink-1);
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-h1);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* Activity cell (12mo commit liveness): shared by registry / governance / readiness tables. */
+.cr-activity-bar.cr-barred-progress {
+    gap: 10px;
+}
+
+.cr-activity-bar .cr-barred-progress__track {
+    --cr-barred-width: 5px;
+    --cr-barred-height: 12px;
+    --cr-barred-gap: 1.5px;
+}
+
+.cr-activity-bar .cr-barred-progress__value {
+    color: var(--cr-ink-1);
+    font-size: 11px;
+}
+
+/* Dense operator table — reusable product surface primitive. */
+.cr-operator-table-host {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+    background: var(--cr-bg-0);
+}
+
+.cr-operator-table {
+    width: 100%;
+    min-width: var(--cr-operator-table-min-width, 1020px);
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.cr-operator-table__header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    height: 34px;
+    padding: 0 14px;
+    color: var(--cr-ink-2);
+    background: var(--cr-bg-strip);
+    border-bottom: 1px solid var(--cr-line-0);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0.14em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.cr-operator-table__header:first-child,
+.cr-operator-table__cell:first-child {
+    padding-left: 16px;
+}
+
+.cr-operator-table__header:last-child,
+.cr-operator-table__cell:last-child {
+    padding-right: 16px;
+}
+
+.cr-operator-table__cell {
+    padding: 12px 14px;
+    color: var(--cr-ink-0);
+    border-bottom: 1px solid var(--cr-line-0);
+    vertical-align: middle;
+}
+
+.cr-operator-table__row {
+    outline: 0;
+}
+
+.cr-operator-table__row--interactive {
+    cursor: pointer;
+    transition: background 120ms ease, box-shadow 120ms ease;
+}
+
+.cr-operator-table__row--interactive:hover,
+.cr-operator-table__row--interactive:focus-visible {
+    background: var(--cr-bg-3);
+}
+.cr-operator-table__row--interactive:hover .cr-operator-table__cell:last-child svg,
+.cr-operator-table__row:hover .cr-operator-table__cell:last-child svg {
+    color: var(--cr-ink-1);
+}
+
+.cr-operator-table__row--selected {
+    background: color-mix(in srgb, #a78bfa 6%, transparent);
+}
+
+.cr-operator-table__row--expanded {
+    background: var(--cr-bg-1);
+}
+
+.cr-operator-table__group-row {
+    background: var(--cr-bg-0);
+}
+
+.cr-operator-table__group-cell {
+    height: 42px;
+    padding: 12px 16px;
+    color: var(--cr-ink-2);
+    background: var(--cr-bg-0);
+    border-bottom: 1px solid var(--cr-line-0);
+    vertical-align: middle;
+}
+
+.cr-operator-table__expanded-row {
+    background: var(--cr-bg-1);
+}
+
+.cr-operator-table__expanded-cell {
+    padding: 0;
+    border-bottom: 1px solid var(--cr-line-0);
+}
+
+.cr-operator-table--right {
+    text-align: right;
+}
+
+.cr-operator-table--center {
+    text-align: center;
+}
+
+.cr-operator-table__header--sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.cr-operator-table__header--sortable:hover {
+    color: var(--cr-ink-0);
+}
+
+
+.cr-operator-table__header-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cr-operator-table__sort-icon {
+    display: inline-flex;
+    align-items: baseline;
+    color: var(--cr-ink-1);
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.cr-operator-table__sort-ordinal {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--cr-ink-3);
+    margin-left: 1px;
+}
+
+.cr-operator-table__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 8px 16px;
+    border-top: 1px solid var(--cr-line-0);
+    background: var(--cr-bg-strip);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--cr-ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.cr-operator-table__page-info {
+    white-space: nowrap;
+}
+
+.cr-operator-table__page-buttons {
+    display: flex;
+    gap: 2px;
+}
+
+.cr-operator-table__page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--cr-line-0);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--cr-ink-2);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.cr-operator-table__page-btn:hover:not(:disabled) {
+    color: var(--cr-ink-0);
+    background: var(--cr-bg-3);
+    border-color: var(--cr-line-1);
+}
+
+.cr-operator-table__page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ── Node description + Overview grid (drawer + inspector modal) ──────
+   Shared node-identity presentation. The row builder lives in
+   components/blast-radius/NodeOverview.tsx; both surfaces render the same
+   MetadataGrid so a node describes itself identically everywhere. */
+
+.cr-node-description {
+    margin: 10px 0 0 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-secondary, #c7c7cc);
+    letter-spacing: 0;
+    max-width: 62ch;
+    opacity: 0.92;
+}
+
+/* Key-rail modifier: one aligned label column across the drawer/modal
+   sections (Overview + Data Quality), so values share a single left edge
+   instead of starting ragged after each key's natural width. 84px fits the
+   longest keys in both grids (REPOSITORY, DATASTORES, WELDED FROM). */
+.cr-meta-grid--rail .cr-meta-grid__key {
+    width: auto;
+    min-width: 84px;
+    flex-shrink: 0;
+}
+
+/* Let the value cell fill the row so right-aligned children (the Quality
+   row's last-seen commit) can push to the far edge via margin-left:auto. */
+.cr-meta-grid--rail .cr-meta-grid__value {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Categorical enum values (apiKind, language, ecosystem, tags): mono per
+   the system's machine-readable rule, same family as CrPill. */
+.cr-overview__pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 3px;
+    border: 1px solid var(--cr-line-0);
+    background: transparent;
+    color: var(--cr-ink-1);
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    line-height: 1.5;
+    letter-spacing: 0;
+    cursor: default;
+}
+
+.cr-overview__inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cr-overview__inline--static {
+    cursor: default;
+}
+
+.cr-overview__inline--wrap {
+    flex-wrap: wrap;
+    white-space: normal;
+}
+
+.cr-overview__host-suffix {
+    opacity: 0.6;
+    font-style: italic;
+    margin-left: 4px;
+}
+
+.cr-overview__datastore-icon {
+    opacity: 0.6;
+}
+
+.cr-overview__ext-link {
+    vertical-align: -1px;
+    margin-left: 3px;
+}
+
+/* Graph-wide edge census ("All edges" row). Deliberately monochrome so it
+   never reads as the path-scoped rel badges in the Relationships section. */
+.cr-overview__census {
+    gap: 6px;
+    color: var(--cr-ink-1);
+}
+
+.cr-overview__census-item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.cr-overview__census-count {
+    color: var(--cr-ink-0);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--cr-weight-medium);
+}
+
+.cr-overview__census-sep {
+    margin-right: 1px;
+    opacity: 0.4;
+}
+
+/* ── Data Quality section (drawer + inspector modal) ──────────────────
+   Single source of truth for "how sure are we about this node + where
+   did it come from". See components/Grounding.tsx for the JSX.
+   Layout: tier headline (dot + tier word + info glyph, last-seen commit
+   right-aligned; the tier's tagline lives in the lockup tooltip), then a
+   key/value grid of provenance (no collapsible). */
+.cr-grounding {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.cr-grounding__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 14px;
+}
+
+/* Same micro voice as .blast-drawer__section-label; keep in sync. */
+.cr-grounding__label {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    font-weight: var(--cr-weight-semibold);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+}
+
+.cr-grounding__review {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: var(--cr-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--cr-warn);
+    background: color-mix(in srgb, var(--cr-warn) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cr-warn) 26%, transparent);
+    border-radius: 4px;
+    padding: 1px 6px;
+    cursor: default;
+    user-select: none;
+}
+
+.cr-grounding__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--grounding-color);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--grounding-color) 40%, transparent);
+}
+
+/* Tooltip trigger: tier word + state dot, inside the Quality row's dd.
+   Default cursor on purpose (cursor:help is banned); the tooltip carries
+   the tier's explanatory tagline on hover. The word inherits the grid
+   value typography so the section reads with one uniform font. */
+.cr-grounding__tierlock {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: default;
+}
+
+.cr-grounding__tier {
+    text-transform: lowercase;
+}
+
+.cr-grounding__lastseen {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: var(--cr-type-caption);
+}
+
+.cr-grounding__lastseen-label {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: var(--cr-weight-medium);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--cr-ink-3);
+}
+
+
+.cr-grounding__value--muted {
+    color: var(--text-tertiary);
+    font-style: italic;
+}
+
+.cr-grounding__mono {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    letter-spacing: 0;
+}
+
+.cr-grounding__commit-link {
+    color: var(--cr-ink-1);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 2px;
+    transition: color 120ms ease, text-decoration-color 120ms ease;
+}
+
+.cr-grounding__commit-link:hover {
+    color: var(--cr-ink-0);
+    text-decoration-color: var(--cr-ink-2);
+}
+
+.cr-grounding__chips {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.cr-grounding__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--cr-line-0);
+    background: var(--cr-bg-1);
+    color: var(--text-secondary);
+    font-size: 10.5px;
+    line-height: 1.5;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: default;
+}
+
+.cr-grounding__chip--mono {
+    font-family: var(--font-mono);
+    font-size: var(--cr-type-micro);
+    letter-spacing: 0;
+}
+
+.badge-group {
+    display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle;
+}
+.badge a {
+  color: inherit;
+  text-decoration: none;
+  box-shadow: none;
+}
+.badge a:hover {
+  text-decoration: underline;
+}
+.badge.red { background: var(--color-red-bg); color: var(--color-red); border-color: var(--color-red-border); }
+.badge.yellow { background: var(--color-yellow-bg); color: var(--color-yellow); border-color: var(--color-yellow-border); }
+.badge.green { background: var(--color-green-bg); color: var(--color-green); border-color: var(--color-green-border); }
+.badge.cyan { background: var(--color-cyan-bg); color: var(--color-cyan); border-color: color-mix(in srgb, var(--cr-signal) 28%, transparent); }
+.badge.blue { background: var(--color-blue-bg); color: var(--color-blue); border-color: rgba(96, 165, 250, 0.2); }
+.badge.magenta { background: var(--color-magenta-bg); color: var(--color-magenta); border-color: rgba(232, 121, 249, 0.2); }
+.badge.dim {
+    background: var(--bg-surface); color: var(--text-secondary); border-color: var(--border-subtle);
+}
+.badge.experimental {
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-left: 12px;
+}
+.badge.experimental {
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+
+/* ── Radix Tooltip ────────────────────────────────────────────────── */
+.cr-tooltip-content {
+    background: #F0F0F0;
+    color: #1A1A1A;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: var(--cr-weight-medium);
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+    white-space: pre-wrap;
+    max-width: 280px;
+    width: max-content;
+    text-align: left;
+    line-height: 1.45;
+    word-break: break-word;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    z-index: 9999;
+    position: relative;
+    animation: cr-tooltip-in 0.12s ease;
+}
+
+.cr-tooltip-arrow {
+    fill: #F0F0F0;
+}
+
+.cr-tooltip-trigger {
+    display: inline-block;
+}
+
+.cr-table-cell-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+@keyframes cr-tooltip-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ── Spotlight Card (Hover Glow) ───────────────────────────────────── */
+.spotlight-card {
+    position: relative;
+    overflow: visible;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    transition: all 0.3s ease;
+}
+.spotlight-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--cr-ink-0) 4%, transparent), transparent);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+.spotlight-card:hover::before {
+    opacity: 1;
+}
+.spotlight-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: none;
+}
+.table-container.spotlight-card:hover {
+    transform: none; /* Avoid moving large tables on hover */
+}
+.spotlight-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Summary Cards ─────────────────────────────────────────────────── */
+.summary-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;
+}
+.summary-card {
+    padding: 24px;
+    position: relative;
+}
+.summary-value {
+    font-size: var(--cr-type-h1); font-weight: var(--cr-weight-semibold); font-family: var(--font-mono);
+    margin-bottom: 8px; color: var(--text-primary); letter-spacing: 0;
+}
+.summary-label { font-size: 13px; font-weight: var(--cr-weight-medium); color: var(--text-secondary); }
+
+/* ── Tables ────────────────────────────────────────────────────────── */
+.table-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
+.table-header h2 { margin-bottom: 0; }
+.table-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: visible; /* Changed for tooltip visibility */
+    width: 100%;
+}
+.table-wrap {
+    width: 100%;
+    overflow: visible;
+    border-radius: var(--radius-lg);
+}
+.table-container table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.table-container thead th { position: sticky; top: 0; z-index: 25; background: var(--bg-surface); }
+.table-container thead { background: var(--bg-surface); }
+.table-container th:first-child { border-top-left-radius: var(--radius-lg); }
+.table-container th:last-child { border-top-right-radius: var(--radius-lg); }
+.table-container tbody tr:last-child td:first-child { border-bottom-left-radius: var(--radius-lg); }
+.table-container tbody tr:last-child td:last-child { border-bottom-right-radius: var(--radius-lg); }
+.table-container th, .table-container td { text-align: left; padding: 14px 20px; border-bottom: 1px solid var(--border-subtle); position: relative; }
+.table-container th {
+    font-weight: var(--cr-weight-medium); color: var(--text-tertiary); font-size: var(--cr-type-caption);
+    letter-spacing: 0.04em;
+    cursor: pointer; user-select: none; background: var(--bg-surface); white-space: nowrap;
+}
+.table-container th:hover { color: var(--text-primary); }
+.table-container th .sort-icon { opacity: 0.3; transition: opacity 0.2s; margin-left: 4px; vertical-align: -2px; }
+.table-container th:hover .sort-icon { opacity: 0.8; }
+.table-container tbody tr { transition: background 0.15s ease; background-color: var(--bg-card); }
+.table-container tbody tr:hover { background-color: var(--bg-surface); }
+.table-container tbody tr:last-child td { border-bottom: none; }
+
+/* ── Clickable rows (side-drawer trigger) ──────────────────────────── */
+tbody tr.tr--clickable {
+    cursor: pointer;
+}
+tbody tr.tr--clickable:hover {
+    background-color: var(--bg-surface);
+}
+
+/* Selected / open state — solid cyan tint so sticky-col doesn't compound */
+tbody tr.tr--selected,
+tbody tr.tr--selected:hover {
+    background-color: var(--bg-surface-cyan) !important;
+    box-shadow: inset 3px 0 0 0 var(--cr-signal);
+}
+
+
+
+/* Sticky Column */
+.sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: inherit;
+    max-width: 350px;
+}
+tbody tr:hover .sticky-col {
+    z-index: 20;
+}
+.sticky-col > div {
+    white-space: normal;
+    word-break: normal;
+}
+/* Sub-row first column: nowrap for versions */
+tr.sub-row .sticky-col > div {
+    white-space: nowrap;
+}
+th.sticky-col {
+    z-index: 11;
+    background-color: var(--bg-surface);
+}
+
+/* Custom Scrollbar for Tables */
+.table-wrap::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.table-wrap::-webkit-scrollbar-track {
+    background: transparent;
+}
+.table-wrap::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+}
+.table-wrap::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.table-wrap::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* Dynamic Scroll Shadow */
+.table-wrap.is-scrolled .sticky-col::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: -1px; /* Cover border bottom */
+    width: 1px;
+    box-shadow: 4px 0 12px 1px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 12;
+}
+
+/* ── Alerts ────────────────────────────────────────────────────────── */
+.alert {
+    padding: 16px 20px; border-radius: var(--radius-md); margin-bottom: 12px; border: 1px solid var(--border-subtle); background: var(--bg-surface); display: flex; gap: 16px; align-items: flex-start; position: relative; overflow: hidden; width: 100%;
+}
+.alert::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+
+.alert.warning { background: linear-gradient(to right, color-mix(in srgb, var(--cr-warn) 7%, transparent), transparent 60%); border-color: color-mix(in srgb, var(--cr-warn) 18%, transparent); }
+.alert.warning::before { background: var(--color-yellow); }
+.alert.warning .icon { color: var(--color-yellow); }
+
+.alert.error { background: linear-gradient(to right, color-mix(in srgb, var(--cr-danger) 7%, transparent), transparent 60%); border-color: color-mix(in srgb, var(--cr-danger) 18%, transparent); }
+.alert.error::before { background: var(--color-red); }
+.alert.error .icon { color: var(--color-red); }
+
+.alert.info { background: linear-gradient(to right, color-mix(in srgb, var(--cr-signal) 7%, transparent), transparent 60%); border-color: color-mix(in srgb, var(--cr-signal) 18%, transparent); }
+.alert.info::before { background: var(--color-cyan); }
+.alert.info .icon { color: var(--color-cyan); }
+
+.alert-content { flex: 1; min-width: 0; }
+.alert-title { font-weight: var(--cr-weight-semibold); font-size: var(--cr-type-body); margin-bottom: 6px; color: var(--text-primary); }
+.alert-body { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.alert-items { margin-top: 10px; padding-left: 16px; font-family: var(--font-mono); font-size: var(--cr-type-caption); color: var(--text-tertiary); }
+.alert-items li { margin-bottom: 4px; }
+
+/* ── Tabs ──────────────────────────────────────────────────────────── */
+.tabs-container { margin-bottom: 0; width: 100%; }
+.tabs-nav {
+    display: flex; gap: 24px; border-bottom: 1px solid transparent;
+    margin-bottom: 24px; align-items: center;
+    overflow-x: auto; overflow-y: hidden;
+    position: sticky; top: 0; z-index: 50;
+    background: transparent;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    padding-top: 12px;
+    padding-bottom: 0;
+    user-select: none;
+    overscroll-behavior: contain;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tabs-nav.is-stuck {
+    background: color-mix(in srgb, var(--cr-bg-0) 92%, transparent);
+    border-bottom-color: var(--border-subtle);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+.tabs-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+    background: transparent; border: none; padding: 0 0 16px 0;
+    font-size: var(--cr-type-body); font-weight: var(--cr-weight-medium); color: var(--text-tertiary);
+    cursor: pointer; position: relative; transition: color 0.2s ease;
+    white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active { color: var(--text-primary); }
+.tab-btn.active::after {
+    content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px;
+    background: var(--cr-signal);
+}
+.tab-pane { display: none; animation: fadeIn 0.3s ease; }
+.tab-pane.active { display: block; margin-bottom: 48px; }
+
+/* ── Table Toolbar / Filters ───────────────────────────────────────── */
+.table-toolbar {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    gap: 16px; flex-wrap: wrap; min-height: 36px;
+}
+.search-input {
+    position: relative; flex: 1; max-width: 320px;
+}
+.search-input svg {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-tertiary);
+}
+.search-input input {
+    width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+    padding: 8px 12px 8px 36px; color: var(--text-primary); font-family: var(--font-sans); font-size: 13px;
+    transition: all 0.2s ease; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2) inset;
+}
+.search-input input:focus { border-color: var(--border-hover); background: var(--bg-surface-hover); }
+.search-input input::placeholder { color: var(--text-tertiary); }
+.filter-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.table-metadata { font-size: 13px; font-weight: var(--cr-weight-medium); color: var(--text-tertiary); font-family: var(--font-sans); letter-spacing: 0; padding-right: 4px; }
+.filter-pill-wrap { position: relative; }
+.filter-pill {
+    background: var(--bg-card); border: 1px solid var(--border-subtle); color: var(--text-secondary);
+    padding: 6px 14px; border-radius: 999px; font-size: var(--cr-type-caption); font-weight: var(--cr-weight-medium); cursor: pointer; display: flex; align-items: center;
+    transition: all 0.2s ease;
+}
+.filter-pill:hover, .filter-pill.active-pill { color: var(--text-primary); border-color: var(--border-hover); background: var(--bg-surface-hover); }
+.filter-pill.has-selection { color: var(--text-primary); border-color: var(--accent); background: var(--accent-glow); }
+.filter-popover {
+    position: absolute; right: 0; top: calc(100% + 8px); 
+    background: color-mix(in srgb, var(--cr-bg-2) 98%, transparent);
+    border: 1px solid var(--border-hover); border-radius: var(--radius-md); padding: 8px; z-index: 100; min-width: 180px; max-height: 250px; overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+.filter-popover::-webkit-scrollbar { width: 6px; }
+.filter-popover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 999px; }
+.popover-item {
+    display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; cursor: pointer; font-size: 13px; color: var(--text-secondary);
+    transition: background 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.popover-item:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
+.popover-item input[type="checkbox"] { accent-color: var(--accent); flex-shrink: 0; width: 14px; height: 14px; cursor: pointer; border-radius: 4px; }
+
+/* ── Icon helper ───────────────────────────────────────────────────── */
+.icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── Adoption Health Bar ───────────────────────────────────────────── */
+.adoption-bar {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+    width: 100%;
+    gap: 1px;
+    margin-top: 6px;
+    transition: height 0.2s ease, margin-top 0.2s ease;
+    cursor: default;
+}
+.bar-seg {
+    height: 100%;
+    border-radius: 2px;
+    min-width: 2px;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
+.adoption-bar:hover {
+    height: 8px;
+    margin-top: 5px; /* compensate extra height */
+}
+.adoption-bar:hover .bar-seg {
+    opacity: 1;
+}
+
+/* ── Tree View ────────────────────────────────────────────────────── */
+.tree-root {
+    padding: 0;
+    margin-bottom: 6px; /* Ultra compact */
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    overflow: visible;
+}
+
+.tree-root-node {
+    margin-top: 0;
+    padding: 10px;
+}
+
+.tree-root-node > .tree-node-content {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.tree-node {
+    position: relative;
+    margin-top: 6px;
+}
+
+.tree-node-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.tree-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+}
+
+.tree-icon-wrapper svg {
+    width: 10px;
+    height: 10px;
+}
+
+.tree-label {
+    letter-spacing: 0;
+}
+
+.tree-fn {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.tree-meta {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+    padding-left: 24px; /* 16px icon + 8px gap */
+    font-family: var(--font-mono);
+    line-height: 1.2;
+}
+
+.tree-children {
+    margin-left: 11px;
+    padding-left: 24px;
+    border-left: 1px solid var(--border-subtle);
+    margin-top: 8px;
+    position: relative;
+}
+
+/* Connecting lines for tree */
+.tree-children .tree-node::before {
+    content: "";
+    position: absolute;
+    left: -24px;
+    top: 12px;
+    width: 20px;
+    height: 1px;
+    background: var(--border-subtle);
+}
+
+.tree-root:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.drawer-link {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    transition: color 0.15s ease, opacity 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.7;
+}
+
+.drawer-link:hover {
+    color: var(--accent);
+    opacity: 1;
+}
+
+.tree-meta-link {
+    color: inherit;
+    transition: color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.tree-meta-link:hover {
+    color: var(--accent);
+}
+
+/* ── DrawerShell — Unified side-panel chrome ──────────────────────── */
+
+@keyframes cr-drawer-backdrop-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes cr-drawer-backdrop-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+@keyframes cr-drawer-slide-in {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+}
+@keyframes cr-drawer-slide-out {
+    from { transform: translateX(0); }
+    to   { transform: translateX(100%); }
+}
+
+.cr-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 9995;
+    animation: cr-drawer-backdrop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.cr-drawer-backdrop--closing {
+    animation: cr-drawer-backdrop-out 0.18s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.cr-drawer-shell {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 320px;
+    /* Match the app sidebar / global header surface (bg-1) so elevated
+       controls (e.g. the secondary CrButton in the footer, bg-2) read
+       as buttons instead of blending into the panel. */
+    background: var(--cr-bg-1);
+    border-left: 1px solid var(--border-default, rgba(255, 255, 255, 0.09));
+    z-index: 9996;
+    display: flex;
+    flex-direction: column;
+    animation: cr-drawer-slide-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+    box-shadow: -8px 0 48px rgba(0, 0, 0, 0.45);
+}
+.cr-drawer-shell--closing {
+    animation: cr-drawer-slide-out 0.2s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.cr-drawer-shell__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.cr-drawer-shell__close:hover {
+    background: color-mix(in srgb, var(--cr-ink-0) 8%, transparent);
+    color: var(--cr-ink-0);
+    border-color: color-mix(in srgb, var(--cr-ink-0) 15%, transparent);
+}
+
+.cr-drawer-shell__close:focus-visible {
+    outline: 2px solid var(--cr-signal);
+    outline-offset: 1px;
+    color: var(--cr-ink-0);
+}
+
+.cr-drawer-shell__body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cr-drawer-shell__footer {
+    margin-top: auto;
+    padding: 16px 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cr-drawer-shell,
+    .cr-drawer-shell--closing,
+    .cr-drawer-backdrop,
+    .cr-drawer-backdrop--closing,
+    .cr-modal-shell,
+    .cr-modal-backdrop {
+        animation: none;
+    }
+}
+
+/* ── ModalShell — Centered focused detail surface ─────────────────── */
+
+.cr-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.58);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 9997;
+    animation: fadeIn 0.16s ease-out;
+}
+
+.cr-modal-shell {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 84vh;
+    min-width: 320px;
+    background: var(--cr-bg-strip);
+    border: 1px solid var(--cr-line-0);
+    border-radius: 10px;
+    z-index: 9998;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.cr-modal-shell__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--cr-ink-3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.cr-modal-shell__close:hover {
+    background: var(--cr-bg-3);
+    color: var(--cr-ink-0);
+}
+
+.cr-modal-shell__close:focus-visible {
+    outline: 2px solid var(--cr-signal);
+    outline-offset: 1px;
+    color: var(--cr-ink-0);
+}
+
+.cr-modal-shell__body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px 28px;
+}
+
+.cr-modal-shell__footer {
+    flex-shrink: 0;
+    padding: 12px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--bg-elevated, #161618);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* ── Dashboard Grid ────────────────────────────────────────────────── */
+.cr-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+.cr-dashboard-grid > .cr-cap-data {
+    margin-inline: 0;
+    max-width: none;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Global Search Palette Modal ──────────────────────────────────────────────
+   Used by GlobalSearchPalette (global-search/GlobalSearchPalette.tsx).
+
+   The modal card IS the visual container. TaggedSearch normally renders its own
+   `input-wrap` box (border + bg) and a separate `dropdown` box — both need to be
+   neutralised so the result reads as a single unified panel, not three nested boxes.
+
+   Layout inside the modal:
+     ┌──────────────────────────────────────┐  ← .global-search-modal__content
+     │  🔍  [scope tag]  input text    ✕   │  ← input-wrap: transparent, no border
+     │ ────────────────────────────────── │  ← hairline divider only when dropdown open
+     │  SERVICE              1            │
+     │  acme-monolith     acme-dev-platform  │  ← dropdown: no bg, no border, no radius
+     │  ───────────────────────────────── │
+     │  172 nodes · 205 edges · 6 types  │
+     └──────────────────────────────────────┘
+*/
+
+.global-search-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 12vh;
+}
+
+.global-search-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.global-search-modal__content {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    background: var(--bg-elevated, #161618);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    animation: global-search-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    overflow: hidden; /* clip children to the card's border-radius */
+}
+
+/* ── Input row: flush to the top of the card, no inner box ─────────── */
+.global-search-modal__content .tagged-search {
+    position: static; /* dropdown will be relative to the card, not the input */
+}
+
+.global-search-modal__content .tagged-search__input-wrap {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 16px;
+    height: 56px;
+}
+
+.global-search-modal__content .tagged-search__input-wrap:focus-within {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.global-search-modal__content .tagged-search__input {
+    font-size: 15px;
+}
+
+/* ── Dropdown: fused into the card, no floating box ─────────────────── */
+.global-search-modal__content .tagged-search__dropdown {
+    /* Override absolute positioning — flow naturally inside the card */
+    position: static;
+    border: none;
+    border-top: 1px solid var(--border-default);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    /* Constrain height so very long lists don't overflow the viewport */
+    max-height: 380px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+    /* Override the drop-in animation which moves Y — already animated by the card */
+    animation: none;
+}
+
+.global-search-modal__content .tagged-search__dropdown::-webkit-scrollbar {
+    width: 4px;
+}
+.global-search-modal__content .tagged-search__dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+.global-search-modal__content .tagged-search__dropdown::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+}
+
+/* Empty state — shown when topology is null (no blast tab active) */
+.global-search-modal__empty {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 28px 20px;
+    color: var(--text-tertiary);
+    font-size: 13px;
+}
+
+.global-search-modal__empty svg {
+    flex-shrink: 0;
+    opacity: 0.5;
+}
+
+@keyframes global-search-in {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.acme.events",
+  "fields": [
+    { "name": "orderId", "type": "string" },
+    { "name": "total", "type": "double" }
+  ]
+}

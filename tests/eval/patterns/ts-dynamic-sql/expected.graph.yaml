@@ -1,0 +1,8 @@
+fixture: "ts-dynamic-sql"
+description: "TypeScript Dynamic SQL"
+expected_nodes:
+  DataContainer:
+    - "tenant_data_{tenantId}"
+    - "regional_sales_{region}"
+negative_nodes: {}
+negative_patterns: {}

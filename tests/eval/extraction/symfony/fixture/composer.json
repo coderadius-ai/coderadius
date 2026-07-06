@@ -1,0 +1,6 @@
+{
+    "name": "acme/acme-orders",
+    "description": "Acme orders service (Symfony attribute routing)",
+    "require": { "php": "^8.1", "symfony/framework-bundle": "^6.4" },
+    "autoload": { "psr-4": { "Acme\\Orders\\": "src/" } }
+}

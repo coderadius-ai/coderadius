@@ -1,0 +1,17 @@
+{
+    "name": "acme/inventory-app",
+    "require": {
+        "php": ">=8.1",
+        "acme/orders": "*",
+        "acme/shipping": "*"
+    },
+    "repositories": [
+        { "type": "path", "url": "./contexts/orders" },
+        { "type": "path", "url": "contexts/*" }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}

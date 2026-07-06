@@ -1,0 +1,10 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.acme.events",
+  "doc": "Event emitted when an order is finalized",
+  "fields": [
+    { "name": "orderId", "type": "string" },
+    { "name": "total", "type": "double" }
+  ]
+}

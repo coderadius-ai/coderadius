@@ -1,0 +1,10 @@
+envAccessors:
+  - callee: 'Acme\Platform\EnvVault::fetch'
+    keyArg: 0
+    defaultArg: 1
+
+packages:
+  analyze:
+    - name: 'acme/amqp-client'
+      kind: broker-client
+      provider: rabbitmq

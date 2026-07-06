@@ -1,0 +1,38 @@
+id: ar-context-minimal
+name: Context file size
+description: >-
+  Flags oversized agent context files. An empirical study of developer-written
+  AGENTS.md/CLAUDE.md (Gloaguen et al., 2026) found a median of ~640 words and
+  no file above ~2000 words; over-specified context files raise agent step count
+  and inference cost by ~20% without improving task success. Smaller,
+  tooling-focused files perform best. Considers rule, agent_instructions and
+  global_rule files (AGENTS.md, CLAUDE.md, .cursorrules, ...).
+level: warning
+scope: repository
+tags:
+  - agent-readiness
+query: |
+  MATCH (r:Repository)
+  WHERE r.valid_to_commit IS NULL
+  OPTIONAL MATCH (r)<-[:STORED_IN]-(s:Service)-[:HAS_AGENTIC_CONFIG]->(c1:AgenticConfig)
+    WHERE s.valid_to_commit IS NULL
+      AND c1.configType IN ['rule', 'agent_instructions', 'global_rule']
+  OPTIONAL MATCH (r)-[:HAS_AGENTIC_CONFIG]->(c2:AgenticConfig)
+    WHERE c2.configType IN ['rule', 'agent_instructions', 'global_rule']
+  WITH r, collect(DISTINCT c1) + collect(DISTINCT c2) AS rawConfigs
+  WITH r, [c IN rawConfigs WHERE c IS NOT NULL] AS configs
+  WITH r,
+    size(configs) AS totalConfigs,
+    size([c IN configs WHERE c.fileSize IS NOT NULL AND c.fileSize > 12000]) AS oversized
+  RETURN
+    r.id AS entityId,
+    r.name AS entityName,
+    'Repository' AS entityType,
+    CASE WHEN oversized = 0 THEN 'pass' ELSE 'fail' END AS status,
+    CASE
+      WHEN totalConfigs = 0 THEN 'No context files to assess.'
+      WHEN oversized = 0 THEN
+        toString(totalConfigs) + ' context file(s), all within the size envelope of developer-written files.'
+      ELSE
+        toString(oversized) + ' of ' + toString(totalConfigs) + ' context file(s) exceed ~2000 words — larger than any developer-written file studied. Trim to tooling-specific essentials.'
+    END AS detail

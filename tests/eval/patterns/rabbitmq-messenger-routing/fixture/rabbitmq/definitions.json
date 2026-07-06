@@ -1,0 +1,26 @@
+{
+    "exchanges": [
+        { "name": "acme.orders", "vhost": "/prod", "type": "topic", "durable": true, "auto_delete": false },
+        { "name": "acme.dlx", "vhost": "/prod", "type": "direct", "durable": true, "auto_delete": false }
+    ],
+    "queues": [
+        { "name": "acme.inventory.order.requested", "vhost": "/prod", "durable": true, "auto_delete": false },
+        { "name": "acme.payment.order.requested", "vhost": "/prod", "durable": true, "auto_delete": false }
+    ],
+    "bindings": [
+        {
+            "source": "acme.orders",
+            "destination": "acme.inventory.order.requested",
+            "destination_type": "queue",
+            "routing_key": "acme.order.#",
+            "vhost": "/prod"
+        },
+        {
+            "source": "acme.orders",
+            "destination": "acme.payment.order.requested",
+            "destination_type": "queue",
+            "routing_key": "acme.order.created",
+            "vhost": "/prod"
+        }
+    ]
+}

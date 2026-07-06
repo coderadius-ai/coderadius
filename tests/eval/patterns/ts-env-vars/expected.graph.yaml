@@ -1,0 +1,17 @@
+fixture: "ts-env-vars"
+description: "TypeScript Environment Variables & Basic AST I/O"
+
+expected_nodes:
+  DataContainer:
+    - "users"
+    - "orders"
+  MessageChannel:
+    - "orders_exchange"
+  ExternalAPI:
+    - "PAYMENT_SERVICE_URL"
+    - "ORDER_SERVICE_URL"
+    - "FULFILLMENT_URL"
+
+negative_nodes:
+  DataContainer:
+    - "DB_ORDERS"

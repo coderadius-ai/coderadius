@@ -1,0 +1,8 @@
+framework:
+    messenger:
+        transports:
+            async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            failed: 'doctrine://default?queue_name=failed'
+        routing:
+            'Acme\Inventory\Message\OrderCreated': async
+            'Acme\Payment\Message\PaymentProcessed': async
