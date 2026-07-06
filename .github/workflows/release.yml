@@ -96,7 +96,7 @@ jobs:
             (sha256sum "$f" 2>/dev/null || shasum -a 256 "$f") > "$f.sha256"
           done
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.artifact }}
           path: |
