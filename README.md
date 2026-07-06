@@ -50,7 +50,7 @@ CodeRadius fixes this with three capabilities on one graph:
 
 CodeRadius is **0.x and moving fast**, released early to gather real-world feedback, not as a finished product.
 
-What you can rely on today: the deterministic core (AST parsing, import and taint analysis, graph building, blast radius) is pinned by 5,400+ unit tests plus a deterministic eval suite, and every framework marked *eval-verified* in the [compatibility matrix](docs/guide/supported-frameworks.md) is regression-gated by committed fixtures.
+What you can rely on today: the deterministic core (AST parsing, import and taint analysis, graph building, blast radius) is pinned by 5,400+ unit tests plus a deterministic eval suite, and every framework marked *eval-verified* in the [compatibility matrix](https://coderadius.ai/docs/guide/supported-frameworks) is regression-gated by committed fixtures.
 
 What is still settling: LLM semantic extraction quality varies by stack and provider, and the graph schema and CLI surface may change between 0.x releases without migration paths (re-ingesting is the upgrade path).
 
@@ -110,7 +110,7 @@ Unlike observability tools that rely on runtime traffic, CodeRadius builds its g
 3. **Semantic Extraction**: Tainted functions are sent to your chosen LLM to extract intents, payloads, and infrastructure dependencies. A Merkle hash cache makes incremental runs take seconds instead of hours.
 4. **Global Edge Resolution**: Matches emergent client calls in Service A to canonical OpenAPI endpoints in Service B, bridging the cross-repo gap.
 
-Every node and edge carries [grounding](docs/guide/grounding.md): who produced the fact (AST, LLM, declaration, infra), the supporting evidence, and how much to trust it.
+Every node and edge carries [grounding](https://coderadius.ai/docs/guide/grounding): who produced the fact (AST, LLM, declaration, infra), the supporting evidence, and how much to trust it.
 
 Built on Bun, tree-sitter, Mastra + Vercel AI SDK, and Memgraph.
 
@@ -144,7 +144,7 @@ CodeRadius ships a native MCP server that plugs into any MCP-compatible agent (C
 | `analyze_architecture_gravity` | SPOFs, shared-database anti-patterns, and coupling hotspots ranked by score. |
 | `analyze_agentic_context` | AI-tooling adoption per repository: tools, configurations, skills, workflows. |
 
-Full guide: [docs/guide/mcp-server.md](docs/guide/mcp-server.md)
+Full guide: [coderadius.ai/docs/guide/mcp-server](https://coderadius.ai/docs/guide/mcp-server)
 
 ---
 
@@ -162,7 +162,7 @@ Full guide: [docs/guide/mcp-server.md](docs/guide/mcp-server.md)
 
 **LLM providers**: Google Vertex AI · Google Gemini API · OpenAI · Anthropic · Amazon Bedrock · Ollama (fully local, no API key)
 
-→ [Full compatibility matrix](docs/guide/supported-frameworks.md)
+→ [Full compatibility matrix](https://coderadius.ai/docs/guide/supported-frameworks)
 
 ---
 
@@ -177,8 +177,8 @@ Full guide: [docs/guide/mcp-server.md](docs/guide/mcp-server.md)
 
 ## Documentation
 
-- **User guide**: [docs/guide/](docs/guide/) including [introduction](docs/guide/introduction.md), [CLI commands](docs/guide/cli-commands.md), [impact evaluation](docs/guide/impact-evaluation.md), [governance policies](docs/guide/governance.md), [configuration](docs/guide/coderadius-yaml.md)
-- **Architecture deep-dives**: [docs/architecture/](docs/architecture/) covering ingestion pipeline, graph data model, API-endpoint dedup, service topology, grounding contract
+- **User guide**: [docs/guide/](https://coderadius.ai/docs) including [introduction](https://coderadius.ai/docs/guide/introduction), [CLI commands](https://coderadius.ai/docs/guide/cli-commands), [impact evaluation](https://coderadius.ai/docs/guide/impact-evaluation), [governance policies](https://coderadius.ai/docs/guide/governance), [configuration](https://coderadius.ai/docs/guide/coderadius-yaml)
+- **Architecture deep-dives**: [docs/architecture/](https://coderadius.ai/docs) covering ingestion pipeline, graph data model, API-endpoint dedup, service topology, grounding contract
 
 ---
 

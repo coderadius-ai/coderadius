@@ -1,4 +1,4 @@
-# CodeRadius Code Ingestion Pipeline
+# Code Ingestion Pipeline
 
 The ingestion pipeline transforms a repository into a Knowledge Graph in a graph database (like Memgraph). It is designed to be fast, deterministic, and cost-effective by filtering out as much noise as possible *before* invoking any LLM.
 

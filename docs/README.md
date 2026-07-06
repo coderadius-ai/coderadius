@@ -33,7 +33,7 @@ CodeRadius builds a live, queryable graph of your services, APIs, databases, and
 ## Architecture Deep-Dives
 
 - **[System Architecture](./architecture/architecture.md)**: How CodeRadius constructs the architectural graph, from ingestion pipeline to graph storage and query layer.
-- **[CodeRadius Code Ingestion Pipeline](./architecture/ingestion-pipeline.md)**: How the pipeline transforms a repository into a knowledge graph, filtering out as much noise as possible before invoking any LLM.
+- **[Code Ingestion Pipeline](./architecture/ingestion-pipeline.md)**: How the pipeline transforms a repository into a knowledge graph, filtering out as much noise as possible before invoking any LLM.
 - **[Grounding, Evidence, Quality](./architecture/grounding.md)**: How CodeRadius attributes every node and edge in the graph to its origin, supporting evidence, and trust tier.
 - **[Impact Explorer Scoring System](./architecture/impact-scoring.md)**: Mathematical specification of the Downstream Gravity Score that feeds the T0-T4 impact tier classifier.
 - **[API Endpoint Dedup & Cross-Service Matchmaking](./architecture/api-endpoint-dedup.md)**: How CodeRadius prevents duplicate APIEndpoint nodes when the same logical route is described by multiple producers, and joins consumer->provider edges across services.
