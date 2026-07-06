@@ -108,11 +108,11 @@ describe('shouldRunGitFallback', () => {
 describe('formatPreflightSummary', () => {
     it('uses singular form for 1 file', () => {
         // Note: in non-TTY test environments the dim wrapper is a no-op.
-        expect(formatPreflightSummary(1)).toContain('Analyzing 1 changed file via LLM');
+        expect(formatPreflightSummary(1)).toContain('Static + semantic extraction: 1 changed file');
     });
 
     it('uses plural form for many files', () => {
-        expect(formatPreflightSummary(12)).toContain('Analyzing 12 changed files via LLM');
+        expect(formatPreflightSummary(12)).toContain('Static + semantic extraction: 12 changed files');
     });
 
     it('does not include the `[cr impact]` prefix anymore (redundant after banner)', () => {

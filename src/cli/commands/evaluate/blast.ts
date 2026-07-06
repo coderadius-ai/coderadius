@@ -278,7 +278,7 @@ export function registerEvaluateBlastCommand(evaluate: Command): void {
                 }
 
                 // ── Step 4: Ephemeral LLM Extraction ─────────────────────────
-                // Mono-line phase widget: "Analyzing N changed files via LLM..." is
+                // Mono-line phase widget: "Static + semantic extraction: N changed files..." is
                 // printed without newline; when extraction returns we \r-overwrite
                 // the same line with the completion summary.
                 if (opts.verbose) logger.debug('[Step 4/6] Running ephemeral extraction (LLM)...');
@@ -287,7 +287,7 @@ export function registerEvaluateBlastCommand(evaluate: Command): void {
                 const fileNoun = changedFiles.length === 1 ? 'changed file' : 'changed files';
                 const dimAnsi = (s: string) => (isTty ? `\x1b[2m${s}\x1b[0m` : s);
                 if (!headlessOutput && isTty) {
-                    process.stdout.write(dimAnsi(`  Analyzing ${changedFiles.length} ${fileNoun} via LLM...`));
+                    process.stdout.write(dimAnsi(`  Static + semantic extraction: ${changedFiles.length} ${fileNoun}...`));
                 }
 
                 const llmStartMs = performance.now();
@@ -310,7 +310,7 @@ export function registerEvaluateBlastCommand(evaluate: Command): void {
                 if (!headlessOutput) {
                     const { formatLlmSummary } = await import('../../../eval/report-generator.js');
                     const summary = formatLlmSummary({ durationMs: llmDurationMs, tokensUsed });
-                    const text = `Analyzed ${changedFiles.length} ${fileNoun} via LLM${summary ? ` ${summary}` : ''}`;
+                    const text = `Static + semantic extraction: ${changedFiles.length} ${fileNoun}${summary ? ` ${summary}` : ''}`;
                     if (isTty) {
                         process.stdout.write(`\r\x1b[K${dimAnsi('  ' + text)}\n`);
                     } else {

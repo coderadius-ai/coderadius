@@ -762,7 +762,7 @@ export async function ingestStructural(
                 let enrichFail = 0;
                 const enrichT0 = Date.now();
 
-                reporter.report(`[LLM Enrichment] ${total} agentic config(s) to enrich in "${repo.name}"`);
+                reporter.report(`[Agentic Enrichment] ${total} agentic config(s) to enrich in "${repo.name}"`);
 
                 // ── Accumulator: collect LLM results in memory ───────────────
                 const metadataPatches: Array<{
@@ -783,7 +783,7 @@ export async function ingestStructural(
                     const filePath = (entity.properties.filePath as string) ?? '';
                     const preview = (entity.properties.contentPreview as string) ?? '';
 
-                    reporter.report(`[LLM Enrichment] (${idx + 1}/${total}) ${name} [${configType}] — ${filePath}`);
+                    reporter.report(`[Agentic Enrichment] (${idx + 1}/${total}) ${name} [${configType}] — ${filePath}`);
                     const t0 = Date.now();
 
                     try {
@@ -807,7 +807,7 @@ export async function ingestStructural(
                             const tool = entity.properties.tool as string | undefined;
                             if (tool === 'knowledge_base' && metadata.isAgenticContent === false) {
                                 nonAgenticNodeIds.push(entity.id);
-                                reporter.report(`[LLM Enrichment] ✖ ${name} — classified as non-agentic content (will be pruned)`);
+                                reporter.report(`[Agentic Enrichment] ✖ ${name} — classified as non-agentic content (will be pruned)`);
                                 return;
                             }
 
@@ -817,17 +817,17 @@ export async function ingestStructural(
                             metadataPatches.push({ nodeId: entity.id, intent: metadata.intent, topicsCsv, techsCsv });
                             enrichedIntents.set(entity.id, metadata.intent);
                             enrichOk++;
-                            reporter.report(`[LLM Enrichment] ✔ ${name} (${elapsed}s) → [${topicsCsv}] {${techsCsv}}`);
-                            logger.debug(`[LLM Enrichment]   "${metadata.intent}"`);
+                            reporter.report(`[Agentic Enrichment] ✔ ${name} (${elapsed}s) → [${topicsCsv}] {${techsCsv}}`);
+                            logger.debug(`[Agentic Enrichment]   "${metadata.intent}"`);
                         } else {
                             enrichFail++;
                             telemetryCollector.addEnrichError({
                                 repoName: repo.name,
                                 filePath,
-                                errorMessage: 'LLM returned empty metadata',
+                                errorMessage: 'model returned empty metadata',
                                 errorType: 'EmptyMetadata',
                             });
-                            reporter.warn(`[LLM Enrichment] ✖ ${name} (${elapsed}s) — LLM returned empty metadata`);
+                            reporter.warn(`[Agentic Enrichment] ✖ ${name} (${elapsed}s) — model returned empty metadata`);
                         }
                     } catch (err) {
                         const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
@@ -855,7 +855,7 @@ export async function ingestStructural(
                         });
 
                         // Graceful fallback: log and continue, don't cascade to Vercel Gateway
-                        reporter.warn(`[LLM Enrichment] ✖ ${name} (${elapsed}s) — ${errMsg}`);
+                        reporter.warn(`[Agentic Enrichment] ✖ ${name} (${elapsed}s) — ${errMsg}`);
                     }
                 };
 
@@ -869,19 +869,19 @@ export async function ingestStructural(
                 // ── Flush: chunked UNWIND writes for metadata patches ────────
                 if (metadataPatches.length > 0) {
                     await bulkPatchMetadata(metadataPatches);
-                    logger.debug(`[LLM Enrichment] Flushed ${metadataPatches.length} metadata patch(es) with chunked Bolt writes`);
+                    logger.debug(`[Agentic Enrichment] Flushed ${metadataPatches.length} metadata patch(es) with chunked Bolt writes`);
                 }
 
                 // ── Prune false-positive knowledge_base nodes ────────────────
                 if (nonAgenticNodeIds.length > 0) {
                     const pruned = await pruneNonAgenticNodes(nonAgenticNodeIds);
-                    reporter.report(`[LLM Enrichment] Pruned ${pruned} non-agentic node(s) from graph`);
+                    reporter.report(`[Agentic Enrichment] Pruned ${pruned} non-agentic node(s) from graph`);
                     metrics.entitiesRemoved += pruned;
                 }
 
                 const totalElapsedMs = Date.now() - enrichT0;
                 const totalElapsed = (totalElapsedMs / 1000).toFixed(1);
-                reporter.report(`[LLM Enrichment] Done: ${enrichOk}/${total} enriched, ${enrichFail} failed (${totalElapsed}s)`);
+                reporter.report(`[Agentic Enrichment] Done: ${enrichOk}/${total} enriched, ${enrichFail} failed (${totalElapsed}s)`);
 
                 // Feed enrichment counters to telemetry for final report
                 telemetryCollector.incrementEnrichOk(enrichOk);

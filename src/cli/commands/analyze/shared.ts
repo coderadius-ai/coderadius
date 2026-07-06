@@ -52,7 +52,7 @@ export function printIngestHeader(title: string, scope: string, targetStr: strin
     labels.push(
         { label: 'Target', value: targetStr },
         { label: 'Scope', value: scope },
-        { label: 'LLM Engine', value: llmInfo },
+        { label: 'Inference', value: llmInfo },
         { label: 'Embeddings', value: embeddingInfo }
     );
 

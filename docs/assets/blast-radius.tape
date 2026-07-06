@@ -27,8 +27,12 @@ Set Theme "Catppuccin Mocha"
 Set TypingSpeed 15ms
 
 # ── Hidden setup: fleet root, friendly prompt, no pager ─────────────────────
+# `cr` runs the CLI from the repo source (bun) so copy changes not yet in the
+# published binary are reflected in the recording.
 Hide
-Type "cd /Users/emenon/Code/coderadius-ai/demo-fleet && export PS1='demo-fleet ❯ ' GIT_PAGER=cat && clear"
+Type `cr() { bun /Users/emenon/Code/coderadius-ai/coderadius/src/cli/index.ts "$@"; }`
+Enter
+Type "cd /Users/emenon/Code/coderadius-ai/demo-fleet && export PS1='demo-fleet ❯ ' GIT_PAGER=cat GIT_SSH_COMMAND=false GIT_TERMINAL_PROMPT=0 && clear"
 Enter
 Sleep 1s
 Show

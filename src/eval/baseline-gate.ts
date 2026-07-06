@@ -71,5 +71,5 @@ const dim = (s: string): string => (isTty ? `\x1b[2m${s}\x1b[0m` : s);
 
 export function formatPreflightSummary(fileCount: number): string {
     const noun = fileCount === 1 ? 'changed file' : 'changed files';
-    return dim(`  Analyzing ${fileCount} ${noun} via LLM...`);
+    return dim(`  Static + semantic extraction: ${fileCount} ${noun}...`);
 }

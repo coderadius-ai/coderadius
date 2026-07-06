@@ -1236,7 +1236,7 @@ class TelemetryCollector {
                 const cost = this.estimateCost();
                 lines.push(
                     section('ECONOMICS'),
-                    row('LLM Cost', money(cost.llmCost)),
+                    row('Inference Cost', money(cost.llmCost)),
                     row('Model', cost.modelLabel),
                 );
                 if (cost.embeddingCost > 0 || f.embeddingTokens > 0) {

@@ -315,7 +315,7 @@ export async function ingestCodePipeline(
     // PHASE 2: Execution (LLM Extraction + Graph Persistence)
     // ═════════════════════════════════════════════════════════════════════
 
-    if (task?.setPhase) task.setPhase('Extracting semantics (LLM)...');
+    if (task?.setPhase) task.setPhase('Semantic extraction...');
 
     for (const plan of plannedRepos) {
         const { discoveryResult, manifestResults, analysisResults, cacheHitResults } = plan;
@@ -366,7 +366,7 @@ export async function ingestCodePipeline(
 
             try {
                 if (task && logger.isDebugEnabled()) {
-                    task.report(`Extracting semantics (LLM) for ${fileContext.relativePath} (${analysisResult.analysisTasks.length} functions)...`);
+                    task.report(`Semantic extraction: ${fileContext.relativePath} (${analysisResult.analysisTasks.length} functions)...`);
                 }
 
                 // ── Stage 3: Semantic Extraction (Chunked) ────────────
