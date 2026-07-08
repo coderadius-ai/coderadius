@@ -1,4 +1,4 @@
-# `coderadius.yaml`
+# coderadius.yaml Reference
 
 `coderadius.yaml` is a per-repository config file that tells CodeRadius things static analysis can't figure out on its own: what your internal SDKs do, which physical database a table belongs to, which broker a DSN points to. It's optional. Without it, CodeRadius still analyzes your repo using built-in heuristics. You add the file only where those heuristics guess wrong.
 
@@ -202,6 +202,8 @@ cr:datacontainer:acme/payment-service:orders
 ```
 
 Scoped to the repo. Safe, but if `inventory-service` also queries `orders` against the same physical MySQL instance, you get two disconnected nodes. CodeRadius has no way to know it's one database.
+
+You don't have to find these cases by hand: after an analysis, `cr doctor` scans the graph for cross-repo tables it could not weld on its own and prints a ready-to-paste `databases[]` block for each candidate (see [CLI Reference](./cli-commands.md#doctor)).
 
 ```yaml
 databases:
@@ -658,7 +660,9 @@ hints:
 
 ## Finding shared databases
 
-Once `databases` is declared consistently across repos, two `DataContainer` nodes with the same `scope` but different `sourceRepo` mean two services are hitting the same physical table. Query it directly in Memgraph Lab:
+**Before declaring**: run `cr doctor` after an analysis. It surfaces cross-repo same-named tables whose database endpoints resolve the same database name — the candidates worth declaring — each with the exact `databases[]` block to paste.
+
+**After declaring**: once `databases` is declared consistently across repos, two `DataContainer` nodes with the same `scope` but different `sourceRepo` mean two services are hitting the same physical table. Query it directly in Memgraph Lab:
 
 ```cypher
 MATCH (dc1:DataContainer), (dc2:DataContainer)
