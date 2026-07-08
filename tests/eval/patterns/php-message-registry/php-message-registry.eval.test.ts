@@ -205,7 +205,7 @@ describe('Pattern Eval — php-message-registry', () => {
     // The grounding refactor moves trust scoring from a single confidence
     // float to a categorical (source, quality, evidence) triple. Every fact
     // emitted by a provider MUST stamp its identity so downstream filters
-    // (cr review pending, dashboard quality dot) can attribute the value.
+    // (cr doctor, dashboard quality dot) can attribute the value.
     // Anchor expectations on the fixture above so a regression in the
     // provider does not silently lose the grounding trace.
 

@@ -76,7 +76,7 @@ program
 // ─── Custom Help Rendering ───────────────────────────────────────────────────
 // Override the default flat Commander output with a categorized, branded layout.
 
-const CORE_COMMANDS    = ['analyze', 'blast', 'policy', 'review', 'drift', 'ask', 'ui', 'docs'];
+const CORE_COMMANDS    = ['analyze', 'doctor', 'blast', 'policy', 'drift', 'ask', 'ui', 'docs'];
 const SETUP_COMMANDS   = ['init', 'up', 'down', 'mcp'];
 const MAINT_COMMANDS   = ['validate', 'prune', 'state', 'config'];
 
@@ -167,7 +167,7 @@ import { registerStopCommand } from './commands/infra/stop.js';
 import { registerChatCommand } from './commands/chat/index.js';
 import { registerUiCommand } from './commands/ui/index.js';
 import { registerTeamAliasCommand } from './commands/team-alias.js';
-import { registerReviewCommand } from './commands/review.js';
+import { registerDoctorCommand } from './commands/doctor.js';
 import { registerDriftCommand } from './commands/drift.js';
 import { registerPolicyVerifyCommand } from './commands/policy/verify.js';
 import { registerPolicyPruneCommand } from './commands/policy/prune.js';
@@ -201,8 +201,8 @@ registerChatCommand(program);
 // ui (← dashboard): Open the architecture dashboard
 registerUiCommand(program);
 
-// review: Triage entities flagged for human review (grounding.needsReview)
-registerReviewCommand(program);
+// doctor: Diagnose analysis gaps (grounding.needsReview + shared-DB candidates) and prescribe coderadius.yaml fixes
+registerDoctorCommand(program);
 
 // drift: Compare catalog-declared truth vs code-extracted graph
 registerDriftCommand(program);

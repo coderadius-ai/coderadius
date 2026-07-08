@@ -1098,7 +1098,7 @@ class TelemetryCollector {
             if (f.brokerCandidatesUnbound > 0) {
                 lines.push(row(
                     'Broker Candidates Unbound',
-                    `${fmt(f.brokerCandidatesUnbound)} (broker-ish env values with no anchor/sink — see cr review pending)`,
+                    `${fmt(f.brokerCandidatesUnbound)} (broker-ish env values with no anchor/sink — see cr doctor)`,
                     'red',
                 ));
             }

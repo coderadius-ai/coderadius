@@ -15,7 +15,7 @@ import { clearMessageBrokerRegistry } from '../../../../src/ingestion/core/messa
 // messaging-shaped. The plugin MUST:
 //   - NOT emit MessageChannel / MessageBroker (would be a wrong / partial graph)
 //   - Stamp `needsReview=true` on the SourceFile entity so the user sees the
-//     file in `cr review pending`
+//     file in `cr doctor`
 // ═════════════════════════════════════════════════════════════════════════════
 
 const TEST_DIR = import.meta.dirname;

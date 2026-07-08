@@ -3,7 +3,7 @@
  *
  * The candidate ledger's whole point is that broker-ish evidence which cannot
  * be grounded stays VISIBLE: unbound candidates and guess-only bindings must
- * surface as funnel rows (and in `cr review pending` via NEEDS_REVIEW_LABELS).
+ * surface as funnel rows (and in `cr doctor` via NEEDS_REVIEW_LABELS).
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -57,7 +57,7 @@ describe('Broker discovery negative telemetry', () => {
 });
 
 describe('NEEDS_REVIEW_LABELS — broker discovery review surface', () => {
-    it('includes MessageBroker and BrokerCandidate so cr review pending sees them', () => {
+    it('includes MessageBroker and BrokerCandidate so cr doctor sees them', () => {
         expect(NEEDS_REVIEW_LABELS).toContain('MessageBroker');
         expect(NEEDS_REVIEW_LABELS).toContain('BrokerCandidate');
     });

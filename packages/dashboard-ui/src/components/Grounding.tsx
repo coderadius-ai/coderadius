@@ -84,7 +84,7 @@ export function GroundingSection({ node, repoUrl }: { node: TopologyNode; repoUr
                 {node.needsReview && (
                     <span
                         className="cr-grounding__review"
-                        title="Flagged for human review. Run `cr review pending` for the full list."
+                        title="Flagged for human review. Run `cr doctor` for the full list."
                     >
                         Needs review
                     </span>

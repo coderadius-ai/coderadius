@@ -42,7 +42,7 @@
  *     onto the wrong queue.
  *   - Ambiguity stamp: when 2+ bindings match, stamp
  *     `channel-routing-pattern-ambiguous@v1` + `needsReview=true` so the
- *     reviewer sees it in `cr review pending`.
+ *     reviewer sees it in `cr doctor`.
  */
 
 import { runInTransaction, run } from '../../graph/mutations/_run.js';

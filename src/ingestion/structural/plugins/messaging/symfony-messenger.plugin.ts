@@ -329,7 +329,7 @@ function extractFromPhpFactory(content: string, context: PluginContext): Structu
         // config service) — the static extractor cannot recover the map. To
         // avoid a silent false-negative on a file the customer expects to be
         // recognised, stamp `needsReview=true` on the SourceFile so it surfaces
-        // in `cr review pending`. No MessageChannel/Broker emitted (a partial
+        // in `cr doctor`. No MessageChannel/Broker emitted (a partial
         // graph would be worse than the miss).
         if (FACTORY_METHOD_SHAPE.test(content)) {
             const sourceFileUrn = buildUrn('sourcefile', context.repoName, context.relativePath);

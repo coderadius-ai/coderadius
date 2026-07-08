@@ -274,7 +274,7 @@ export function NodePopover({
                             <span className="cr-popover__quality-row">
                                 <QualityBadge quality={q as Quality} source={node.groundingSource ?? undefined} />
                                 {node.needsReview && (
-                                    <SimpleTooltip side="bottom" content="Flagged for human review. Run `cr review pending` for the full list.">
+                                    <SimpleTooltip side="bottom" content="Flagged for human review. Run `cr doctor` for the full list.">
                                         <span className="cr-popover__review-flag">· needs review</span>
                                     </SimpleTooltip>
                                 )}

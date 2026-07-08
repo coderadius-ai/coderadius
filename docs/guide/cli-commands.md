@@ -42,7 +42,7 @@ cr --help
 
 | Category | Commands |
 |----------|----------|
-| **Core** | `analyze`, `blast`, `policy`, `review`, `drift`, `ask`, `ui`, `docs` |
+| **Core** | `analyze`, `doctor`, `blast`, `policy`, `drift`, `ask`, `ui`, `docs` |
 | **Setup** | `init`, `up`, `down`, `mcp` |
 | **Maintenance** | `validate`, `prune`, `state`, `config` |
 
@@ -733,38 +733,40 @@ cr prune all [options]
 
 ---
 
-## Grounding Review
+## Doctor
 
-Read-only commands for inspecting the trust attribution of entities in the graph. See the [Grounding & Trust Tiers](./grounding.md) guide for the conceptual model.
-
-### Review Pending
-
-Lists every inferred entity flagged with `needsReview = true`, grouped by node label. The engine flags entities when it cannot decide between competing signals, when a sanitizer fallback fires on a weak source, or when a mutation runs without a grounding argument (defensive catch).
+Diagnoses what the analysis could not infer on its own and prescribes the `coderadius.yaml` declaration that fixes it. See the [Grounding & Trust Tiers](./grounding.md) guide for the conceptual model behind the flags.
 
 ```bash
-cr review pending [options]
+cr doctor [options]
 ```
+
+The output has two sections:
+
+1. **Shared databases** — cross-repo tables the welder cannot merge without a physical fingerprint (compose service hosts and localhost are unfingerprintable by design). Candidates are corroborated by the endpoint database name (modulo env suffix), *not* by the table name alone — two repos both owning a `users` table is noise; two repos whose endpoints resolve the same database name is signal. Each suggestion comes with a paste-ready `databases[]` block (`shared: true` + `tables`) for every involved repo.
+2. **Pending review** — every inferred entity flagged with `needsReview = true`, grouped by node label. The engine flags entities when it cannot decide between competing signals, when a sanitizer fallback fires on a weak source, or when a mutation runs without a grounding argument (defensive catch). Where the fix is a single unambiguous config knob, the reason includes a paste-ready yaml fragment.
 
 | Option | Description |
 |--------|-------------|
-| `--label <name>` | Restrict to a single inferred label (MessageChannel, DataContainer, APIEndpoint, ...) |
+| `--label <name>` | Restrict the pending-review list to a single inferred label (MessageChannel, DataContainer, APIEndpoint, ...) |
 | `--quality-at-least <tier>` | Keep only entities whose quality is at least the given tier (exact, high, medium, low, speculative) |
 | `--source <s>` | Keep only entities whose grounding source matches (ast, heuristic, llm, composite, declared, infra, runtime). Repeat the flag for multiple sources |
+| `--json` | Machine-readable output (`{ sharedDatabases, pending }`) |
 
-The command is read-only: it prints the triage list and exits. To act on a flagged entity, either accept the engine's inference (no action), tighten the source code so a static extractor catches it, or declare the entity in `coderadius.yaml` to override the tier with a `declared` source.
+The command is read-only: it prints the diagnosis and exits. To act on a finding, either accept the engine's inference (no action), tighten the source code so a static extractor catches it, or apply the suggested `coderadius.yaml` fragment — declarations become `declared` source on the next `cr analyze code` run.
 
 ```bash
-# All pending entities
-cr review pending
+# Full diagnosis: shared-database suggestions + pending review
+cr doctor
 
 # Only flagged MessageChannels
-cr review pending --label MessageChannel
+cr doctor --label MessageChannel
 
 # Only LLM-inferred entities with quality medium or above
-cr review pending --quality-at-least medium --source llm
+cr doctor --quality-at-least medium --source llm
 
 # LLM-inferred OR heuristic-inferred (anything not from AST or composite)
-cr review pending --source llm --source heuristic
+cr doctor --source llm --source heuristic
 ```
 
 ### Diagnostic Coverage Dump

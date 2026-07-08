@@ -16,7 +16,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
  * Expected behaviour: the structural plugin recognises the file as messaging-
  * shaped, observes that `extractMessageClassRoutingTable` returns an empty
  * map, and stamps `needsReview=true` on the SourceFile so the user sees it
- * in `cr review pending`. No MessageChannel / MessageBroker emitted (would
+ * in `cr doctor`. No MessageChannel / MessageBroker emitted (would
  * be worse than the silent miss).
  */
 class MessageMap

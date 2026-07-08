@@ -19,7 +19,7 @@
  *      a T2 transitive duplicate of the physical (orchestrator bug).
  *
  * The logical channel survives ONLY in two legitimate cases, both surfaced
- * via `needsReview=true` for triage in `cr review pending`:
+ * via `needsReview=true` for triage in `cr doctor`:
  *   - Ambiguous broker (>1 broker detected for the channel): tagged with
  *     extractor `channel-autopromoter-ambiguous@v1`.
  *   - Schema-anchor: a DataContract attached via `:DESCRIBES` makes the
@@ -433,7 +433,7 @@ async function promoteOntoPhysical(
     // Step 5 (Fix 6bis): mark the physical channel needsReview + low-evidence
     // extractor tag when the promotion lacked structural corroboration (no
     // `discoverySource = 'config'` on the logical, and not the Tier-1 weld
-    // onto a config-declared physical). Surfaced in `cr review pending` and
+    // onto a config-declared physical). Surfaced in `cr doctor` and
     // used by the technology welder Fix 7 as a "skip" signal to avoid
     // painting FPs.
     if (!opts.structurallyCorroborated) {

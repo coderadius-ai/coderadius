@@ -4,7 +4,7 @@
  * Read-only Cypher that answers operational questions about the trust tier
  * distribution across the graph. Used by:
  *   - `cr sync code` final report (breakdown per node label)
- *   - `cr review pending` (lists items where `needsReview = true`)
+ *   - `cr doctor` (lists items where `needsReview = true`)
  *   - dashboard toolbar filter chips (qualityAtLeast, sourceIn)
  *
  * Convention: each function reads only the flat grounding properties
@@ -41,7 +41,7 @@ export type InferredNodeLabel = typeof INFERRED_NODE_LABELS[number];
  * Fix P1.2: extension of INFERRED_NODE_LABELS used ONLY by `listNeedsReview`.
  * Includes `SourceFile` so structural-plugin emits (e.g. Symfony Messenger PHP
  * dynamic-routing G7 case) that stamp `needsReview=true` on a source file are
- * surfaced by `cr review pending`. Quality breakdown queries continue to use
+ * surfaced by `cr doctor`. Quality breakdown queries continue to use
  * the narrow INFERRED_NODE_LABELS to avoid flooding aggregates with uniformly
  * `ast/exact` structural rows.
  *
@@ -131,7 +131,7 @@ export interface ListNeedsReviewFilter {
 
 /**
  * List every inferred node flagged with `needsReview = true`. Used by
- * `cr review pending` and the dashboard "Needs review" filter chip.
+ * `cr doctor` and the dashboard "Needs review" filter chip.
  *
  * Filters narrow the set:
  *   - `label`: restrict to a single inferred node label.

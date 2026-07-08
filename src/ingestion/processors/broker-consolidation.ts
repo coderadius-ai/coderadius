@@ -218,7 +218,7 @@ function vhostBlindGroupKey(b: BrokerRow): string | null {
  *     one — two known vhosts are two legitimate logical brokers, NO review noise;
  *   - ≥2 distinct known vhosts + a vhost-NULL sibling → the NULL broker is
  *     ambiguous: no melt, `needsReview=true` on the NULL broker ONLY
- *     (queryable via listNeedsReview / cr review pending).
+ *     (queryable via listNeedsReview / cr doctor).
  */
 async function meltVhostNullSiblings(brokers: BrokerRow[], commitHash: string): Promise<number> {
     const groups = new Map<string, BrokerRow[]>();

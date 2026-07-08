@@ -1,5 +1,5 @@
 /**
- * Guards the human-readable copy that `cr review pending` shows operators.
+ * Guards the human-readable copy that `cr doctor` shows operators.
  *
  * Regression target: `broker-candidate@v1` (and the rest of the broker
  * discovery family) had no `REVIEW_REASONS` entry, so every unbound
@@ -7,9 +7,12 @@
  * the operator SHOULD see — a mapped, actionable reason that names the
  * concrete config knob — so the fix is pinned by what we want, not by the
  * absence of the old text.
+ *
+ * The `yaml` templates turn the prose suggestion into a paste-ready
+ * coderadius.yaml fragment parameterized on the flagged entity's name.
  */
 import { describe, it, expect } from 'vitest';
-import { REVIEW_REASONS, formatReasons, unmappedReason } from '../../../src/cli/commands/review.js';
+import { REVIEW_REASONS, formatReasons, unmappedReason } from '../../../src/cli/commands/doctor.js';
 
 /** Tags stamped on `needsReview = true` nodes that the operator can actually act on. */
 const BROKER_FAMILY_TAGS = [
@@ -40,6 +43,39 @@ describe('REVIEW_REASONS gives broker candidates an actionable reason', () => {
 
     it('formatReasons returns nothing for an unmapped tag (so the caller falls back)', () => {
         expect(formatReasons(['totally-unknown@v9'])).toEqual([]);
+    });
+});
+
+describe('yaml fragments are paste-ready and parameterized on the entity name', () => {
+    it('broker family emits a messageBrokers block naming the candidate', () => {
+        for (const tag of BROKER_FAMILY_TAGS) {
+            const reason = REVIEW_REASONS[tag];
+            expect(reason.yaml, `${tag} has no yaml template`).toBeDefined();
+            const frag = reason.yaml!('acme-mq');
+            expect(frag).toContain('messageBrokers:');
+            expect(frag).toContain('acme-mq');
+        }
+    });
+
+    it('dynamic-routing / low-evidence channels emit a class_routes skeleton', () => {
+        for (const tag of ['symfony-messenger-dynamic-routing@v1', 'channel-autopromoter-low-evidence@v1']) {
+            const frag = REVIEW_REASONS[tag].yaml!('OrderPlacedEvent');
+            expect(frag).toContain('class_routes:');
+            expect(frag).toContain('class: OrderPlacedEvent');
+            expect(frag).toContain('routing_key:');
+        }
+    });
+
+    it('ambiguous routing patterns emit an aliases skeleton anchored on the channel name', () => {
+        const frag = REVIEW_REASONS['channel-routing-pattern-ambiguous@v1'].yaml!('order.created');
+        expect(frag).toContain('aliases:');
+        expect(frag).toContain('from: order.created');
+        expect(frag).toContain('channelKind:');
+    });
+
+    it('prose-only reasons carry no yaml template (schema anchor is informational)', () => {
+        expect(REVIEW_REASONS['channel-autopromoter-schema-anchor@v1'].yaml).toBeUndefined();
+        expect(REVIEW_REASONS['untagged@v1'].yaml).toBeUndefined();
     });
 });
 

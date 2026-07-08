@@ -197,7 +197,7 @@ On incremental runs (after small code changes), only modified files trigger LLM 
 
 After extraction, all nodes and relationships are written to **Memgraph**, an in-memory graph database compatible with the openCypher query language (the same query language as Neo4j).
 
-Every inferred node and edge written in this phase carries a **provenance** block that stamps the fact's origin (`source`), supporting evidence (`evidence_*`), and trust tier (`quality`). The categorical model lets the dashboard, the `cr review pending` triage queue, and the CLI's `--quality-at-least` / `--source` filters branch on the same vocabulary. See [Grounding, Evidence, Quality](./grounding.md) for the full producer contract, the quality assignment matrix, and the welder ordering invariant.
+Every inferred node and edge written in this phase carries a **provenance** block that stamps the fact's origin (`source`), supporting evidence (`evidence_*`), and trust tier (`quality`). The categorical model lets the dashboard, the `cr doctor` triage queue, and the CLI's `--quality-at-least` / `--source` filters branch on the same vocabulary. See [Grounding, Evidence, Quality](./grounding.md) for the full producer contract, the quality assignment matrix, and the welder ordering invariant.
 
 ### The Graph Data Model (Ontology)
 

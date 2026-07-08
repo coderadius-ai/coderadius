@@ -103,10 +103,17 @@ export function renderIngestCompletion(opts: {
     });
 }
 
-export async function renderGroundingBreakdown(): Promise<string | null> {
+export interface GroundingBreakdownReport {
+    block: string | null;
+    /** Total entities flagged `needsReview = true` — feeds the `cr doctor` teaser. */
+    needsReview: number;
+}
+
+export async function renderGroundingBreakdown(): Promise<GroundingBreakdownReport> {
     const breakdowns = await countByQualityTier();
     const populated = breakdowns.filter(b => b.total > 0);
-    if (populated.length === 0) return null;
+    const needsReview = populated.reduce((sum, b) => sum + b.needsReview, 0);
+    if (populated.length === 0) return { block: null, needsReview };
 
     const tiers = ['exact', 'high', 'medium', 'low', 'speculative'] as const;
     const tierWidths = [5, 4, 6, 3, 11];
@@ -135,13 +142,14 @@ export async function renderGroundingBreakdown(): Promise<string | null> {
         return '  ' + chalk.cyan(b.label.padEnd(labelWidth)) + sep + cells.join(sep) + sep + review;
     });
 
-    return [
+    const block = [
         '',
         chalk.bold('  GROUNDING'),
         rule,
         header,
         ...rows,
     ].join('\n');
+    return { block, needsReview };
 }
 
 function formatDisplayPath(filePath: string): string {

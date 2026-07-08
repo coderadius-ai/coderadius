@@ -396,15 +396,18 @@ export function registerAnalyzeCodeCommand(analyzeCmd: Command): void {
 
                     // Grounding distribution: per-label tier counts. Skipped when
                     // the graph contains no inferred nodes (fresh DB / structural-only run).
-                    const provBlock = await renderGroundingBreakdown();
-                    if (provBlock) {
+                    const grounding = await renderGroundingBreakdown();
+                    if (grounding.block) {
                         logger.log('');
-                        logger.log(provBlock);
+                        logger.log(grounding.block);
                     }
 
                     logger.log(renderIngestCompletion({
                         title: 'Analysis complete',
                         nextSteps: [
+                            ...(grounding.needsReview > 0
+                                ? [{ command: 'cr doctor', description: `${grounding.needsReview} gaps need your input — get coderadius.yaml fixes` }]
+                                : []),
                             { command: 'cr ui', description: 'Open architecture dashboard' },
                             { command: 'cr docs generate', description: 'Generate C4 Markdown' },
                             { command: 'cr mcp configure', description: 'Connect to coding agents' },

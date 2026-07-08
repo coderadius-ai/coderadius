@@ -94,9 +94,9 @@ The dot is hidden by default on the structural family: labels that are uniformly
 ### Triage flagged entities
 
 ```bash
-cr review pending
-cr review pending --label MessageChannel
-cr review pending --quality-at-least medium --source llm
+cr doctor
+cr doctor --label MessageChannel
+cr doctor --quality-at-least medium --source llm
 ```
 
 Lists every node with `needsReview = true`, grouped by label, with a concrete reason and a concrete suggestion for each. These are derived from the extractor tags on the node, not a generic "low confidence" shrug:
@@ -109,7 +109,7 @@ MessageChannel (1)
 ```
 
 Filters:
-- `--label <name>`: Restrict to one label. `cr review pending`'s label set is slightly wider than the breakdown table above; it adds `SourceFile`, `MessageBroker`, and `BrokerCandidate`. That means a `SourceFile` can legitimately show up here even though it's elsewhere always `ast`/Verified and dot-suppressed: a structural-plugin extractor can flag one specific file for review (an ambiguous Symfony Messenger dynamic-routing case, for example). `BrokerCandidate` entries exist *only* to be reviewed. They are unconfirmed broker guesses that nothing has grounded yet.
+- `--label <name>`: Restrict to one label. `cr doctor`'s label set is slightly wider than the breakdown table above; it adds `SourceFile`, `MessageBroker`, and `BrokerCandidate`. That means a `SourceFile` can legitimately show up here even though it's elsewhere always `ast`/Verified and dot-suppressed: a structural-plugin extractor can flag one specific file for review (an ambiguous Symfony Messenger dynamic-routing case, for example). `BrokerCandidate` entries exist *only* to be reviewed. They are unconfirmed broker guesses that nothing has grounded yet.
 - `--quality-at-least <tier>`: keep entities at or above the given tier (`exact` ≥ `high` ≥ `medium` ≥ `low` ≥ `speculative`).
 - `--source <s>`: keep entities whose source matches. Repeat the flag for multiple sources.
 
@@ -125,7 +125,7 @@ bun run scripts/diag-graph-coverage.ts --source ast
 bun run scripts/diag-graph-coverage.ts --repo my-repo --source llm
 ```
 
-Same filter vocabulary as `cr review pending`. Useful for:
+Same filter vocabulary as `cr doctor`. Useful for:
 - "Show me only what I should trust" → `--quality-at-least high`.
 - "Show me what the LLM inferred, so I can sanity-check it" → `--source llm`.
 - "Show me the deterministic baseline" → `--source ast`.
@@ -160,4 +160,4 @@ The codebase has weak static signals: no decorators, no config files, and no con
 
 **The `needs-review` count is large. What now?**
 
-Run `cr review pending`. Every item comes with a concrete reason and suggestion (see above). If a tag isn't recognized yet, you'll get a generic "low confidence, here's the raw extractor tag" fallback instead of nothing. One specific tag worth knowing: `untagged@v1` means a graph mutation ran without a grounding argument, so it fell back to the defensive `heuristic`/`speculative`/`needsReview=true` default. Find them with `evidence_extractors CONTAINS 'untagged@v1'`. This is an internal tagging gap, not a data problem, and safe to ignore beyond reporting it.
+Run `cr doctor`. Every item comes with a concrete reason and suggestion (see above). If a tag isn't recognized yet, you'll get a generic "low confidence, here's the raw extractor tag" fallback instead of nothing. One specific tag worth knowing: `untagged@v1` means a graph mutation ran without a grounding argument, so it fell back to the defensive `heuristic`/`speculative`/`needsReview=true` default. Find them with `evidence_extractors CONTAINS 'untagged@v1'`. This is an internal tagging gap, not a data problem, and safe to ignore beyond reporting it.

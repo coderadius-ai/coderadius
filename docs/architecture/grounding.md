@@ -8,7 +8,7 @@ Every inferred node and every inferred edge in the CodeRadius graph carries a st
 | What supports it? | `evidence` | structured object |
 | How much should I trust it? | `quality` | categorical enum |
 
-The model replaces the legacy `confidence: float` field. Floats compound badly along path computations, do not survive LLM model upgrades, and answer none of the three questions independently. The categorical model is the operator-facing contract for the dashboard, the `cr review pending` triage queue, and the `--quality-at-least` / `--source` filters across the CLI.
+The model replaces the legacy `confidence: float` field. Floats compound badly along path computations, do not survive LLM model upgrades, and answer none of the three questions independently. The categorical model is the operator-facing contract for the dashboard, the `cr doctor` triage queue, and the `--quality-at-least` / `--source` filters across the CLI.
 
 ---
 
@@ -67,7 +67,7 @@ Extractors carry a version suffix (`symfony-messenger-php@v1`) so a regex or pro
 
 ### Operational flags
 
-- `needsReview: boolean`: explicit human-triage flag. Operational signal, **not derived from quality**. Surfaced by `cr review pending` and by the dashboard's "needs review" pill.
+- `needsReview: boolean`: explicit human-triage flag. Operational signal, **not derived from quality**. Surfaced by `cr doctor` and by the dashboard's "needs review" pill.
 - `lastSeenCommit: string`: commit sha at which the fact was last reconciled against fresh code.
 
 ---
@@ -138,7 +138,7 @@ Every mutation in `src/graph/mutations/` accepts an optional `grounding: Groundi
 await mergeMessageChannelWithKind(name, kind, technology, commitHash, schemaPath, schemaFormat, tags, grounding);
 ```
 
-If the caller omits the argument, the mutation stamps `UNTAGGED_GROUNDING`: a deliberately weak default (`source: 'heuristic'`, `quality: 'speculative'`, `needsReview: true`, extractor `'untagged@v1'`). This is a guardrail: an accidental untagged write **visibly degrades** the node and surfaces in `cr review pending` instead of masquerading as authoritative `ast/exact`. A warning is logged once per process.
+If the caller omits the argument, the mutation stamps `UNTAGGED_GROUNDING`: a deliberately weak default (`source: 'heuristic'`, `quality: 'speculative'`, `needsReview: true`, extractor `'untagged@v1'`). This is a guardrail: an accidental untagged write **visibly degrades** the node and surfaces in `cr doctor` instead of masquerading as authoritative `ast/exact`. A warning is logged once per process.
 
 Sweep target: `evidence_extractors CONTAINS 'untagged@v1'` lists every node that landed in the default so a later pass can assign a real extractor identity.
 
@@ -198,7 +198,7 @@ countByQualityTier()
 
 listNeedsReview({ label?, qualityAtLeast?, sourceIn? })
     // → triage list of nodes with needsReview=true (with optional tier / source narrowing).
-    // Used by `cr review pending`.
+    // Used by `cr doctor`.
 
 findDisputed()
     // → nodes where source='llm' but evidence_extractors contains BOTH llm + a deterministic
@@ -242,8 +242,8 @@ Lists nodes where the LLM was the sole signal. Useful when verifying a regressio
 ### "Triage entities the engine wants a human to look at"
 
 ```bash
-cr review pending --label MessageChannel
-cr review pending --quality-at-least medium --source llm
+cr doctor --label MessageChannel
+cr doctor --quality-at-least medium --source llm
 ```
 
 Lists every node flagged `needsReview = true`, optionally narrowed by label / quality / source.

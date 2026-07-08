@@ -206,15 +206,18 @@ export function registerAnalyzeInfraCommand(analyzeCmd: Command): void {
 
                     logger.funnel(telemetryCollector.generateFunnelReport());
 
-                    const provBlock = await renderGroundingBreakdown();
-                    if (provBlock) {
+                    const grounding = await renderGroundingBreakdown();
+                    if (grounding.block) {
                         logger.log('');
-                        logger.log(provBlock);
+                        logger.log(grounding.block);
                     }
 
                     logger.log(renderIngestCompletion({
                         title: 'Infra ingestion complete',
                         nextSteps: [
+                            ...(grounding.needsReview > 0
+                                ? [{ command: 'cr doctor', description: `${grounding.needsReview} gaps need your input — get coderadius.yaml fixes` }]
+                                : []),
                             { command: 'cr analyze code .', description: 'Run full semantic code analysis' },
                             { command: 'cr analyze code . --depth=structure', description: 'Re-run structural scan plus deterministic reconciliation' },
                             { command: 'cr ui', description: 'Open architecture dashboard' },

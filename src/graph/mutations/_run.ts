@@ -117,7 +117,7 @@ export async function runInTransaction(
  * a deliberately weak combination (source='heuristic', quality='speculative')
  * so a re-touch by an untagged caller CANNOT silently downgrade a higher-trust
  * edge from `ast/exact` or `composite/high`: the ON MATCH write would visibly
- * tank the tier and operators see it in `cr review pending` or the dashboard's
+ * tank the tier and operators see it in `cr doctor` or the dashboard's
  * "weakest tier" surfaces.
  *
  * Sweep target: `evidence_extractors CONTAINS 'untagged@v1'` lists every node
