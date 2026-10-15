@@ -21,6 +21,9 @@
   </p>
 </div>
 
+> [!NOTE]
+> **CodeRadius is in maintenance mode** and no longer under active development. The code stays available under Apache-2.0 and works as documented. See [Project Status](#project-status).
+
 As teams adopt AI coding tools, code is written faster than ever, but without global system context. CodeRadius statically builds a live knowledge graph of your entire architecture, covering every service, API, queue, and database across every repo, so engineers and AI agents can measure blast radius, enforce policy, and ship without breaking downstream systems.
 
 ![cr blast finding a cross-repo breaking change](docs/assets/blast-radius.gif)
@@ -45,13 +48,13 @@ CodeRadius fixes this with three capabilities on one graph:
 
 ## Project Status
 
-CodeRadius is **0.x and moving fast**, released early to gather real-world feedback, not as a finished product.
+CodeRadius is **in maintenance mode**. There is no roadmap and no planned release; issues and pull requests are not actively triaged.
 
-What you can rely on today: the deterministic core (AST parsing, import and taint analysis, graph building, blast radius) is pinned by 5,400+ unit tests plus a deterministic eval suite, and every framework marked *eval-verified* in the [compatibility matrix](https://coderadius.ai/docs/guide/supported-frameworks) is regression-gated by committed fixtures.
+The deterministic core (AST parsing, import and taint analysis, graph building, blast radius) is pinned by 5,400+ unit tests plus a deterministic eval suite, and every framework marked *eval-verified* in the [compatibility matrix](https://coderadius.ai/docs/guide/supported-frameworks) is regression-gated by committed fixtures.
 
-What is still settling: LLM semantic extraction quality varies by stack and provider, and the graph schema and CLI surface may change between 0.x releases without migration paths (re-ingesting is the upgrade path).
+LLM semantic extraction quality varies by stack and provider.
 
-If it breaks on your codebase, that's exactly the feedback we need. Please [open an issue](https://github.com/coderadius-ai/coderadius/issues) with the `cr --version` output and the language/framework involved.
+Forks are welcome under the Apache-2.0 license.
 
 ---
 
@@ -179,16 +182,9 @@ Full guide: [coderadius.ai/docs/guide/mcp-server](https://coderadius.ai/docs/gui
 
 ---
 
-## Roadmap
-
-- **Languages**: C#, Ruby
-- **CI/CD config ingestion**: Bitbucket Pipelines, Jenkins (running `cr blast` inside any CI already works today, Bitbucket included; see the compatibility matrix)
-
----
-
 ## Contributing
 
-Contributions are welcome. Language plugins, framework signals, and connection extractors are designed as isolated extension points. See [CONTRIBUTING.md](CONTRIBUTING.md).
+The project is not accepting new features. If you fork it, language plugins, framework signals, and connection extractors are designed as isolated extension points. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
